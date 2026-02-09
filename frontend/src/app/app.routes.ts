@@ -12,6 +12,7 @@ export const routes: Routes = [
       { path: 'login/admin', loadComponent: () => import('./auth/components/login-admin/login-admin.component').then(m => m.LoginAdminComponent) },
       { path: 'login/boutique', loadComponent: () => import('./auth/components/login-boutique/login-boutique.component').then(m => m.LoginBoutiqueComponent) },
       { path: 'login/acheteur', loadComponent: () => import('./auth/components/login-acheteur/login-acheteur.component').then(m => m.LoginAcheteurComponent) },
+      { path: 'register/acheteur', loadComponent: () => import('./auth/components/register-acheteur/register-acheteur.component').then(m => m.RegisterAcheteurComponent) },
       { path: 'logout', loadComponent: () => import('./auth/components/logout/logout.component').then(m => m.LogoutComponent) },
     ]
   },

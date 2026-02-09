@@ -8,7 +8,7 @@ import { LoginRequest } from '../../models/auth.models';
     selector: 'app-login-admin',
     standalone: true,
     imports: [BaseLoginComponent],
-    template: `<app-base-login [title]="'Connexion Admin'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)"></app-base-login>`
+    templateUrl: './login-admin.component.html'
 })
 export class LoginAdminComponent {
     private authService = inject(AuthService);

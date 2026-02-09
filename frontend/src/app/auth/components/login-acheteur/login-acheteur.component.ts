@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { BaseLoginComponent } from '../base-login/base-login.component';
 import { LoginRequest } from '../../models/auth.models';
@@ -7,8 +7,8 @@ import { LoginRequest } from '../../models/auth.models';
 @Component({
     selector: 'app-login-acheteur',
     standalone: true,
-    imports: [BaseLoginComponent],
-    template: `<app-base-login [title]="'Connexion Acheteur'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)"></app-base-login>`
+    imports: [BaseLoginComponent, RouterLink],
+    templateUrl: './login-acheteur.component.html'
 })
 export class LoginAcheteurComponent {
     private authService = inject(AuthService);

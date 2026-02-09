@@ -8,7 +8,7 @@ import { LoginRequest } from '../../models/auth.models';
     selector: 'app-login-boutique',
     standalone: true,
     imports: [BaseLoginComponent],
-    template: `<app-base-login [title]="'Connexion Boutique'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)"></app-base-login>`
+    templateUrl: './login-boutique.component.html'
 })
 export class LoginBoutiqueComponent {
     private authService = inject(AuthService);

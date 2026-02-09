@@ -44,6 +44,10 @@ export class AuthService {
             .pipe(tap(response => this.setSession(response)));
     }
 
+    register(user: any): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/register`, user);
+    }
+
     logout(): void {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem(this.USER_KEY);
