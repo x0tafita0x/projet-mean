@@ -1,0 +1,36 @@
+//Verification que node.js est installe
+node -v
+npm -v
+
+//Initialisation du projet
+npm init -y
+
+//Instalation de express
+npm install express
+
+//Installation des dependance
+npm install mongoose dotenv bcrypt jsonwebtoken cors
+
+mongoose → MongoDB
+
+dotenv → variables d’environnement
+
+bcrypt → hash mot de passe
+
+jsonwebtoken → JWT
+
+cors → autoriser frontend
+
+
+//Installation de Nodemon
+npm install --save-dev nodemon
+
+ao am package.json amzay solona anty le scripts ao
+"scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js"
+}
+
+de .env adaptena amle url sy nom de table anla
+
+<3
