@@ -1,0 +1,34 @@
+require("dotenv").config();
+
+const express = require("express");
+const connectDB = require("./config/db");
+
+const app = express();
+const cors = require("cors");
+
+// middleware pour le CORS
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// middleware pour lire le JSON
+app.use(express.json());
+
+connectDB();
+
+// routes
+app.use("/api/auth", require("./routes/utilisateur.routes"));
+app.use("/api/produits", require("./routes/produit.routes"));
+
+// route test
+app.get("/", (req, res) => {
+  res.json({ message: "API Express fonctionne 🚀" });
+});
+
+// serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+});
