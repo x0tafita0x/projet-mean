@@ -21,6 +21,8 @@ connectDB();
 // routes
 app.use("/api/auth", require("./routes/utilisateur.routes"));
 app.use("/api/produits", require("./routes/produit.routes"));
+app.use("/api/type-sous-type", require("./routes/typeSousType.routes"));
+
 
 // route test
 app.get("/", (req, res) => {
