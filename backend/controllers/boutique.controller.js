@@ -13,7 +13,7 @@ exports.createBoutique = async (req, res) => {
 // lister tous les produits avec catégorie
 exports.getAllBoutiques = async (req, res) => {
   try {
-    const boutiques = await Boutique.find();
+    const boutiques = await Boutique.find().populate("typeProduit");
     res.json(boutiques);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -23,7 +23,7 @@ exports.getAllBoutiques = async (req, res) => {
 // trouver un produit par ID
 exports.getBoutiqueById = async (req, res) => {
   try {
-    const boutique = await Boutique.findById(req.params.id).populate("produit_type");
+    const boutique = await Boutique.findById(req.params.id).populate("typeProduit");
     if (!boutique) return res.status(404).json({ error: "Boutique non trouvée" });
     res.json(boutique);
   } catch (err) {
@@ -34,7 +34,7 @@ exports.getBoutiqueById = async (req, res) => {
 // mettre à jour un produit
 exports.updateBoutique = async (req, res) => {
   try {
-    const boutique = await Boutique.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const boutique = await Boutique.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("typeProduit");
     if (!boutique) return res.status(404).json({ error: "Boutique non trouvée" });
     res.json(boutique);
   } catch (err) {
