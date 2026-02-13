@@ -2,23 +2,22 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ProduitService } from '../../services/produit.service';
-import { Produit, SousTypeProduit } from '../../models/produit.models';
+import { BoutiqueService } from '../../services/boutique.services';
+import { Boutique, TypeBoutique } from '../../models/boutique.models';
 
 @Component({
-  selector: 'app-produit-form',
+  selector: 'app-boutique-form',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './produit-form.component.html'
+  templateUrl: './boutique-form.component.html'
 })
-export class ProduitFormComponent implements OnInit {
-  private produitService = inject(ProduitService);
+export class BoutiqueFormComponent implements OnInit {
+  private boutiqueService = inject(BoutiqueService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  produit = signal<Produit>({ nom: '', sousTypeProduit: '', boutique: '' });
-  sousTypeProduits = signal<SousTypeProduit[]>([]);
-  boutiques = signal<any[]>([]);
+  boutique = signal<Boutique>({ nom: '', typeBoutique: '', heureOuverture: '', heureFermeture: '', nbJoursOuverture: '' });
+  typeBoutiques = signal<TypeBoutique[]>([]);
   isEdit = signal(false);
   loading = signal(false);
   selectedFile: File | null = null;
@@ -29,34 +28,30 @@ export class ProduitFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit.set(true);
-      this.produitService.getProduitById(id).subscribe({
+      this.boutiqueService.getBoutiqueById(id).subscribe({
         next: (data: any) => {
-          if (data.sousTypeProduit) {
-            data.sousTypeProduit = (typeof data.sousTypeProduit === 'object') ? data.sousTypeProduit._id : data.sousTypeProduit;
+          if (data.typeBoutique) {
+            data.typeBoutique = (typeof data.typeBoutique === 'object') ? data.typeBoutique._id : data.typeBoutique;
           }
 
           if (data.boutique) {
             data.boutique = (typeof data.boutique === 'object') ? data.boutique._id : data.boutique;
           }
 
-          this.produit.set(data);
+          this.boutique.set(data);
           if (data.photo) {
             this.imagePreview = `http://localhost:3000/${data.photo}`;
           }
         },
-        error: (err) => alert('Erreur lors du chargement du produit')
+        error: (err) => alert('Erreur lors du chargement de la boutique')
       });
     }
   }
 
   loadMetadata() {
-    this.produitService.getSousTypeProduits().subscribe({
-      next: (data) => this.sousTypeProduits.set(data),
-      error: (err) => console.error('Error loading sous-types', err)
-    });
-    this.produitService.getBoutiques().subscribe({
-      next: (data) => this.boutiques.set(data),
-      error: (err) => console.error('Error loading boutiques', err)
+    this.boutiqueService.getTypeBoutiques().subscribe({
+      next: (data) => this.typeBoutiques.set(data),
+      error: (err) => console.error('Error loading type boutiques', err)
     });
   }
 
@@ -75,25 +70,27 @@ export class ProduitFormComponent implements OnInit {
   save() {
     this.loading.set(true);
     const formData = new FormData();
-    formData.append('nom', this.produit().nom);
-    formData.append('info', this.produit().info || '');
-    formData.append('sousTypeProduit', (this.produit().sousTypeProduit as string) || '');
-    formData.append('boutique', (this.produit().boutique as string) || '');
+    formData.append('nom', this.boutique().nom);
+    formData.append('typeBoutique', (this.boutique().typeBoutique as string) || '');
+    formData.append('heureOuverture', this.boutique().heureOuverture);
+    formData.append('heureFermeture', this.boutique().heureFermeture);
+    formData.append('nbJoursOuverture', this.boutique().nbJoursOuverture);
 
     if (this.selectedFile) {
       formData.append('photo', this.selectedFile);
     }
-
+    
     const obs = this.isEdit()
-      ? this.produitService.updateProduit(this.produit()._id!, formData)
-      : this.produitService.createProduit(formData);
+      ? this.boutiqueService.updateBoutique(this.boutique()._id!, formData)
+      : this.boutiqueService.createBoutique(formData);
 
     obs.subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/home/produit']);
+        this.router.navigate(['/home/boutique']);
       },
       error: (err) => {
+        console.error('Error saving boutique', err);
         this.loading.set(false);
         alert('Erreur lors de l\'enregistrement');
       }

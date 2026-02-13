@@ -1,3 +1,6 @@
+import { inject } from '@angular/core';
+import { Boutique } from '../../boutique/models/boutique.models';
+
 export interface TypeProduit {
     _id?: string;
     nom: string;
@@ -19,7 +22,7 @@ export interface Produit {
     info?: string;
     photo?: string;
     sousTypeProduit: string | SousTypeProduit;
-    boutique: string;
+    boutique: string | Boutique;
     createdAt?: string;
     updatedAt?: string;
 }

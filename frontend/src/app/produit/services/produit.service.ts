@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
 import { Produit, TypeProduit, SousTypeProduit } from '../models/produit.models';
+import { Boutique, TypeBoutique } from '../../boutique/models/boutique.models';
 
 @Injectable({
     providedIn: 'root'
@@ -10,11 +11,11 @@ export class ProduitService {
     private apiService = inject(ApiService);
 
     // Boutiques
-    getBoutiques(): Observable<any[]> {
-        return this.apiService.getList<any[]>('boutique');
+    getBoutiques(): Observable<Boutique[]> {
+        return this.apiService.getList<Boutique[]>('boutique');
     }
 
-    // Products
+    // Produits
     getProduits(): Observable<Produit[]> {
         return this.apiService.getList<Produit[]>('produits');
     }

@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
-import { TypeBoutique } from '../models/boutique.models';
-import { TypeProduit } from '../../produit/models/produit.models';
+import { Boutique, TypeBoutique } from '../models/boutique.models';
 
 @Injectable({
     providedIn: 'root'
@@ -29,5 +28,26 @@ export class BoutiqueService {
  
      deleteTypeBoutique(id: string): Observable<void> {
          return this.apiService.delete('type-sous-type/type-boutique', id);
+     }
+ 
+     // Boutiques
+     getBoutiques(): Observable<Boutique[]> {
+         return this.apiService.getList<Boutique[]>('boutique');
+     }
+ 
+     getBoutiqueById(id: string): Observable<Boutique> {
+         return this.apiService.getById<Boutique>('boutique', id);
+     }
+ 
+     createBoutique(boutique: Boutique | FormData): Observable<Boutique> {
+         return this.apiService.create<Boutique>('boutique', boutique as any);
+     }
+ 
+     updateBoutique(id: string, boutique: Boutique | FormData): Observable<Boutique> {
+         return this.apiService.update<Boutique>(`boutique/${id}`, boutique as any);
+     }
+ 
+     deleteBoutique(id: string): Observable<void> {
+         return this.apiService.delete('boutique', id);
      }
 }

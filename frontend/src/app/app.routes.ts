@@ -42,6 +42,11 @@ export const routes: Routes = [
       { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },
       { path: 'type-boutique/new', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },
       { path: 'type-boutique/edit/:id', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },
+
+      // Boutique routes
+      { path: 'boutique', loadComponent: () => import('./boutique/components/boutique-list/boutique-list.component').then(m => m.BoutiqueListComponent) },
+      { path: 'boutique/new', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
+      { path: 'boutique/edit/:id', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
       
     ]
   },

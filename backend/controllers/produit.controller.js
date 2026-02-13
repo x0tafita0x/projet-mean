@@ -24,7 +24,7 @@ exports.getAllProduits = async (req, res) => {
         path: "typeProduit",
         select: "nom"
       }
-    });
+    }).populate("boutique", "nom");
     res.json(produits);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -34,7 +34,14 @@ exports.getAllProduits = async (req, res) => {
 // trouver un produit par ID
 exports.getProduitById = async (req, res) => {
   try {
-    const produit = await Produit.findById(req.params.id).populate("sousTypeProduit");
+    const produit = await Produit.findById(req.params.id).populate({
+      path: "sousTypeProduit",
+      select: "nom",
+      populate: {
+        path: "typeProduit",
+        select: "nom"
+      }
+    }).populate("boutique", "nom");
     if (!produit) return res.status(404).json({ error: "Produit non trouvé" });
     res.json(produit);
   } catch (err) {

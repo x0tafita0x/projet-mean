@@ -6,7 +6,8 @@ const BoutiqueSchema = new mongoose.Schema(
     typeBoutique: { type: mongoose.Schema.Types.ObjectId, ref: "type_boutique", required: true } ,
     heureOuverture: { type: String, required: true } ,
     heureFermeture: { type: String, required: true } ,
-    nb_jours_ouverture: { type: Number, required: true } 
+    nbJoursOuverture: { type: Number, required: true } ,
+    photo: String ,
  },
   { timestamps: true }
 );

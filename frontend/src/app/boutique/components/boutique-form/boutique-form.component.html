@@ -1,0 +1,76 @@
+<div class="container mt-4 pb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/home/boutique">Boutiques</a></li>
+            <li class="breadcrumb-item active">{{ isEdit() ? 'Modifier' : 'Nouveau' }} Boutique</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm col-md-8 mx-auto">
+        <div class="card-header bg-white">
+            <h2 class="h4 mb-0">{{ isEdit() ? 'Modifier la Boutique' : 'Nouvelle Boutique' }}</h2>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nom" class="form-label">Nom de la Boutique</label>
+                        <input type="text" id="nom" name="nom" class="form-control" [(ngModel)]="boutique().nom" required
+                            #nom="ngModel">
+                        <div *ngIf="nom.invalid && (nom.dirty || nom.touched)" class="text-danger small">Le nom est
+                            requis.</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="photo" class="form-label">Photo de la Boutique</label>
+                        <input type="file" id="photo" class="form-control" (change)="onFileSelected($event)"
+                            accept="image/*">
+                        <div *ngIf="imagePreview" class="mt-2 text-center">
+                            <img [src]="imagePreview" class="img-thumbnail" style="max-height: 150px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="heureOuverture" class="form-label">Heure d'ouverture</label>
+                    <input type="text" id="heureOuverture" name="heureOuverture" class="form-control" [(ngModel)]="boutique().heureOuverture" required
+                            #heureOuverture="ngModel">
+                </div>
+
+                <div class="mb-3">
+                    <label for="heureFermeture" class="form-label">Heure de fermeture</label>
+                    <input type="text" id="heureFermeture" name="heureFermeture" class="form-control" [(ngModel)]="boutique().heureFermeture" required
+                            #heureFermeture="ngModel">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="nbjourOuverture" class="form-label">Jour d'ouverture /7</label>
+                    <input type="text" id="nbjourOuverture" name="nbjourOuverture" class="form-control" [(ngModel)]="boutique().nbJoursOuverture" required
+                            #jourOuverture="ngModel">
+                </div>
+
+                
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="typeBoutique" class="form-label">Type de Boutique</label>
+                        <select id="typeBoutique" name="typeBoutique" class="form-select"
+                            [(ngModel)]="boutique().typeBoutique" required>
+                            <option value="" disabled selected>Sélectionnez un type</option>
+                            <option *ngFor="let t of typeBoutiques()" [value]="t._id">{{ t.nom }}</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" routerLink="/home/boutique">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="loading() || !boutique().nom || !boutique().typeBoutique || !boutique().heureOuverture || !boutique().heureFermeture || !boutique().nbJoursOuverture">
+                        {{ loading() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,11 @@ const Boutique = require("../models/boutique.model");
 // créer un produit
 exports.createBoutique = async (req, res) => {
   try {
-    const boutique = await Boutique.create(req.body);
+     const data = { ...req.body };
+    if (req.file) {
+      data.photo = `uploads/${req.file.filename}`;
+    }
+    const boutique = await Boutique.create(data);
     res.status(201).json(boutique);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -34,7 +38,11 @@ exports.getBoutiqueById = async (req, res) => {
 // mettre à jour un produit
 exports.updateBoutique = async (req, res) => {
   try {
-    const boutique = await Boutique.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("typeProduit");
+    const data = { ...req.body };
+    if (req.file) {
+      data.photo = `uploads/${req.file.filename}`;
+    }
+    const boutique = await Boutique.findByIdAndUpdate(req.params.id, data, { new: true });
     if (!boutique) return res.status(404).json({ error: "Boutique non trouvée" });
     res.json(boutique);
   } catch (err) {
