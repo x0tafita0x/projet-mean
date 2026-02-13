@@ -1,0 +1,43 @@
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/home/sous-type-produit">Sous-Types de Produits</a></li>
+            <li class="breadcrumb-item active">{{ isEdit() ? 'Modifier' : 'Nouveau' }} Sous-Type</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm col-md-6 mx-auto">
+        <div class="card-header bg-white">
+            <h2 class="h4 mb-0">{{ isEdit() ? 'Modifier le Sous-Type' : 'Nouveau Sous-Type' }}</h2>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="save()">
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom du Sous-Type</label>
+                    <input type="text" id="nom" name="nom" class="form-control" [(ngModel)]="sousTypeProduit().nom"
+                        required #nom="ngModel">
+                    <div *ngIf="nom.invalid && (nom.dirty || nom.touched)" class="text-danger small">
+                        Le nom est requis.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="typeProduit" class="form-label">Type Parent</label>
+                    <select id="typeProduit" name="typeProduit" class="form-select"
+                        [(ngModel)]="sousTypeProduit().typeProduit" required>
+                        <option value="" disabled selected>Sélectionnez un type</option>
+                        <option *ngFor="let type of typeProduits()" [value]="type._id">{{ type.nom }}</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light" routerLink="/home/sous-type-produit">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="loading() || !sousTypeProduit().nom || !sousTypeProduit().typeProduit">
+                        {{ loading() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Sous-Types de Produits</h2>
+        <button class="btn btn-primary" routerLink="/home/sous-type-produit/new">
+            <i class="bi bi-plus-lg"></i> Nouveau Sous-Type
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type Parent</th>
+                        <th>Date de Création</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let stype of sousTypeProduits()">
+                        <td>{{ stype.nom }}</td>
+                        <td>{{ getTypeName(stype.typeProduit) }}</td>
+                        <td>{{ stype.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                [routerLink]="['/home/sous-type-produit/edit', stype._id]">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" (click)="deleteSousType(stype._id!)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="sousTypeProduits().length === 0">
+                        <td colspan="4" class="text-center py-4 text-muted">Aucun sous-type de produit trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

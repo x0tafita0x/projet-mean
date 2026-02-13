@@ -16,6 +16,10 @@ app.use(cors({
 // middleware pour lire le JSON
 app.use(express.json());
 
+// Servir le dossier uploads en statique
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 connectDB();
 
 // routes
@@ -24,7 +28,7 @@ app.use("/api/produits", require("./routes/produit.routes"));
 app.use("/api/type-sous-type", require("./routes/typeSousType.routes"));
 app.use("/api/boutique", require("./routes/boutique.routes"));
 
- 
+
 // route test
 app.get("/", (req, res) => {
   res.json({ message: "API Express fonctionne 🚀" });

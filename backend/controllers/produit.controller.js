@@ -3,7 +3,11 @@ const Produit = require("../models/produit.model");
 // créer un produit
 exports.createProduit = async (req, res) => {
   try {
-    const produit = await Produit.create(req.body);
+    const data = { ...req.body };
+    if (req.file) {
+      data.photo = `uploads/${req.file.filename}`;
+    }
+    const produit = await Produit.create(data);
     res.status(201).json(produit);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -14,15 +18,15 @@ exports.createProduit = async (req, res) => {
 exports.getAllProduits = async (req, res) => {
   try {
     const produits = await Produit.find().populate({
-                      path : "sousTypeProduit" ,
-                      select : "nom",
-                      populate : {
-                        path : "typeProduit",
-                        select : "nom"
-                      }
-                    });
+      path: "sousTypeProduit",
+      select: "nom",
+      populate: {
+        path: "typeProduit",
+        select: "nom"
+      }
+    });
     res.json(produits);
-  } catch (err) { 
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
@@ -41,7 +45,11 @@ exports.getProduitById = async (req, res) => {
 // mettre à jour un produit
 exports.updateProduit = async (req, res) => {
   try {
-    const produit = await Produit.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("sousTypeProduit");
+    const data = { ...req.body };
+    if (req.file) {
+      data.photo = `uploads/${req.file.filename}`;
+    }
+    const produit = await Produit.findByIdAndUpdate(req.params.id, data, { new: true }).populate("sousTypeProduit");
     if (!produit) return res.status(404).json({ error: "Produit non trouvé" });
     res.json(produit);
   } catch (err) {

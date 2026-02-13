@@ -15,10 +15,10 @@ exports.getAllMouvementsProduits = async (req, res) => {
   try {
     const mouvementsProduits = await MouvementProduit.find();
     res.json(mouvementsProduits);
-  } catch (err) { 
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};  
+};
 
 
 // mettre à jour un mouvement de produit
@@ -45,85 +45,85 @@ exports.deleteMouvementProduit = async (req, res) => {
 
 exports.getProduitToSellByBoutiqueId = async (req, res) => {
   try {
-  const produitsStock = await MouvementProduit.aggregate([
-  // 1️⃣ Grouper pour calculer le stock restant
-  {
-    $group: {
-      _id: "$produit",
-      totalIn: { $sum: "$in" },
-      totalOut: { $sum: "$out" }
-    }
-  },
-  // 2️⃣ Calculer stock restant
-  {
-    $addFields: {
-      stockRestant: { $subtract: ["$totalIn", "$totalOut"] }
-    }
-  },
-  // 3️⃣ Filtrer produits avec stock > 0
-  {
-    $match: { stockRestant: { $gt: 0 } }
-  },
-  // 4️⃣ Lookup pour récupérer le dernier prix
-  {
-    $lookup: {
-      from: "MouvementPrixProduit",
-      let: { produitId: "$_id" },
-      pipeline: [
-        { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
-        { $sort: { createdAt: -1 } },
-        { $limit: 1 }
-      ],
-      as: "dernierPrix"
-    }
-  },
-  { $unwind: "$dernierPrix" },
-  // 5️⃣ Lookup pour récupérer le produit avec boutique et sousTypeProduit
-  {
-    $lookup: {
-      from: "Produit",
-      localField: "_id",
-      foreignField: "_id",
-      as: "produitDetails"
-    }
-  },
-  { $unwind: "$produitDetails" },
-  // 6️⃣ Lookup pour peupler sousTypeProduit
-  {
-    $lookup: {
-      from: "SousTypeProduit",
-      localField: "produitDetails.sousTypeProduit",
-      foreignField: "_id",
-      as: "sousTypeProduitDetails"
-    }
-  },
-  { $unwind: "$sousTypeProduitDetails" },
-  // 7️⃣ Lookup pour peupler boutique
-  {
-    $lookup: {
-      from: "Boutique",
-      localField: "produitDetails.boutique",
-      foreignField: "_id",
-      as: "boutiqueDetails"
-    }
-  },
-  { $unwind: "$boutiqueDetails" },
-  // 8️⃣ Projetter les champs finaux
-  {
-    $project: {
-      _id: 1,
-      produit: "$produitDetails.nom",
-      prixUnitaire: "$dernierPrix.prix",
-      stockRestant: 1,
-      info : "$produitDetails.info",
-      photo : "$produitDetails.photo",
-      sousTypeProduit: "$sousTypeProduitDetails.nom",
-      boutique: "$boutiqueDetails.nom"
-    }
-  }
-]);
+    const produitsStock = await MouvementProduit.aggregate([
+      // 1️⃣ Grouper pour calculer le stock restant
+      {
+        $group: {
+          _id: "$produit",
+          totalIn: { $sum: "$in" },
+          totalOut: { $sum: "$out" }
+        }
+      },
+      // 2️⃣ Calculer stock restant
+      {
+        $addFields: {
+          stockRestant: { $subtract: ["$totalIn", "$totalOut"] }
+        }
+      },
+      // 3️⃣ Filtrer produits avec stock > 0
+      {
+        $match: { stockRestant: { $gt: 0 } }
+      },
+      // 4️⃣ Lookup pour récupérer le dernier prix
+      {
+        $lookup: {
+          from: "MouvementPrixProduit",
+          let: { produitId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 }
+          ],
+          as: "dernierPrix"
+        }
+      },
+      { $unwind: "$dernierPrix" },
+      // 5️⃣ Lookup pour récupérer le produit avec boutique et sousTypeProduit
+      {
+        $lookup: {
+          from: "Produit",
+          localField: "_id",
+          foreignField: "_id",
+          as: "produitDetails"
+        }
+      },
+      { $unwind: "$produitDetails" },
+      // 6️⃣ Lookup pour peupler sousTypeProduit
+      {
+        $lookup: {
+          from: "sousTypeProduit",
+          localField: "produitDetails.sousTypeProduit",
+          foreignField: "_id",
+          as: "sousTypeProduitDetails"
+        }
+      },
+      { $unwind: "$sousTypeProduitDetails" },
+      // 7️⃣ Lookup pour peupler boutique
+      {
+        $lookup: {
+          from: "Boutique",
+          localField: "produitDetails.boutique",
+          foreignField: "_id",
+          as: "boutiqueDetails"
+        }
+      },
+      { $unwind: "$boutiqueDetails" },
+      // 8️⃣ Projetter les champs finaux
+      {
+        $project: {
+          _id: 1,
+          produit: "$produitDetails.nom",
+          prixUnitaire: "$dernierPrix.prix",
+          stockRestant: 1,
+          info: "$produitDetails.info",
+          photo: "$produitDetails.photo",
+          sousTypeProduit: "$sousTypeProduitDetails.nom",
+          boutique: "$boutiqueDetails.nom"
+        }
+      }
+    ]);
 
-console.log(produitsStock);
+    console.log(produitsStock);
 
 
 

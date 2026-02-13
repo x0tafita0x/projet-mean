@@ -22,6 +22,27 @@ export const routes: Routes = [
     component: Layout,
     children: [
       { path: '', component: Home },
+
+      // TypeProduit routes
+      { path: 'type-produit', loadComponent: () => import('./produit/components/type-produit-list/type-produit-list.component').then(m => m.TypeProduitListComponent) },
+      { path: 'type-produit/new', loadComponent: () => import('./produit/components/type-produit-form/type-produit-form.component').then(m => m.TypeProduitFormComponent) },
+      { path: 'type-produit/edit/:id', loadComponent: () => import('./produit/components/type-produit-form/type-produit-form.component').then(m => m.TypeProduitFormComponent) },
+
+      // SousTypeProduit routes
+      { path: 'sous-type-produit', loadComponent: () => import('./produit/components/sous-type-produit-list/sous-type-produit-list.component').then(m => m.SousTypeProduitListComponent) },
+      { path: 'sous-type-produit/new', loadComponent: () => import('./produit/components/sous-type-produit-form/sous-type-produit-form.component').then(m => m.SousTypeProduitFormComponent) },
+      { path: 'sous-type-produit/edit/:id', loadComponent: () => import('./produit/components/sous-type-produit-form/sous-type-produit-form.component').then(m => m.SousTypeProduitFormComponent) },
+
+      // Produit routes
+      { path: 'produit', loadComponent: () => import('./produit/components/produit-list/produit-list.component').then(m => m.ProduitListComponent) },
+      { path: 'produit/new', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
+      { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
+
+      // TypeBoutique routes
+      { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },
+      { path: 'type-boutique/new', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },
+      { path: 'type-boutique/edit/:id', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },
+      
     ]
   },
 ];

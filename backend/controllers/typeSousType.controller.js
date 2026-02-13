@@ -68,7 +68,7 @@ exports.createSousTypeProduit = async (req, res) => {
 // lister tous les sous-types de produits
 exports.getAllSousTypeProduits = async (req, res) => {
   try {
-    const sousTypeProduits = await SousTypeProduit.find();
+    const sousTypeProduits = await SousTypeProduit.find().populate("typeProduit");
     res.json(sousTypeProduits);
   } catch (err) {
     res.status(500).json({ error: err.message });
