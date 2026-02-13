@@ -31,8 +31,18 @@ export class BoutiqueService {
      }
  
      // Boutiques
-     getBoutiques(): Observable<Boutique[]> {
-         return this.apiService.getList<Boutique[]>('boutique');
+     getBoutiques(nom : string ,typeBoutique : string,nbJoursOuverture : string,order : string): Observable<Boutique[]> {
+        const params: string[] = [];
+
+        if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
+        if (typeBoutique) params.push(`typeBoutique=${encodeURIComponent(typeBoutique)}`);
+        if (nbJoursOuverture) params.push(`nbJoursOuverture=${encodeURIComponent(nbJoursOuverture)}`);
+        if (order) params.push(`order=${encodeURIComponent(order)}`);
+         
+        // Coller tous les paramètres avec '&'
+        const queryString = params.length ? '?' + params.join('&') : '';
+
+         return this.apiService.getList<Boutique[]>(`boutique${queryString}`);
      }
  
      getBoutiqueById(id: string): Observable<Boutique> {

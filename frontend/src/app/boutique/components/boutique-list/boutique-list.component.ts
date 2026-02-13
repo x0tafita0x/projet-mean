@@ -19,7 +19,7 @@ export class BoutiqueListComponent implements OnInit {
   }
 
   loadBoutiques() {
-    this.boutiqueService.getBoutiques().subscribe({
+    this.boutiqueService.getBoutiques('','','','asc').subscribe({
       next: (data) => this.boutiques.set(data),
       error: (err) => console.error('Error loading boutiques', err)
     });
