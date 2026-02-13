@@ -2,82 +2,61 @@
   <div class="position-sticky py-4 px-3 sidebar-sticky">
     <ul class="nav flex-column h-100">
 
-      <!-- Tous les menus si role vide -->
-      <ng-container *ngIf="currentMenu === 'default'">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/overview">
-            <i class="bi-house-fill me-2"></i> Overview
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/wallet">
-            <i class="bi-wallet me-2"></i> My Wallet
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/profile">
-            <i class="bi-person me-2"></i> Profile
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/settings">
-            <i class="bi-gear me-2"></i> Settings
-          </a>
-        </li>
-      </ng-container>
+      <!-- Overview Link -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bi-house-fill me-2"></i> Overview
+        </a>
+      </li>
 
-      <!-- Menu Mardang -->
-      <ng-container *ngIf="currentMenu === 'mardang'">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/overview">
-            <i class="bi-house-fill me-2"></i> Mardang Crud
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/wallet">
-            <i class="bi-wallet me-2"></i> Mardang DashBoard
-          </a>
-        </li>
-      </ng-container>
-      <ng-container *ngIf="currentMenu === 'ops'">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/overview">
-            <i class="bi-house-fill me-2"></i> Ops Crud
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/wallet">
-            <i class="bi-wallet me-2"></i> Ops DashBoard
-          </a>
-        </li>
-      </ng-container>
-      <ng-container *ngIf="currentMenu === 'aga'">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/overview">
-            <i class="bi-house-fill me-2"></i> Aga Crud
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/wallet">
-            <i class="bi-wallet me-2"></i> Aga DashBoard
-          </a>
-        </li>
-      </ng-container>
-      <ng-container *ngIf="currentMenu === 'ans'">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/overview">
-            <i class="bi-house-fill me-2"></i> Ans Crud
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/wallet">
-            <i class="bi-wallet me-2"></i> Ans DashBoard
-          </a>
-        </li>
-      </ng-container>
+      <!-- Gestion Produits Section -->
+      <li class="nav-item">
+        <!-- Menu avec sous-menu Level 1 -->
+        <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Produits')"
+          style="cursor: pointer;">
+          <span><i class="bi-box-seam me-2"></i> Gestion Produits</span>
+          <i class="bi" [class.bi-chevron-down]="!isExpanded('Gestion Produits')"
+            [class.bi-chevron-up]="isExpanded('Gestion Produits')"></i>
+        </a>
 
+        @if (isExpanded('Gestion Produits')) {
+        <ul class="nav flex-column ms-3">
+          <li class="nav-item">
+            <!-- Simple Link Level 2 -->
+            <a class="nav-link" routerLink="/home/produit" routerLinkActive="active">
+              <i class="bi-cart me-2"></i> Produits
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <!-- Sous-menu de niveau 2 (Configuration) -->
+            <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Configuration')"
+              style="cursor: pointer;">
+              <span><i class="bi-gear me-2"></i> Configuration</span>
+              <i class="bi bi-chevron-right" [class.bi-chevron-down]="isExpanded('Configuration')"></i>
+            </a>
+            @if (isExpanded('Configuration')) {
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/home/type-produit" routerLinkActive="active">
+                  <i class="bi-tags me-2"></i> Types
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/home/sous-type-produit" routerLinkActive="active">
+                  <i class="bi-tag me-2"></i> Sous-Types
+                </a>
+              </li>
+            </ul>
+            }
+          </li>
+        </ul>
+        }
+      </li>
+
+      <!-- Logout Link -->
       <li class="nav-item border-top mt-auto pt-2">
-        <a class="nav-link" routerLink="/auth/logout">
+        <a class="nav-link text-danger" routerLink="/auth/logout">
           <i class="bi-box-arrow-left me-2"></i> Logout
         </a>
       </li>

@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
     selector: 'app-logout',
     standalone: true,
-    template: `<p>Déconnexion en cours...</p>`
+    templateUrl: './logout.component.html'
 })
 export class LogoutComponent implements OnInit {
     private authService = inject(AuthService);
