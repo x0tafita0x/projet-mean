@@ -17,7 +17,30 @@ exports.createBoutique = async (req, res) => {
 // lister tous les produits avec catégorie
 exports.getAllBoutiques = async (req, res) => {
   try {
-    const boutiques = await Boutique.find().populate("typeBoutique");
+    const filter = {};
+
+    // 🔎 Filtre par type de boutique
+    if (req.query.typeBoutique) {
+      filter.typeBoutique = req.query.typeBoutique;
+    }
+
+    // 🔢 Filtre par nombre de jours d'ouverture
+    if (req.query.nbJoursOuverture) {
+      filter.nbJoursOuverture = Number(req.query.nbJoursOuverture);
+    }
+
+    // 🔤 Recherche par nom (partielle, insensible à la casse)
+    if (req.query.nom) {
+      filter.nom = { $regex: req.query.nom, $options: "i" };
+    }
+
+
+    const sortOrder = req.query.order === "desc" ? -1 : 1;
+
+
+    const boutiques = await Boutique.find(filter)
+    .sort({ nom: sortOrder })
+    .populate("typeBoutique");
     res.json(boutiques);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -34,6 +57,10 @@ exports.getBoutiqueById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+
+
 
 // mettre à jour un produit
 exports.updateBoutique = async (req, res) => {

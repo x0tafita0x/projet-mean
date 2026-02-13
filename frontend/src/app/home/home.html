@@ -6,149 +6,306 @@
 
                     <div class="row my-4">
                         <div class="col-lg-7 col-12">
-                            <div class="custom-block custom-block-balance">
-                                <small>Your Balance</small>
+                            <div class="custom-block"> 
+                                <h3>Liste des Boutiques</h3>
+                                <form >
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
+                                            <select id="typeBoutique" name="typeBoutique" [(ngModel)]="typeBoutique" class="form-select" required (change)="filterBoutiques()">
+                                                <option value="" disabled selected>Sélectionnez un type</option>
+                                                <option *ngFor="let t of typeBoutiques()" [value]="t._id">
+                                                    {{ t.nom }}
+                                                </option>
+                                            </select>
+                                        </div>
 
-                                <h2 class="mt-2 mb-3">$254,800</h2>
-
-                                <div class="custom-block-numbers d-flex align-items-center">
-                                    <span>****</span>
-                                    <span>****</span>
-                                    <span>****</span>
-                                    <p>2560</p>
-                                </div>
-
-                                <div class="d-flex">
-                                    <div>
-                                        <small>Valid Date</small>
-                                        <p>12/2028</p>
+                                        <div class="form-group">
+                                            <label class="form-label" for="ordre">Ordre</label>
+                                            <select class="form-select" name="ordre" [(ngModel)]="order" id="ordre" (change)="filterBoutiques()">
+                                                <option value="asc">Croissant</option>
+                                                <option value="desc">Décroissant</option>
+                                            </select>
+                                        </div>
                                     </div>
-
-                                    <div class="ms-auto">
-                                        <small>Card Holder</small>
-                                        <p>Thomas</p>
-                                    </div>
-                                </div>
+                                </form>
+                               
                             </div>
+                            <div class="custom-block liste-boutique">
+                                
+                                    <a *ngFor="let boutique of boutiques()"
+                                    [routerLink]="['/boutique', boutique._id]"
+                                    class="custom-produit"
+                                    style="display: block;">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid"
+                                            [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
+                                            alt="">
+                                        <div class="produit-info">
+                                        <h3 class="boutique-nom">{{ boutique.nom }}</h3>
+                                        <p class="boutique-type">{{ getTypeBoutiqueName(boutique.typeBoutique) }}</p>
+                                        </div>
+                                    </div>
+                                    </a>
 
-                            <div class="custom-block bg-white">
-                                <h5 class="mb-4">History</h5>
-
-                                <div id="pie-chart"></div>
+                                
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()"  [routerLink]="['/boutique', boutique._id]">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
+                                        <div class="produit-info">
+                                            <h3 class="boutique-nom">{{boutique.nom}}</h3>
+                                            <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                
                             </div>
-
-                            <div class="custom-block bg-white">
-                                <div id="chart"></div>
-                            </div>
-
-                            <div class="custom-block custom-block-exchange">
-                                <h5 class="mb-4">Exchange Rate</h5>
-
-                                <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/flag/united-states.png" class="exchange-image img-fluid" alt="">
-
-                                        <div>
-                                            <p>USD</p>
-                                            <h6>1 US Dollar</h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto me-4">
-                                        <small>Sell</small>
-                                        <h6>1.0931</h6>
-                                    </div>
-
-                                    <div>
-                                        <small>Buy</small>
-                                        <h6>1.0821</h6>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/flag/singapore.png" class="exchange-image img-fluid" alt="">
-
-                                        <div>
-                                            <p>SGD</p>
-                                            <h6>1 Singapore Dollar</h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto me-4">
-                                        <small>Sell</small>
-                                        <h6>0.6901</h6>
-                                    </div>
-
-                                    <div>
-                                        <small>Buy</small>
-                                        <h6>0.6201</h6>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/flag/united-kingdom.png" class="exchange-image img-fluid" alt="">
-
-                                        <div>
-                                            <p>GPD</p>
-                                            <h6>1 British Pound</h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto me-4">
-                                        <small>Sell</small>
-                                        <h6>1.1520</h6>
-                                    </div>
-
-                                    <div>
-                                        <small>Buy</small>
-                                        <h6>1.1412</h6>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/flag/australia.png" class="exchange-image img-fluid" alt="">
-
-                                        <div>
-                                            <p>AUD</p>
-                                            <h6>1 Australian Dollar</h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto me-4">
-                                        <small>Sell</small>
-                                        <h6>0.6110</h6>
-                                    </div>
-
-                                    <div>
-                                        <small>Buy</small>
-                                        <h6>0.5110</h6>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/flag/european-union.png" class="exchange-image img-fluid" alt="">
-
-                                        <div>
-                                            <p>EUR</p>
-                                            <h6>1 Euro</h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto me-4">
-                                        <small>Sell</small>
-                                        <h6>1.1020</h6>
-                                    </div>
-
-                                    <div>
-                                        <small>Buy</small>
-                                        <h6>1.1010</h6>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
 
                         <div class="col-lg-5 col-12">
@@ -162,59 +319,27 @@
                                 <p class="d-flex flex-wrap mb-2">
                                     <strong>Name:</strong>
 
-                                    <span>Thomas Edison</span>
+                                    <span>{{ user?.nom }}</span>
                                 </p>
 
                                 <p class="d-flex flex-wrap mb-2">
                                     <strong>Email:</strong>
                                     
                                     <a href="#">
-                                        thomas@site.com
+                                        {{user?.email}}
                                     </a>
                                 </p>
 
                                 <p class="d-flex flex-wrap mb-0">
-                                    <strong>Phone:</strong>
+                                    <strong>Role:</strong>
 
                                     <a href="#">
-                                        (60) 12 345 6789
+                                        {{user?.role}}
                                     </a>
                                 </p>
                             </div>
 
-                            <div class="custom-block custom-block-bottom d-flex flex-wrap">
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-wallet"></i>
-
-                                        <small>Top up</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-upc-scan"></i>
-
-                                        <small>Scan & Pay</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-send"></i>
-
-                                        <small>Send</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-arrow-down"></i>
-
-                                        <small>Request</small>
-                                    </a>
-                                </div>
-                            </div>
+                          
 
                             <div class="custom-block custom-block-transations">
                                 <h5 class="mb-4">Recent Transations</h5>
@@ -282,27 +407,7 @@
                                 </div>
                             </div>
 
-                            <div class="custom-block primary-bg">
-                                <h5 class="text-white mb-4">Send Money</h5>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/young-woman-with-round-glasses-yellow-sweater.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/young-beautiful-woman-pink-warm-sweater.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/senior-man-white-sweater-eyeglasses.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <div class="profile-rounded">
-                                    <a href="#">
-                                        <i class="profile-rounded-icon bi-plus"></i>
-                                    </a>
-                                </div>
-                            </div>
+                            
 
                         </div>
                     </div>
@@ -386,3 +491,86 @@
             var chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();
         </script>
+
+
+<!-- <small>Your Balance</small>
+
+                                <h2 class="mt-2 mb-3">$254,800</h2>
+
+                                <div class="custom-block-numbers d-flex align-items-center">
+                                    <span>****</span>
+                                    <span>****</span>
+                                    <span>****</span>
+                                    <p>2560</p>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div>
+                                        <small>Valid Date</small>
+                                        <p>12/2028</p>
+                                    </div>
+
+                                    <div class="ms-auto">
+                                        <small>Card Holder</small>
+                                        <p>Thomas</p>
+                                    </div>
+                                </div> -->
+
+
+<!-- 
+                                  <div class="custom-block custom-block-bottom d-flex flex-wrap">
+                                <div class="custom-block-bottom-item">
+                                    <a href="#" class="d-flex flex-column">
+                                        <i class="custom-block-icon bi-wallet"></i>
+
+                                        <small>Top up</small>
+                                    </a>
+                                </div>
+
+                                <div class="custom-block-bottom-item">
+                                    <a href="#" class="d-flex flex-column">
+                                        <i class="custom-block-icon bi-upc-scan"></i>
+
+                                        <small>Scan & Pay</small>
+                                    </a>
+                                </div>
+
+                                <div class="custom-block-bottom-item">
+                                    <a href="#" class="d-flex flex-column">
+                                        <i class="custom-block-icon bi-send"></i>
+
+                                        <small>Send</small>
+                                    </a>
+                                </div>
+
+                                <div class="custom-block-bottom-item">
+                                    <a href="#" class="d-flex flex-column">
+                                        <i class="custom-block-icon bi-arrow-down"></i>
+
+                                        <small>Request</small>
+                                    </a>
+                                </div>
+                            </div> -->
+
+
+                            <!-- <div class="custom-block primary-bg">
+                                <h5 class="text-white mb-4">Send Money</h5>
+
+                                <a href="#">
+                                    <img src="assets/images/profile/young-woman-with-round-glasses-yellow-sweater.jpg" class="profile-image img-fluid" alt="">
+                                </a>
+
+                                <a href="#">
+                                    <img src="assets/images/profile/young-beautiful-woman-pink-warm-sweater.jpg" class="profile-image img-fluid" alt="">
+                                </a>
+
+                                <a href="#">
+                                    <img src="assets/images/profile/senior-man-white-sweater-eyeglasses.jpg" class="profile-image img-fluid" alt="">
+                                </a>
+
+                                <div class="profile-rounded">
+                                    <a href="#">
+                                        <i class="profile-rounded-icon bi-plus"></i>
+                                    </a>
+                                </div>
+                            </div> -->
