@@ -8,4 +8,4 @@ const PromotionInfoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("promotionInfo", PromotionInfoSchema);
+module.exports = mongoose.model("promotion_info", PromotionInfoSchema);

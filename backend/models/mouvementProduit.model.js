@@ -9,4 +9,4 @@ const MouvementProduitSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("mouvementProduit", MouvementProduitSchema);
+module.exports = mongoose.model("mouvement_produit", MouvementProduitSchema);

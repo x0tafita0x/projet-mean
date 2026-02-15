@@ -6,4 +6,4 @@ const typeProduitSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("typeProduit", typeProduitSchema);
+module.exports = mongoose.model("type_produit", typeProduitSchema);
