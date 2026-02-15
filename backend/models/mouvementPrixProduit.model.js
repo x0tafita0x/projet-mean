@@ -8,4 +8,4 @@ const MouvementPrixProduitSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("mouvementPrixProduit", MouvementPrixProduitSchema);
+module.exports = mongoose.model("mouvement_prix_produit", MouvementPrixProduitSchema);
