@@ -14,6 +14,7 @@
                         <th>Produit</th>
                         <th>Entrée</th>
                         <th>Sortie</th>
+                        <th>Date de transaction</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +26,7 @@
                         </td>
                         <td [ngStyle]="{'color': +stock.in > 0 ? '#0cdf0c' : 'light grey'}">{{ stock.in }}</td>
                         <td [ngStyle]="{'color': +stock.out > 0 ? 'red' : 'light grey'}">{{ stock.out }}</td>
+                        <td>{{ stock.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
                     </tr>
                     <tr *ngIf="stocks().length === 0">
                         <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement de stock trouvé</td>
