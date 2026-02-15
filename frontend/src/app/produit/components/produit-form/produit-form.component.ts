@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProduitService } from '../../services/produit.services';
+import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/services/mouvement-prix-produit.services';
 import { Produit, SousTypeProduit } from '../../models/produit.models';
+import { MouvementPrixProduitInsert } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
 
 @Component({
   selector: 'app-produit-form',
@@ -15,7 +17,8 @@ export class ProduitFormComponent implements OnInit {
   private produitService = inject(ProduitService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
+  private mouvementPrixProduitService = inject(MouvementPrixProduitService);
+   mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
   produit = signal<Produit>({ nom: '', sousTypeProduit: '', boutique: '' });
   sousTypeProduits = signal<SousTypeProduit[]>([]);
   boutiques = signal<any[]>([]);
@@ -39,6 +42,7 @@ export class ProduitFormComponent implements OnInit {
             data.boutique = (typeof data.boutique === 'object') ? data.boutique._id : data.boutique;
           }
 
+          this.getPrixActuelle(data._id);
           this.produit.set(data);
           if (data.photo) {
             this.imagePreview = `http://localhost:3000/${data.photo}`;
@@ -90,6 +94,11 @@ export class ProduitFormComponent implements OnInit {
 
     obs.subscribe({
       next: () => {
+
+  this.mouvementPrixProduitService.createMouvementPrixProduit(this.mouvementPrixProduit()).subscribe({
+      next: (data) => console.log('MouvementPrixProduit created', data),
+      error: (err) => console.error('Error creating MouvementPrixProduit', err)
+    });
         this.loading.set(false);
         this.router.navigate(['/home/produit']);
       },
@@ -98,5 +107,20 @@ export class ProduitFormComponent implements OnInit {
         alert('Erreur lors de l\'enregistrement');
       }
     });
+  }
+
+  getPrixActuelle(produitId: string): number {
+    
+     this.mouvementPrixProduitService.getLastMouvementPrixByProduit(produitId).subscribe({
+      next: (data) => {
+        console.log('Last MouvementPrixProduit', data);
+        this.mouvementPrixProduit.set({
+          produit: produitId,
+          prix: data.prix.toString() || '0'
+        });
+        return data.prix;
+  }
+    });
+    return 0;
   }
 }

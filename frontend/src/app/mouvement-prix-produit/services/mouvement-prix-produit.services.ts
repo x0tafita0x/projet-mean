@@ -18,5 +18,8 @@ export class MouvementPrixProduitService {
     getMouvementsPrixByProduit(produitId: string): Observable<MouvementPrixProduit[]> {
         return this.apiService.getList<MouvementPrixProduit[]>(`mouvements-prix-produit?produitId=${encodeURIComponent(produitId)}`);
     }
+    getLastMouvementPrixByProduit(produitId: string): Observable<MouvementPrixProduit> {
+        return this.apiService.getList<MouvementPrixProduit>('mouvements-prix-produit/last/'+produitId);
+    }
 
 }

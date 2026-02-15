@@ -57,6 +57,13 @@
                     </div>
                 </div>
 
+                <div class="row" [style.display]="isEdit() ? 'block' : 'none'">
+                    <div class="col-md-6 mb-3">
+                        <label for="prix" class="form-label">Prix Actuel</label>
+                        <input type="number" id="prix" name="prix" class="form-control" [(ngModel)]="mouvementPrixProduit().prix" >
+                    </div>
+                </div>
+
                 <div class="d-flex justify-content-end gap-2 mt-4">
                     <button type="button" class="btn btn-light" routerLink="/home/produit">Annuler</button>
                     <button type="submit" class="btn btn-primary"

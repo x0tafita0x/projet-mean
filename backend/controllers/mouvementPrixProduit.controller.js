@@ -36,4 +36,23 @@ exports.getAllMouvementsPrixByProduit = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
+
+
+  };
+
+    exports.getLastMouvementPrixByProduit = async (req, res) => {
+    try {
+      const { produitId } = req.params;
+      if (!produitId) {
+        return res.status(400).json({ error: "Produit ID est requis" });
+      }
+
+      const mouvementPrix = await MouvementPrix.findOne({ produit: produitId } , "prix")
+      .sort({ createdAt: -1 });
+      
+      if (!mouvementPrix) mouvementPrix = { prix: 0 };
+      res.json(mouvementPrix);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };

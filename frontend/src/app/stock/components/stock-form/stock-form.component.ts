@@ -43,7 +43,7 @@ loadMetadata(){
   save() {
     this.loading.set(true);
 
-// if (this.stock().in && parseFloat(this.stock().in || '0') !== 0) {
+if (this.stock().in && parseFloat(this.stock().in || '0') !== 0) {
   
     this.mouvementPrixProduit.set({
       produit: this.stock().produit as string,
@@ -54,7 +54,7 @@ loadMetadata(){
       next: (data) => console.log('MouvementPrixProduit created', data),
       error: (err) => console.error('Error creating MouvementPrixProduit', err)
     });
-  // }
+  }
     
    
 
