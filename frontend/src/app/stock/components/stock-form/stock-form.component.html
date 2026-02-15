@@ -40,6 +40,14 @@
                         La quantité de sortie est requise.
                         </div>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="prix" class="form-label">Prix unitaire</label>
+                        <input type="number" id="prix" name="prix" class="form-control" 
+                            [(ngModel)]="stock().prix" min="0" #prix="ngModel">
+                        <div *ngIf="prix.invalid && (prix.dirty || prix.touched)" class="text-danger small">
+                        Le prix unitaire est requis.
+                        </div>
+                    </div>
 
                     
                 </div>

@@ -3,6 +3,7 @@ import { Produit } from "../../produit/models/produit.models";
 export interface StockInsert {
   _id?: string;
   produit: string | Produit;
+  prix: string;
   in: string;
   out: string;
   createdAt?: string;

@@ -43,6 +43,9 @@ export const routes: Routes = [
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
       { path: 'stock/new', loadComponent: () => import('./stock/components/stock-form/stock-form.component').then(m => m.StockFormComponent) },
 
+      // MouvementPrixProduit routes
+      { path: 'mouvement-prix-produit', loadComponent: () => import('./mouvement-prix-produit/components/mouvement-prix-produit-list/mouvement-prix-produit-list.component').then(m => m.MouvementPrixProduitListComponent) },
+
       // TypeBoutique routes
       { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },
       { path: 'type-boutique/new', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },

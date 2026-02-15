@@ -29,8 +29,8 @@ export class StockService {
          return this.apiService.getList<StockResponse[]>(`stock/toSell${queryString}`);
      }
 
-    createStock(produit: StockInsert | FormData): Observable<StockInsert> {
-        return this.apiService.create<StockInsert>('stock', produit as any);
+    createStock(produit: StockInsert ): Observable<StockInsert> {
+        return this.apiService.create<StockInsert>('stock', produit );
     }
 
     deleteStock(id: string): Observable<void> {

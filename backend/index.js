@@ -1,10 +1,12 @@
 require("dotenv").config();
 
+
 const express = require("express");
 const connectDB = require("./config/db");
 
 const app = express();
 const cors = require("cors");
+
 
 // middleware pour le CORS
 app.use(cors({
@@ -28,6 +30,7 @@ app.use("/api/produits", require("./routes/produit.routes"));
 app.use("/api/type-sous-type", require("./routes/typeSousType.routes"));
 app.use("/api/boutique", require("./routes/boutique.routes"));
 app.use("/api/stock", require("./routes/stock.routes"));
+app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.routes"));
 
 
 // route test
