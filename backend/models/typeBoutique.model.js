@@ -6,4 +6,4 @@ const typeBoutiqueSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("type_boutique", typeBoutiqueSchema);
+module.exports = mongoose.model("typeBoutique", typeBoutiqueSchema);
