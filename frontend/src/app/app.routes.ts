@@ -37,6 +37,7 @@ export const routes: Routes = [
       { path: 'produit', loadComponent: () => import('./produit/components/produit-list/produit-list.component').then(m => m.ProduitListComponent) },
       { path: 'produit/new', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
+      { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
 
       // TypeBoutique routes
       { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },

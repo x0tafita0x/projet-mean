@@ -34,14 +34,14 @@
                             <div class="custom-block liste-boutique">
                                 
                                     <a *ngFor="let boutique of boutiques()"
-                                    [routerLink]="['/boutique', boutique._id]"
-                                    class="custom-produit"
+                                    [routerLink]="['/home/produitByBoutique', boutique._id]"
+                                    class="custom-boutique"
                                     style="display: block;">
-                                    <div class="produit-content">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid"
                                             [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
                                             alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                         <h3 class="boutique-nom">{{ boutique.nom }}</h3>
                                         <p class="boutique-type">{{ getTypeBoutiqueName(boutique.typeBoutique) }}</p>
                                         </div>
@@ -49,253 +49,253 @@
                                     </a>
 
                                 
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()"  [routerLink]="['/boutique', boutique._id]">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()"  [routerLink]="['/boutique', boutique._id]">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-produit " *ngFor="let boutique of boutiques()">
-                                    <div class="produit-content">
+                                <div class="custom-boutique " *ngFor="let boutique of boutiques()">
+                                    <div class="boutique-content">
                                         <img class="custom-image img-fluid" [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
+                                        <div class="boutique-info">
                                             <h3 class="boutique-nom">{{boutique.nom}}</h3>
                                             <p class="boutique-type">{{getTypeBoutiqueName(boutique.typeBoutique)}}</p>
                                         </div>

@@ -14,22 +14,64 @@ exports.createProduit = async (req, res) => {
   }
 };
 
-// lister tous les produits avec catégorie
+// lister tous les produits avec filtre + tri
 exports.getAllProduits = async (req, res) => {
   try {
-    const produits = await Produit.find().populate({
-      path: "sousTypeProduit",
-      select: "nom",
-      populate: {
-        path: "typeProduit",
-        select: "nom"
-      }
-    }).populate("boutique", "nom");
+    const { nom, boutique, sousTypeProduit, typeProduit, order } = req.query;
+
+    let filter = {};
+
+    // 🔎 filtre par nom (recherche partielle, insensible à la casse)
+    if (nom) {
+      filter.nom = { $regex: nom, $options: "i" };
+    }
+
+    // 🔎 filtre par boutique
+    if (boutique) {
+      filter.boutique = boutique;
+    }
+
+    // 🔎 filtre par sous-type
+    if (sousTypeProduit) {
+      filter.sousTypeProduit = sousTypeProduit;
+    }
+
+    let query = Produit.find(filter)
+      .populate({
+        path: "sousTypeProduit",
+        select: "nom",
+        populate: {
+          path: "typeProduit",
+          select: "nom"
+        }
+      })
+      .populate("boutique", "nom");
+
+    // 🔎 filtre par typeProduit (via populate)
+    if (typeProduit) {
+      query = query.where("sousTypeProduit").in(
+        await mongoose
+          .model("sous_type_produit")
+          .find({ typeProduit })
+          .distinct("_id")
+      );
+    }
+
+    // 🔁 tri (par nom uniquement)
+    if (order === "asc") {
+      query = query.sort({ nom: 1 });
+    } else if (order === "desc") {
+      query = query.sort({ nom: -1 });
+    }
+
+    const produits = await query.exec();
     res.json(produits);
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // trouver un produit par ID
 exports.getProduitById = async (req, res) => {

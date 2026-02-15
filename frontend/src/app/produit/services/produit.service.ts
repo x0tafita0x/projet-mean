@@ -15,11 +15,25 @@ export class ProduitService {
         return this.apiService.getList<Boutique[]>('boutique');
     }
 
-    // Produits
-    getProduits(): Observable<Produit[]> {
-        return this.apiService.getList<Produit[]>('produits');
-    }
+     getProduits(nom : string ,boutique : string,typeProduit : string,sousTypeProduit : string,order : string): Observable<Produit[]> {
+        const params: string[] = [];
 
+        if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
+        if (boutique) params.push(`boutique=${encodeURIComponent(boutique)}`);
+        if (typeProduit) params.push(`typeProduit=${encodeURIComponent(typeProduit)}`);
+        if (sousTypeProduit) params.push(`sousTypeProduit=${encodeURIComponent(sousTypeProduit)}`);
+        if (order) params.push(`order=${encodeURIComponent(order)}`);
+         
+        // Coller tous les paramètres avec '&'
+        const queryString = params.length ? '?' + params.join('&') : '';
+
+         return this.apiService.getList<Produit[]>(`produits${queryString}`);
+     }
+
+    getProduitsByBoutiqueId(id: string | null): Observable<Produit[]> {
+    return this.getProduits('', id || '', '', '', 'asc');
+    }
+    
     getProduitById(id: string): Observable<Produit> {
         return this.apiService.getById<Produit>('produits', id);
     }

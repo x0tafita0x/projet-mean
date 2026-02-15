@@ -19,7 +19,7 @@ export class ProduitListComponent implements OnInit {
   }
 
   loadProduits() {
-    this.produitService.getProduits().subscribe({
+    this.produitService.getProduits('', '', '', '', 'asc').subscribe({
       next: (data) => this.produits.set(data),
       error: (err) => console.error('Error loading products', err)
     });
