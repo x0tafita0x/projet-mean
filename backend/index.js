@@ -27,6 +27,7 @@ app.use("/api/auth", require("./routes/utilisateur.routes"));
 app.use("/api/produits", require("./routes/produit.routes"));
 app.use("/api/type-sous-type", require("./routes/typeSousType.routes"));
 app.use("/api/boutique", require("./routes/boutique.routes"));
+app.use("/api/stock", require("./routes/stock.routes"));
 
 
 // route test

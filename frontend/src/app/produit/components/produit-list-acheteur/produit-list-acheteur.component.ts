@@ -2,8 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { Router, RouterModule,ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
-import { ProduitService } from '../../../produit/services/produit.service';
+import { ProduitService } from '../../services/produit.services';
 import { Produit ,ProduitDetail, SousTypeProduit } from '../../../produit/models/produit.models';
+import { StockResponse } from '../../../stock/models/stock.models';
+import { StockService } from '../../../stock/services/stock.services';
 
 @Component({
   selector: 'app-home',
@@ -15,11 +17,12 @@ import { Produit ,ProduitDetail, SousTypeProduit } from '../../../produit/models
 export class ProduitListAcheteurComponent {
 
     private produitService = inject(ProduitService);  
+    private stockService = inject(StockService);
     private route = inject(ActivatedRoute);
 
     produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
     showDetails = signal(false);
-    produits = signal<Produit[]>([]);
+    produits = signal<StockResponse[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
 
     typeBoutique : string = '';
@@ -32,7 +35,7 @@ this.loadSousTypeProduits();
 }
 
  loadProduits(id: string | null) {
-    this.produitService.getProduitsByBoutiqueId(id).subscribe({
+    this.stockService.getProduits('',id || '','','','').subscribe({
       next: (data) => this.produits.set(data),
       error: (err) => console.error('Error loading produits', err)
     });
@@ -57,7 +60,7 @@ this.loadSousTypeProduits();
     });
   }
 
-  selectProduit(produit: Produit) {
+  selectProduit(produit: StockResponse) {
     this.loadProduitsDetails(produit._id as string || null);
     this.showDetails.set(true);
   }

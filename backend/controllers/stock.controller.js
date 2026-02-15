@@ -1,4 +1,5 @@
 const MouvementProduit = require("../models/mouvementProduit.model");
+const mongoose = require("mongoose");
 
 // créer un mouvement de produit
 exports.createMouvementProduit = async (req, res) => {
@@ -13,7 +14,14 @@ exports.createMouvementProduit = async (req, res) => {
 // lister tous les mouvements de produits
 exports.getAllMouvementsProduits = async (req, res) => {
   try {
-    const mouvementsProduits = await MouvementProduit.find();
+    const mouvementsProduits = await MouvementProduit.find().populate({
+      path: "produit",
+      select: "nom",
+      populate: {
+        path: "sousTypeProduit",
+        select: "nom"
+      }
+    });
     res.json(mouvementsProduits);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -45,6 +53,12 @@ exports.deleteMouvementProduit = async (req, res) => {
 
 exports.getProduitToSellByBoutiqueId = async (req, res) => {
   try {
+    const { nom, sousTypeProduit, boutique, prixMin, prixMax } = req.query;
+
+    // Convertir les IDs si présents
+    const sousTypeProduitId = sousTypeProduit ? new mongoose.Types.ObjectId(sousTypeProduit) : null;
+    const boutiqueId = boutique ? new mongoose.Types.ObjectId(boutique) : null;
+
     const produitsStock = await MouvementProduit.aggregate([
       // 1️⃣ Grouper pour calculer le stock restant
       {
@@ -54,71 +68,90 @@ exports.getProduitToSellByBoutiqueId = async (req, res) => {
           totalOut: { $sum: "$out" }
         }
       },
-      // 2️⃣ Calculer stock restant
       {
         $addFields: {
           stockRestant: { $subtract: ["$totalIn", "$totalOut"] }
         }
       },
-      // 3️⃣ Filtrer produits avec stock > 0
       {
         $match: { stockRestant: { $gt: 0 } }
       },
-      // 4️⃣ Lookup pour récupérer le dernier prix
+      // {
+      //   $lookup: {
+      //     from: "MouvementPrixProduit",
+      //     let: { produitId: "$_id" },
+      //     pipeline: [
+      //       { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
+      //       { $sort: { createdAt: -1 } },
+      //       { $limit: 1 }
+      //     ],
+      //     as: "dernierPrix"
+      //   }
+      // },
+      // { $unwind: "$dernierPrix" },
       {
         $lookup: {
-          from: "MouvementPrixProduit",
-          let: { produitId: "$_id" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
-            { $sort: { createdAt: -1 } },
-            { $limit: 1 }
-          ],
-          as: "dernierPrix"
-        }
-      },
-      { $unwind: "$dernierPrix" },
-      // 5️⃣ Lookup pour récupérer le produit avec boutique et sousTypeProduit
-      {
-        $lookup: {
-          from: "Produit",
+          from: "produits",
           localField: "_id",
           foreignField: "_id",
           as: "produitDetails"
         }
       },
       { $unwind: "$produitDetails" },
-      // 6️⃣ Lookup pour peupler sousTypeProduit
       {
         $lookup: {
-          from: "sousTypeProduit",
+          from: "sous_type_produits",
           localField: "produitDetails.sousTypeProduit",
           foreignField: "_id",
           as: "sousTypeProduitDetails"
         }
       },
       { $unwind: "$sousTypeProduitDetails" },
-      // 7️⃣ Lookup pour peupler boutique
       {
         $lookup: {
-          from: "Boutique",
+          from: "type_produits",
+          localField: "sousTypeProduitDetails.typeProduit",
+          foreignField: "_id",
+          as: "typeProduitDetails" }
+      },
+      { $unwind: "$typeProduitDetails" },
+      {
+        $lookup: {
+          from: "boutiques",
           localField: "produitDetails.boutique",
           foreignField: "_id",
           as: "boutiqueDetails"
         }
       },
       { $unwind: "$boutiqueDetails" },
-      // 8️⃣ Projetter les champs finaux
+      {
+        $match: {
+          stockRestant: { $gt: 0 },
+          ...(nom ? { "produitDetails.nom": { $regex: nom, $options: "i" } } : {}),
+          ...(sousTypeProduitId ? { "sousTypeProduitDetails._id": sousTypeProduitId } : {}),
+          ...(boutiqueId ? { "boutiqueDetails._id": boutiqueId } : {}),
+          ...(prixMin || prixMax ? { 
+              "dernierPrix.prix": {
+                  ...(prixMin ? { $gte: parseFloat(prixMin) } : {}),
+                  ...(prixMax ? { $lte: parseFloat(prixMax) } : {})
+              } 
+          } : {})
+        }
+      },
+      {
+        $sort: { "produitDetails.nom": 1 } 
+      },
       {
         $project: {
           _id: 1,
           produit: "$produitDetails.nom",
-          prixUnitaire: "$dernierPrix.prix",
+        //   prixUnitaire: "$dernierPrix.prix",
           stockRestant: 1,
           info: "$produitDetails.info",
           photo: "$produitDetails.photo",
           sousTypeProduit: "$sousTypeProduitDetails.nom",
-          boutique: "$boutiqueDetails.nom"
+          boutique: "$boutiqueDetails.nom",
+          typeProduit: "$typeProduitDetails.nom"
         }
       }
     ]);

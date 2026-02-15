@@ -40,45 +40,45 @@
                             <!-- BOX DETAIL CENTRÉE -->
                             <div class="produit-detail-modal" *ngIf="showDetails()">
 
-                            <!-- Bouton fermer -->
-                            <button class="btn-close" (click)="fermerDetails()">✕</button>
+                                <!-- Bouton fermer -->
+                                <button class="btn-close" (click)="fermerDetails()">✕</button>
 
-                            <!-- Image produit -->
-                            <img
-                                [src]="produitSelectionne().photo 
-                                ? 'http://localhost:3000/' + produitSelectionne().photo 
-                                : 'assets/placeholder.png'"
-                                class="img-fluid mb-3">
+                                <!-- Image produit -->
+                                <img
+                                    [src]="produitSelectionne().photo 
+                                    ? 'http://localhost:3000/' + produitSelectionne().photo 
+                                    : 'assets/placeholder.png'"
+                                    class="img-fluid mb-3">
 
-                            <!-- Nom produit -->
-                            <h3>{{ produitSelectionne().nom }}</h3>
+                                <!-- Nom produit -->
+                                <h3>{{ produitSelectionne().nom }}</h3>
 
-                            <!-- Sous-type + type -->
-                            <p class="text-muted"
-                                *ngIf="produitSelectionne().sousTypeProduit 
-                                    && typeof produitSelectionne().sousTypeProduit !== 'string'">
-                                {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
-                                {{ produitSelectionne().sousTypeProduit.nom }}
-                            </p>
+                                <!-- Sous-type + type -->
+                                <p class="text-muted"
+                                    *ngIf="produitSelectionne().sousTypeProduit 
+                                        && typeof produitSelectionne().sousTypeProduit !== 'string'">
+                                    {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
+                                    {{ produitSelectionne().sousTypeProduit.nom }}
+                                </p>
 
-                            <!-- Info produit -->
-                            <p>{{ produitSelectionne().info }}</p>
+                                <!-- Info produit -->
+                                <p>{{ produitSelectionne().info }}</p>
 
-                            <!-- Bouton collé en bas avec input quantité -->
-                            <div class="modal-footer-fixed d-flex align-items-center ">
-                            
-                            <!-- Input quantité -->
-                            <div class="qte-input">
-                                <label style="color: green;" for="qte" class="form-label mb-0">Qté</label>
-                                <input type="number" id="qte" class="form-control" min="1" max="4" value="1">
-                            </div>
+                                    <!-- Bouton collé en bas avec input quantité -->
+                                    <div class="modal-footer-fixed d-flex align-items-center ">
+                                    
+                                            <!-- Input quantité -->
+                                            <div class="qte-input">
+                                                <label style="color: green;" for="qte" class="form-label mb-0">Qté</label>
+                                                <input type="number" id="qte" class="form-control" min="1" max="4" value="1">
+                                            </div>
 
-                            <!-- Bouton ajouter panier -->
-                            <button class="btn btn-success flex-grow-1">
-                                <i class="bi bi-cart-plus"></i> Ajouter au panier
-                            </button>
+                                        <!-- Bouton ajouter panier -->
+                                        <button class="btn btn-success flex-grow-1">
+                                            <i class="bi bi-cart-plus"></i> Ajouter au panier
+                                        </button>
 
-                            </div>
+                                    </div>
 
                             </div>
 
@@ -90,156 +90,20 @@
                                    (click)="selectProduit(produit)"
                                     class="custom-produit"
                                     style="display: block;">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid"
-                                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
-                                            alt="">
-                                        <div class="produit-info">
-                                        <h3 class="produit-nom">{{ produit.nom }}</h3>
-                                        <p class="produit-type">{{ getSousTypeProduitName(produit.sousTypeProduit) }}</p>
+                                        <div class="produit-content">
+                                            <img class="custom-image img-fluid"
+                                                [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
+                                                alt="">
+                                            <div class="produit-info">
+                                                <h3 class="produit-nom">{{ produit.produit }}</h3>
+                                                <p class="produit-type">{{ produit.sousTypeProduit }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    </div>
+                                    <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
+                                        Aucun produit disponible
 
-                                
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
                                     </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="custom-produit " *ngFor="let produit of produits()">
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid" [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"  alt="">
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{produit.nom}}</h3>
-                                            <p class="produit-type">{{getSousTypeProduitName(produit.sousTypeProduit)}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                               
-                                
-                                
                                 
                             </div>
                             

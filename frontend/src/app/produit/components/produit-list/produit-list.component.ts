@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProduitService } from '../../services/produit.service';
+import { ProduitService } from '../../services/produit.services';
 import { Produit, SousTypeProduit } from '../../models/produit.models';
 
 @Component({

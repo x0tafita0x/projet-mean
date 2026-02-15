@@ -38,7 +38,10 @@ export const routes: Routes = [
       { path: 'produit/new', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
-      { path: 'produitDetails/:id', loadComponent: () => import('./produit/components/produit-details/produit-details.component').then(m => m.ProduitDetailsComponent) },
+      
+      // Stock routes
+      { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
+      { path: 'stock/new', loadComponent: () => import('./stock/components/stock-form/stock-form.component').then(m => m.StockFormComponent) },
 
       // TypeBoutique routes
       { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },
