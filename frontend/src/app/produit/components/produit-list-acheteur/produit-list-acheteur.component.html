@@ -60,6 +60,7 @@
                                     {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
                                     {{ produitSelectionne().sousTypeProduit.nom }}
                                 </p>
+                                <h6 style="color: rgb(180, 157, 27);"> {{  prixProduit() | currency:'MGA ':'symbol':'1.0-0' }}</h6>
 
                                 <!-- Info produit -->
                                 <p>{{ produitSelectionne().info }}</p>
@@ -85,27 +86,33 @@
 
 
                             <div class="custom-block liste-produit">
-                                
-                                    <div *ngFor="let produit of produits()"
-                                   (click)="selectProduit(produit)"
-                                    class="custom-produit"
-                                    style="display: block;">
-                                        <div class="produit-content">
-                                            <img class="custom-image img-fluid"
-                                                [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
-                                                alt="">
-                                            <div class="produit-info">
-                                                <h3 class="produit-nom">{{ produit.produit }}</h3>
-                                                <p class="produit-type">{{ produit.sousTypeProduit }}</p>
-                                            </div>
+                                <div *ngFor="let produit of produits()"
+                                    (click)="selectProduit(produit)"
+                                    class="custom-produit">
+                                    
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid"
+                                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
+                                            alt="">
+                                        
+                                        <div class="produit-info">
+                                            <h3 class="produit-nom">{{ produit.produit }}</h3>
+                                            <p class="produit-type">{{ produit.sousTypeProduit }}</p>
+                                        </div>
+
+                                        <!-- Prix en bas à droite -->
+                                        <div class="produit-prix">
+                                            {{  produit.prixUnitaire | currency:'MGA ':'symbol':'1.0-0' }}
                                         </div>
                                     </div>
-                                    <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
-                                        Aucun produit disponible
 
-                                    </div>
-                                
+                                </div>
+
+                                <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
+                                    Aucun produit disponible
+                                </div>
                             </div>
+
                             
                         </div>
 

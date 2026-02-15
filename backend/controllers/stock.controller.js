@@ -76,19 +76,19 @@ exports.getProduitToSellByBoutiqueId = async (req, res) => {
       {
         $match: { stockRestant: { $gt: 0 } }
       },
-      // {
-      //   $lookup: {
-      //     from: "MouvementPrixProduit",
-      //     let: { produitId: "$_id" },
-      //     pipeline: [
-      //       { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
-      //       { $sort: { createdAt: -1 } },
-      //       { $limit: 1 }
-      //     ],
-      //     as: "dernierPrix"
-      //   }
-      // },
-      // { $unwind: "$dernierPrix" },
+      {
+        $lookup: {
+          from: "mouvement_prix_produits",
+          let: { produitId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 }
+          ],
+          as: "dernierPrix"
+        }
+      },
+      { $unwind: "$dernierPrix" },
       {
         $lookup: {
           from: "produits",
@@ -145,7 +145,7 @@ exports.getProduitToSellByBoutiqueId = async (req, res) => {
         $project: {
           _id: 1,
           produit: "$produitDetails.nom",
-        //   prixUnitaire: "$dernierPrix.prix",
+          prixUnitaire: "$dernierPrix.prix",
           stockRestant: 1,
           info: "$produitDetails.info",
           photo: "$produitDetails.photo",

@@ -24,6 +24,7 @@ export class ProduitListAcheteurComponent {
     showDetails = signal(false);
     produits = signal<StockResponse[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
+    prixProduit = signal<string>('0');
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -62,6 +63,7 @@ this.loadSousTypeProduits();
 
   selectProduit(produit: StockResponse) {
     this.loadProduitsDetails(produit._id as string || null);
+    this.prixProduit.set(produit.prixUnitaire || '0');
     this.showDetails.set(true);
   }
 
