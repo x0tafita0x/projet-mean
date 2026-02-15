@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
-import { Produit, TypeProduit, SousTypeProduit } from '../models/produit.models';
+import { Produit, TypeProduit, SousTypeProduit, ProduitDetail } from '../models/produit.models';
 import { Boutique, TypeBoutique } from '../../boutique/models/boutique.models';
 
 @Injectable({
@@ -34,8 +34,8 @@ export class ProduitService {
     return this.getProduits('', id || '', '', '', 'asc');
     }
     
-    getProduitById(id: string): Observable<Produit> {
-        return this.apiService.getById<Produit>('produits', id);
+    getProduitById(id: string | null): Observable<ProduitDetail> {
+        return this.apiService.getById<ProduitDetail>('produits', id || '');
     }
 
     createProduit(produit: Produit | FormData): Observable<Produit> {

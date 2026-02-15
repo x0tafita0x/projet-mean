@@ -26,3 +26,20 @@ export interface Produit {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export interface ProduitDetail {
+  _id: string;
+  nom: string;
+  info?: string;
+  photo?: string;
+  boutique: { _id: string; nom: string };
+  sousTypeProduit: {
+    _id: string;
+    nom: string;
+    typeProduit: {
+      _id: string;
+      nom: string;
+    };
+  };
+}
+

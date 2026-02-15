@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule,ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { ProduitService } from '../../../produit/services/produit.service';
-import { Produit , SousTypeProduit } from '../../../produit/models/produit.models';
+import { Produit ,ProduitDetail, SousTypeProduit } from '../../../produit/models/produit.models';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +17,8 @@ export class ProduitListAcheteurComponent {
     private produitService = inject(ProduitService);  
     private route = inject(ActivatedRoute);
 
+    produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
+    showDetails = signal(false);
     produits = signal<Produit[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
 
@@ -46,6 +48,23 @@ this.loadSousTypeProduits();
       return stype.nom;
     }
     return 'N/A';
+  }
+
+  loadProduitsDetails(id: string | null) {
+    this.produitService.getProduitById(id).subscribe({
+      next: (data) => this.produitSelectionne.set(data),
+      error: (err) => console.error(err)
+    });
+  }
+
+  selectProduit(produit: Produit) {
+    this.loadProduitsDetails(produit._id as string || null);
+    this.showDetails.set(true);
+  }
+
+  fermerDetails() {
+    this.showDetails.set(false);
+    this.produitSelectionne.set({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
   }
 //   filterProduits(){
 //     this.produitService.getProduits().subscribe({

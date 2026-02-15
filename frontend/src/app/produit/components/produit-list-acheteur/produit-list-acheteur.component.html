@@ -32,10 +32,62 @@
                                 </form> -->
                                
                             </div>
+
+
+                           <!-- OVERLAY -->
+                            <div class="overlay" *ngIf="showDetails()" (click)="fermerDetails()"></div>
+
+                            <!-- BOX DETAIL CENTRÉE -->
+                            <div class="produit-detail-modal" *ngIf="showDetails()">
+
+                            <!-- Bouton fermer -->
+                            <button class="btn-close" (click)="fermerDetails()">✕</button>
+
+                            <!-- Image produit -->
+                            <img
+                                [src]="produitSelectionne().photo 
+                                ? 'http://localhost:3000/' + produitSelectionne().photo 
+                                : 'assets/placeholder.png'"
+                                class="img-fluid mb-3">
+
+                            <!-- Nom produit -->
+                            <h3>{{ produitSelectionne().nom }}</h3>
+
+                            <!-- Sous-type + type -->
+                            <p class="text-muted"
+                                *ngIf="produitSelectionne().sousTypeProduit 
+                                    && typeof produitSelectionne().sousTypeProduit !== 'string'">
+                                {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
+                                {{ produitSelectionne().sousTypeProduit.nom }}
+                            </p>
+
+                            <!-- Info produit -->
+                            <p>{{ produitSelectionne().info }}</p>
+
+                            <!-- Bouton collé en bas avec input quantité -->
+                            <div class="modal-footer-fixed d-flex align-items-center ">
+                            
+                            <!-- Input quantité -->
+                            <div class="qte-input">
+                                <label style="color: green;" for="qte" class="form-label mb-0">Qté</label>
+                                <input type="number" id="qte" class="form-control" min="1" max="4" value="1">
+                            </div>
+
+                            <!-- Bouton ajouter panier -->
+                            <button class="btn btn-success flex-grow-1">
+                                <i class="bi bi-cart-plus"></i> Ajouter au panier
+                            </button>
+
+                            </div>
+
+                            </div>
+
+
+
                             <div class="custom-block liste-produit">
                                 
-                                    <a *ngFor="let produit of produits()"
-                                    [routerLink]="['/produit', produit._id]"
+                                    <div *ngFor="let produit of produits()"
+                                   (click)="selectProduit(produit)"
                                     class="custom-produit"
                                     style="display: block;">
                                     <div class="produit-content">
@@ -47,7 +99,7 @@
                                         <p class="produit-type">{{ getSousTypeProduitName(produit.sousTypeProduit) }}</p>
                                         </div>
                                     </div>
-                                    </a>
+                                    </div>
 
                                 
                                 <div class="custom-produit " *ngFor="let produit of produits()">
