@@ -1,0 +1,36 @@
+export interface Panier {
+    _id?: string;
+    utilisateur: string;
+    produit: string;
+    prix: number;
+    quantite: number;
+    promotion?: string;
+    etat: string;
+    typeCommande: string;
+    dateHeureRecuperation?: Date;
+}
+
+
+export interface PanierList {
+    _id?: string;
+    utilisateur: string;
+    produit: {
+        _id: string;
+        nom: string;
+        photo?: string;
+        boutique : {
+            nom: string;
+        }
+    };
+    prix: number;
+    quantite: number;
+    promotion?: string;
+    etat: string;
+    typeCommande: string;
+    dateHeureRecuperation?: Date;
+    createdAt: string;
+    updatedAt: string;
+    edit: boolean;
+    selected: boolean;
+}
+

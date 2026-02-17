@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProduitService } from '../../services/produit.services';
 import { Produit, SousTypeProduit } from '../../models/produit.models';
+import { MouvementPrixProduit } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
+import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/services/mouvement-prix-produit.services';
 
 @Component({
   selector: 'app-produit-list',
@@ -13,7 +15,7 @@ import { Produit, SousTypeProduit } from '../../models/produit.models';
 export class ProduitListComponent implements OnInit {
   private produitService = inject(ProduitService);
   produits = signal<Produit[]>([]);
-
+  private mouvementPrixProduitService = inject(MouvementPrixProduitService);
   ngOnInit() {
     this.loadProduits();
   }

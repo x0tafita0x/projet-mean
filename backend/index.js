@@ -31,6 +31,7 @@ app.use("/api/type-sous-type", require("./routes/typeSousType.routes"));
 app.use("/api/boutique", require("./routes/boutique.routes"));
 app.use("/api/stock", require("./routes/stock.routes"));
 app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.routes"));
+app.use("/api/panier", require("./routes/panier.routes"));
 
 
 // route test

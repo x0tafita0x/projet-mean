@@ -6,6 +6,9 @@ import { ProduitService } from '../../services/produit.services';
 import { Produit ,ProduitDetail, SousTypeProduit } from '../../../produit/models/produit.models';
 import { StockResponse } from '../../../stock/models/stock.models';
 import { StockService } from '../../../stock/services/stock.services';
+import { PanierService } from '../../../panier/services/panier.services';
+import { AuthService } from '../../../auth/services/auth.service';
+import { User } from '../../../auth/models/auth.models';
 
 @Component({
   selector: 'app-home',
@@ -18,9 +21,13 @@ export class ProduitListAcheteurComponent {
 
     private produitService = inject(ProduitService);  
     private stockService = inject(StockService);
+    private panierService = inject(PanierService);
     private route = inject(ActivatedRoute);
+    private authService = inject(AuthService);
 
+    user : User | null = null;
     produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
+    panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
     showDetails = signal(false);
     produits = signal<StockResponse[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
@@ -30,6 +37,7 @@ export class ProduitListAcheteurComponent {
     order : string = 'asc';
 
 ngOnInit() {
+  this.user = this.authService.currentUser();
     const id = this.route.snapshot.paramMap.get('id');
 this.loadProduits(id);
 this.loadSousTypeProduits();
@@ -64,6 +72,7 @@ this.loadSousTypeProduits();
   selectProduit(produit: StockResponse) {
     this.loadProduitsDetails(produit._id as string || null);
     this.prixProduit.set(produit.prixUnitaire || '0');
+    this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
   }
 
@@ -71,10 +80,27 @@ this.loadSousTypeProduits();
     this.showDetails.set(false);
     this.produitSelectionne.set({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
   }
-//   filterProduits(){
-//     this.produitService.getProduits().subscribe({
-//       next: (data) => this.produits.set(data),
-//       error: (err) => console.error('Error loading produits', err)
+
+  putData(produit : StockResponse , prix : string){
+    this.panierItem.set({
+      utilisateur: this.user?.id || '', 
+      produit: produit._id || '',
+      prix: parseFloat(prix),
+      quantite: 1,
+      etat: 'en cours',
+      typeCommande: 'normal'
+    });
+  }
+
+  addToPanier() {
+    
+    const item = this.panierItem();
+    this.panierService.createPanier(item).subscribe({
+      next: (data) => console.log('Panier created:', data),
+      error: (err) => console.error('Error creating panier:', err)
+    });
+  }
+
 //     });
 //   }
   

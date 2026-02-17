@@ -39,6 +39,11 @@ export const routes: Routes = [
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
       
+      // Panier routes
+      { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
+      { path: 'panier/validation', loadComponent: () => import('./panier/components/panier-validation/panier-validation.component').then(m => m.PanierValidationComponent) },
+
+
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
       { path: 'stock/new', loadComponent: () => import('./stock/components/stock-form/stock-form.component').then(m => m.StockFormComponent) },

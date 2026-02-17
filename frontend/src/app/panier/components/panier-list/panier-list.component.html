@@ -1,0 +1,122 @@
+                    <div class="row my-4">
+                        <div class="col-lg-12 col-12">
+                            <div class="custom-block"> 
+                                <!-- <a routerLink="/home"> -->
+                                <a routerLink="/home/panier/validation" >
+                                    <i class="bi bi-caret-left-fill"></i> Retour
+                                </a>
+
+                                <!-- Ligne titre + bouton -->
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h3 class="mb-0">Mon Panier</h3>
+
+                                    <button class="btn btn-warning" (click)="validerPanier()"
+                                    [disabled]="paniers().length === 0 || !canValidate()">    
+                                         Valider panier
+                                    </button>
+                                </div>
+
+                                <!-- <form>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
+                                            <select id="typeBoutique" name="typeBoutique" class="form-select">
+                                                <option value="" disabled selected>Sélectionnez un type</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form> -->
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mb-3">
+                                <button class="btn btn-perso" (click)="selectAll()">
+                                    <i class="bi bi-check-square"></i> Sélectionner tout
+                                </button>
+
+                                <button class="btn btn-perso" (click)="deSelectAll()">
+                                    <i class="bi bi-x-square"></i> Désélectionner tout
+                                </button>
+                            </div>
+
+                            
+                            <div class="custom-block liste-panier">
+                                <div *ngFor="let panier of paniers()"
+                                    class="custom-panier d-flex align-items-center">
+
+                                    <!-- Checkbox à gauche -->
+                                    <div class="panier-check">
+                                        <input
+                                            type="checkbox"
+                                            [checked]="panier.selected"
+                                            (change)="check(panier)"
+                                            class="form-check-input"
+                                        >
+                                    </div>
+
+                                    <!-- Contenu du panier -->
+                                    <div class="panier-content">
+                                        <img class="custom-image img-fluid"
+                                            [src]="panier.produit.photo ? 'http://localhost:3000/' + panier.produit.photo : 'assets/placeholder.png'"
+                                            alt="">
+
+                                        <div class="panier-info">
+                                            <h3 class="panier-nom">{{ panier.produit.nom }}</h3>
+
+                                            <p *ngIf="!panier.edit" class="panier-type">
+                                                Prix unitaire:
+                                                {{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}
+                                                /
+                                                Quantité :
+                                                <button class="btn btn-link p-0 panier-qte-btn"
+                                                        (click)="editPanier(panier)">
+                                                    {{ panier.quantite }}
+                                                </button>
+                                            </p>
+
+                                            <p *ngIf="panier.edit" class="panier-type panier-edit">
+                                                Prix unitaire:
+                                                {{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}
+                                                /
+                                                Quantité :
+
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    class="panier-qte-input"
+                                                    [(ngModel)]="panierUpdated().quantite"
+                                                >
+
+                                                <button class="btn btn-success btn-icon"
+                                                        (click)="validerModifPanier(panier)">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+
+                                                <button class="btn btn-danger btn-icon"
+                                                        (click)="editPanier(panier)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </p>
+
+                                            <p style="color: rgb(204, 185, 13);" class="panier-type">
+                                                Boutique : {{ panier.produit.boutique.nom }}
+                                            </p>
+                                        </div>
+
+                                        <div class="panier-prix">
+                                            Total :
+                                            {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">
+                                    Aucun panier disponible
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                    </div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

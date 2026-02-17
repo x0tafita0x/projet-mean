@@ -1,0 +1,62 @@
+<div class="facture-container">
+  <!-- Bouton Export PDF -->
+  <div class="facture-header">
+    <h2>Facture</h2>
+    <button class="btn btn-success" (click)="exportPDF()">
+      <i class="bi bi-file-earmark-pdf"></i> Export PDF
+    </button>
+  </div>
+
+  <!-- Infos client -->
+  <div class="client-info">
+    <p><strong>Client :</strong> {{ user?.nom }}</p>
+    <p><strong>Date :</strong> {{ dateString }}</p>
+    <p><strong>Facture N° :</strong> 000123</p>
+  </div>
+
+  <!-- Tableau produits -->
+  <table class="table table-striped table-bordered facture-table">
+    <thead>
+      <tr >
+        <th>Produit</th>
+        <th>Boutique</th>
+        <th>Quantité</th>
+        <th>Prix unitaire (MGA)</th>
+        <th>Total (MGA)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let panier of paniers()">
+        <td>{{ panier.produit.nom }}</td>
+        <td>{{ panier.produit.boutique.nom }}</td>
+        <td>{{ panier.quantite }}</td>
+        <td>{{ panier.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="4" class="text-end">Total :</th>
+        <th>{{ this.total() | currency:'MGA ':'symbol':'1.0-0' }}</th>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div class="facture-actions mt-4">
+  <!-- Bouton Confirmer -->
+  <button class="btn btn-success" (click)="confirmerFacture()">
+    <i class="bi bi-check-lg"></i> Confirmer
+  </button>
+
+  <!-- Bouton Annuler -->
+  <button class="btn btn-danger" (click)="annulerFacture()">
+    <i class="bi bi-x-lg"></i> Annuler
+  </button>
+</div>
+
+
+  <!-- Notes -->
+  <div class="facture-notes">
+    <p><strong>Notes :</strong> Merci pour votre achat !</p>
+  </div>
+</div>
