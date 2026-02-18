@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { PanierService } from '../../services/panier.services';
 import { Panier, PanierList } from '../../models/panier.models';
 import { AuthService } from '../../../auth/services/auth.service';
+import { AchatService } from '../../../achat/services/achat.services';
 import { User } from '../../../auth/models/auth.models';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -19,11 +20,11 @@ import autoTable from 'jspdf-autotable';
 export class PanierValidationComponent implements OnInit {
   private panierService = inject(PanierService);
      private authService = inject(AuthService);
+     private achatService = inject(AchatService);
      private router = inject(Router);
 
   canValidate = signal(false);
     paniers = signal<PanierList[]>([]);
-  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
   PaniertoValidate = signal<Panier[]>([]);
   total = signal(0);
   date = new Date();
@@ -50,6 +51,7 @@ ngOnInit() {
   purify(){
      for (const panier of this.paniers()) {
       const panierIntermediaire: Panier = {
+        _id: panier._id,
         utilisateur: panier.utilisateur,
         produit: panier.produit._id,
         prix: panier.prix,
@@ -74,7 +76,9 @@ this.total.update(total => total + (panier.prix * panier.quantite));
 }
 confirmerFacture() {
   // Action à effectuer quand on confirme la facture
-  console.log("Facture confirmée !");
+  console.log('Facture confirmée', this.PaniertoValidate());
+  this.achatService.createAchat(this.PaniertoValidate());
+  this.router.navigate(['/home/achat']);
   // Ici tu peux déclencher l'export PDF, l'enregistrement, etc.
 }
 

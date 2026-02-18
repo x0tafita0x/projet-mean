@@ -42,7 +42,10 @@ export const routes: Routes = [
       // Panier routes
       { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
       { path: 'panier/validation', loadComponent: () => import('./panier/components/panier-validation/panier-validation.component').then(m => m.PanierValidationComponent) },
-
+      
+      // Achat routes
+      { path: 'achat', loadComponent: () => import('./achat/components/achat-list/achat-list.component').then(m => m.AchatListComponent) },
+      { path: 'achat-details/:id', loadComponent: () => import('./achat/components/achat-details/achat-details.component').then(m => m.AchatDetailsComponent) },
 
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },

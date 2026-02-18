@@ -140,6 +140,46 @@
         }
       </li>
 
+      <!-- Gestion Achat Section -->
+      <li class="nav-item">
+        <!-- Menu avec sous-menu Level 1 -->
+        <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Achat')"
+          style="cursor: pointer;">
+          <span><i class="bi-box-seam me-2"></i> Gestion Achat</span>
+          <i class="bi" [class.bi-chevron-down]="!isExpanded('Gestion Achat')"
+            [class.bi-chevron-up]="isExpanded('Gestion Achat')"></i>
+        </a>
+
+        @if (isExpanded('Gestion Achat')) {
+        <ul class="nav flex-column ms-3">
+          <li class="nav-item">
+            <!-- Simple Link Level 2 -->
+            <a class="nav-link" routerLink="/home/achat" routerLinkActive="active">
+              <i class="bi-cart me-2"></i> Achat
+            </a>
+          </li>
+
+          <!-- <li class="nav-item">
+             Sous-menu de niveau 2 (Configuration) 
+            <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('ConfigurationBoutique')"
+              style="cursor: pointer;">
+              <span><i class="bi-gear me-2"></i> Configuration</span>
+              <i class="bi bi-chevron-right" [class.bi-chevron-down]="isExpanded('ConfigurationBoutique')"></i>
+            </a>
+            @if (isExpanded('ConfigurationBoutique')) {
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/home/type-boutique" routerLinkActive="active">
+                  <i class="bi-tags me-2"></i> Types
+                </a>
+              </li>
+            </ul>
+            }
+          </li> -->
+        </ul>
+        }
+      </li>
+
       <!-- Logout Link -->
       <li class="nav-item border-top mt-auto pt-2">
         <a class="nav-link text-danger" routerLink="/auth/logout">
