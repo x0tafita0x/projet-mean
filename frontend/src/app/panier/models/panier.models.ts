@@ -22,10 +22,13 @@ export interface PanierList {
             nom: string;
         }
     };
+    etat: {
+        _id: string;
+        nom: string;
+    };
     prix: number;
     quantite: number;
     promotion?: string;
-    etat: string;
     typeCommande: string;
     dateHeureRecuperation?: Date;
     createdAt: string;
@@ -34,3 +37,9 @@ export interface PanierList {
     selected: boolean;
 }
 
+export interface Etat {
+    _id?: string;
+    nom: string;
+    createdAt?: string;
+    updatedAt?: string;
+}

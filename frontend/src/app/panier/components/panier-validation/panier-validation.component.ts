@@ -6,6 +6,7 @@ import { PanierService } from '../../services/panier.services';
 import { Panier, PanierList } from '../../models/panier.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { AchatService } from '../../../achat/services/achat.services';
+import { StockService } from '../../../stock/services/stock.services';
 import { User } from '../../../auth/models/auth.models';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -21,6 +22,7 @@ export class PanierValidationComponent implements OnInit {
   private panierService = inject(PanierService);
      private authService = inject(AuthService);
      private achatService = inject(AchatService);
+     private stockService = inject(StockService);
      private router = inject(Router);
 
   canValidate = signal(false);
@@ -74,10 +76,31 @@ this.total.update(total => total + (panier.prix * panier.quantite));
 
   doc.save('facture.pdf');
 }
+
+createMouvementStock() {
+  const mouvementsStock = [];
+  for (const panier of this.PaniertoValidate()) {
+    const mouvementStockIntermediaire = {
+      produit: panier.produit,
+      in: '0',
+      out: panier.quantite.toString()
+    };
+    mouvementsStock.push(mouvementStockIntermediaire);
+  }
+  this.stockService.createStocks(mouvementsStock).subscribe({
+    next: (response) => {
+      console.log('Mouvements de stock créés avec succès :', response);
+    },
+    error: (error) => {
+      console.error('Erreur lors de la création des mouvements de stock :', error);
+    }
+  });
+}
 confirmerFacture() {
   // Action à effectuer quand on confirme la facture
   console.log('Facture confirmée', this.PaniertoValidate());
   this.achatService.createAchat(this.PaniertoValidate());
+  this.createMouvementStock();
   this.router.navigate(['/home/achat']);
   // Ici tu peux déclencher l'export PDF, l'enregistrement, etc.
 }

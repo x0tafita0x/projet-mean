@@ -11,7 +11,7 @@ import { TypeBoutique } from '../../models/boutique.models';
   templateUrl: './type-boutique-list.component.html'
 })
 export class TypeBoutiqueListComponent implements OnInit {
-  private produitService = inject(BoutiqueService);
+  private boutiqueService = inject(BoutiqueService);
   typeBoutiques = signal<TypeBoutique[]>([]);
 
   ngOnInit() {
@@ -19,7 +19,7 @@ export class TypeBoutiqueListComponent implements OnInit {
   }
 
   loadTypes() {
-    this.produitService.getTypeBoutiques().subscribe({
+    this.boutiqueService.getTypeBoutiques().subscribe({
       next: (data) => this.typeBoutiques.set(data),
       error: (err) => console.error('Error loading types', err)
     });
@@ -27,7 +27,7 @@ export class TypeBoutiqueListComponent implements OnInit {
 
   deleteType(id: string) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce type de boutique ?')) {
-      this.produitService.deleteTypeBoutique(id).subscribe({
+      this.boutiqueService.deleteTypeBoutique(id).subscribe({
         next: () => this.loadTypes(),
         error: (err) => alert('Erreur lors de la suppression')
       });

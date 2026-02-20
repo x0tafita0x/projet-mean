@@ -42,6 +42,9 @@ export const routes: Routes = [
       // Panier routes
       { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
       { path: 'panier/validation', loadComponent: () => import('./panier/components/panier-validation/panier-validation.component').then(m => m.PanierValidationComponent) },
+      { path: 'etat', loadComponent: () => import('./panier/components/etat-list/etat-list.component').then(m => m.EtatListComponent) },
+      { path: 'etat/new', loadComponent: () => import('./panier/components/etat-form/etat-form.component').then(m => m.EtatFormComponent) },
+      { path: 'etat/edit/:id', loadComponent: () => import('./panier/components/etat-form/etat-form.component').then(m => m.EtatFormComponent) },
       
       // Achat routes
       { path: 'achat', loadComponent: () => import('./achat/components/achat-list/achat-list.component').then(m => m.AchatListComponent) },
@@ -49,10 +52,12 @@ export const routes: Routes = [
 
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
+      { path: 'produits-avec-stock', loadComponent: () => import('./stock/components/stock-list-by-produit/stock-list-by-produit.component').then(m => m.StockListComponentByProduit) },
       { path: 'stock/new', loadComponent: () => import('./stock/components/stock-form/stock-form.component').then(m => m.StockFormComponent) },
 
       // MouvementPrixProduit routes
       { path: 'mouvement-prix-produit', loadComponent: () => import('./mouvement-prix-produit/components/mouvement-prix-produit-list/mouvement-prix-produit-list.component').then(m => m.MouvementPrixProduitListComponent) },
+      { path: 'prix-actuel', loadComponent: () => import('./mouvement-prix-produit/components/mouvement-prix-produit-list-by-produit/mouvement-prix-produit-list-by-produit.component').then(m => m.MouvementPrixProduitListByProduitComponent) },
 
       // TypeBoutique routes
       { path: 'type-boutique', loadComponent: () => import('./boutique/components/type-boutique-list/type-boutique-list.component').then(m => m.TypeBoutiqueListComponent) },

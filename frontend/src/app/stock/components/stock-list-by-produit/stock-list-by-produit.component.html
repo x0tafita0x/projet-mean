@@ -1,0 +1,33 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mouvements de Stock</h2>
+        <button class="btn btn-primary" routerLink="/home/stock/new">
+            <i class="bi bi-plus-lg"></i> Nouveau Mouvement de Stock
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Produit</th>
+                        <th>Stock Restant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let stock of stocks()">
+                        
+                        <td>
+                            <strong>{{ stock.nom }}</strong><br>
+                        </td>
+                        <td [ngStyle]="{'color': stock.stockRestant > 0 ? '#0cdf0c' : 'light grey'}">{{ stock.stockRestant }}</td>
+                    </tr>
+                    <tr *ngIf="stocks().length === 0">
+                        <td colspan="5" class="text-center py-4 text-muted">Aucun produit trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

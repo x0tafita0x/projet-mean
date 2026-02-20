@@ -1,4 +1,5 @@
 const MouvementPrix = require("../models/mouvementPrixProduit.model");
+const Produit = require("../models/produit.model");
 const mongoose = require("mongoose");
 const upload = require("../middlewares/upload.middleware");
 
@@ -56,3 +57,62 @@ exports.getAllMouvementsPrixByProduit = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   };
+
+
+  exports.getProduitsAvecDernierPrix = async (req, res) => {
+  try {
+    const produits = await Produit.aggregate([
+      // 1️⃣ Lookup des mouvements de prix
+      {
+        $lookup: {
+          from: "mouvement_prix_produits", 
+          let: { produitId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 }
+          ],
+          as: "dernierPrix"
+        }
+      },
+
+      // 2️⃣ Extraire le prix (ou null)
+      {
+        $addFields: {
+          prix: {
+            $cond: [
+              { $gt: [{ $size: "$dernierPrix" }, 0] },
+              { $arrayElemAt: ["$dernierPrix.prix", 0] },
+              0
+            ]
+          },
+          date : {
+            $cond: [
+              { $gt: [{ $size: "$dernierPrix" }, 0] },
+              { $arrayElemAt: ["$dernierPrix.createdAt", 0] },
+              'N/A'
+            ] 
+        }
+      }
+      },
+
+      // 3️⃣ Nettoyage
+      {
+        $project: {
+          dernierPrix: 0,
+          info: 0,
+          description: 0,
+          photo: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          sousTypeProduit: 0,
+          boutique: 0
+        }
+      }
+    ]);
+
+    res.json(produits);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

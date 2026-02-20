@@ -1,4 +1,5 @@
 const MouvementProduit = require("../models/mouvementProduit.model");
+const Produit = require("../models/produit.model");
 const mongoose = require("mongoose");
 
 // créer un mouvement de produit
@@ -6,6 +7,15 @@ exports.createMouvementProduit = async (req, res) => {
   try {
     const mouvementProduit = await MouvementProduit.create(req.body);
     res.status(201).json(mouvementProduit);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+// créer plusieurs mouvements de produit
+exports.createMouvementsProduits = async (req, res) => {
+  try {
+    const mouvementProduits = await MouvementProduit.insertMany(req.body);
+    res.status(201).json(mouvementProduits);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -161,6 +171,43 @@ exports.getProduitToSellByBoutiqueId = async (req, res) => {
 
 
     res.json(produitsStock);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+
+  
+};
+
+exports.getProduitsAvecStock = async (req, res) => {
+  try {
+    const produits = await Produit.aggregate([
+      {
+        $lookup: {
+          from: "mouvement_produits",
+          localField: "_id",
+          foreignField: "produit",
+          as: "mouvements"
+        }
+      },
+      {
+        $addFields: {
+          stockRestant: {
+            $subtract: [
+              { $sum: "$mouvements.in" },
+              { $sum: "$mouvements.out" }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          nom: 1,
+          stockRestant: 1
+        }
+      }
+    ]);
+
+    res.json(produits);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

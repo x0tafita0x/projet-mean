@@ -2,6 +2,7 @@ const achat = require("../models/achat.model");
 const achatInfo = require("../models/achatInfo.model");
 const panier = require("../models/panier.model");
 const achatService = require("../services/achat.service");
+const panierController = require("./panier.controller");
 
 exports.createAchat = async (req, res) => {
   try {
@@ -10,6 +11,7 @@ exports.createAchat = async (req, res) => {
     const achatInfos = achatService.extractAchatInfo(paniers);
     const newAchat = await achat.create(achatData);
     const newAchatInfos = await achatInfo.insertMany(achatInfos.map(info => ({ ...info, achat: newAchat._id })));
+    const panierValidate = await panierController.validerPaniers(req, res);
     res.status(201).json(newAchat);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -19,7 +21,7 @@ exports.createAchat = async (req, res) => {
 exports.getAchatById = async (req, res) => {
     try {
         const achatId = req.params.achatId;
-        const achatData = await achat.findById(achatId).populate('client');
+        const achatData = await achat.findById(achatId).populate('client').populate('etat');
         if (!achatData) {
             return res.status(404).json({ error: "Achat non trouvé" });
         }
@@ -32,7 +34,7 @@ exports.getAchatById = async (req, res) => {
 exports.getAchatsByUser = async (req, res) => {
     try{
         const userId = req.params.userId;
-        const achats = await achat.find({ client: userId }).sort({ createdAt: -1 });
+        const achats = await achat.find({ client: userId }).populate('etat').sort({ createdAt: -1 });
         res.status(200).json(achats);
     } catch (err) {
         res.status(400).json({ error: err.message });   

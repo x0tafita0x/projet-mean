@@ -11,10 +11,23 @@ exports.createPanier = async (req, res) => {
   }
 };
 
+// Mettre à jour l'état de plusieurs paniers à "VALIDE"
+exports.validerPaniers = async (req, res) => {
+  try {
+    const paniers = req.body; // tableau
 
+    const ids = paniers.map(p => p._id);
 
+    const result = await Panier.updateMany(
+      { _id: { $in: ids } },
+      { $set: { etat: '6997d956319cef48fa23a812' } }
+    );
 
-
+    res.json({result});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 // lister tous les paniers
 exports.getAllPanier = async (req, res) => {
@@ -23,6 +36,7 @@ exports.getAllPanier = async (req, res) => {
   try {
     if (etat) filter.etat = etat;
     if (utilisateur) filter.utilisateur = utilisateur;
+    filter.etat = '6997d94d319cef48fa23a80f';
     const paniers = await Panier.find(filter).populate({
       path: "produit",
       select: "nom photo",
@@ -30,7 +44,7 @@ exports.getAllPanier = async (req, res) => {
         path: "boutique",
         select: "nom"
       } 
-    });
+    }).populate('etat');
     res.json(paniers);
   } catch (err) {
     res.status(500).json({ error: err.message });

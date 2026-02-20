@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
-import { StockList,StockInsert, StockResponse } from '../models/stock.models';
+import { StockList,StockInsert, StockResponse, StockProduit } from '../models/stock.models';
 
 @Injectable({
     providedIn: 'root'
@@ -29,15 +29,20 @@ export class StockService {
          return this.apiService.getList<StockResponse[]>(`stock/toSell${queryString}`);
      }
 
-    createStock(produit: StockInsert ): Observable<StockInsert> {
-        return this.apiService.create<StockInsert>('stock', produit );
+    createStock(stock: StockInsert ): Observable<StockInsert> {
+        return this.apiService.create<StockInsert>('stock', stock );
+    }
+    createStocks(stocks: StockInsert[] ): Observable<StockInsert[]> {
+        return this.apiService.create<StockInsert[]>('stock/multiple', stocks );
     }
 
     deleteStock(id: string): Observable<void> {
         return this.apiService.delete('stock', id);
     }
 
-  
+  getListeMouvementsStocksByProduit(): Observable<StockProduit[]> {
+        return this.apiService.getList<StockProduit[]>('stock/produits-avec-stock');
+    }
 
 
 }

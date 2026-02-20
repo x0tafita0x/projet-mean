@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable,BehaviorSubject } from 'rxjs';
-import { Panier, PanierList } from '../models/panier.models';
+import { Panier, PanierList,Etat } from '../models/panier.models';
+import { TypeBoutique } from '../../boutique/models/boutique.models';
 
 
 
@@ -32,5 +33,26 @@ export class PanierService {
        sendData(data: any) {
     this.dataSource.next(data);
   }
+
+   // Etat
+       getEtats(): Observable<Etat[]> {
+           return this.apiService.getList<Etat[]>('etat');
+       }
+   
+       getEtatById(id: string): Observable<Etat> {
+           return this.apiService.getById<Etat>('etat', id);
+       }
+   
+       createEtat(etat: Etat): Observable<Etat> {
+           return this.apiService.create<Etat>('etat', etat);
+       }
+   
+       updateEtat(id: string, etat: Etat): Observable<Etat> {
+           return this.apiService.update<Etat>(`etat/${id}`, etat);
+       }
+   
+       deleteEtat(id: string): Observable<void> {
+           return this.apiService.delete('etat', id);
+       }
 
 }

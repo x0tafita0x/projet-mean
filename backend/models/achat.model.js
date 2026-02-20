@@ -5,6 +5,7 @@ const AchatSchema = new mongoose.Schema(
     client: { type: mongoose.Schema.Types.ObjectId, ref: "utilisateur", required: true },
     total: { type: Number, required: true },
     nombreItems: { type: Number, required: true },
+    etat: { type: mongoose.Schema.Types.ObjectId, ref: "etat", required: true }
  },
   { timestamps: true }
 );

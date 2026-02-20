@@ -86,8 +86,8 @@ this.loadSousTypeProduits();
       utilisateur: this.user?.id || '', 
       produit: produit._id || '',
       prix: parseFloat(prix),
-      quantite: 1,
-      etat: 'en cours',
+      quantite: this.panierItem().quantite,
+      etat: '6997d94d319cef48fa23a80f',
       typeCommande: 'normal'
     });
   }
@@ -96,7 +96,7 @@ this.loadSousTypeProduits();
     
     const item = this.panierItem();
     this.panierService.createPanier(item).subscribe({
-      next: (data) => console.log('Panier created:', data),
+      next: (data) => alert('Produit ajouté au panier avec succès !'),
       error: (err) => console.error('Error creating panier:', err)
     });
   }

@@ -33,6 +33,7 @@ app.use("/api/stock", require("./routes/stock.routes"));
 app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.routes"));
 app.use("/api/panier", require("./routes/panier.routes"));
 app.use("/api/achat", require("./routes/achat.routes"));
+app.use("/api/etat", require("./routes/etat.routes"));
 
 
 // route test

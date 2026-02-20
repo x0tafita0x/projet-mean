@@ -3,6 +3,10 @@ export interface Achat {
     client: string;
     total: number;
     nombreItems: number;
+    etat:{
+        _id: string;
+        nom: string;
+    }
     createdAt?: string;
     updatedAt?: string;
 }
