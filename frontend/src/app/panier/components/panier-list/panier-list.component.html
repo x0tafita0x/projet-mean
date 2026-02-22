@@ -64,7 +64,7 @@
 
                                             <p *ngIf="!panier.edit" class="panier-type">
                                                 Prix unitaire:
-                                                {{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}
+                                                {{ panier.prixActuel | currency:'MGA ':'symbol':'1.0-0' }}
                                                 /
                                                 Quantité :
                                                 <button class="btn btn-link p-0 panier-qte-btn"
@@ -75,14 +75,14 @@
 
                                             <p *ngIf="panier.edit" class="panier-type panier-edit">
                                                 Prix unitaire:
-                                                {{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}
+                                                {{ panier.prixActuel | currency:'MGA ':'symbol':'1.0-0' }}
                                                 /
                                                 Quantité <strong style="color: red;">(max : {{ max_stock() }})</strong> :
 
                                                 <input
                                                     type="number"
                                                     min="1"
-                                                    max="{{ max_stock }}"
+                                                    max="{{ max_stock() }}"
                                                     class="panier-qte-input"
                                                     [(ngModel)]="panierUpdated().quantite"
                                                 >
@@ -105,7 +105,7 @@
 
                                         <div class="panier-prix">
                                             Total :
-                                            {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}
+                                            {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}
                                         </div>
                                     </div>
                                 </div>

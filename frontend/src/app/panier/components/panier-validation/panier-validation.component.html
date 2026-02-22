@@ -30,8 +30,8 @@
         <td>{{ panier.produit.nom }}</td>
         <td>{{ panier.produit.boutique.nom }}</td>
         <td>{{ panier.quantite }}</td>
-        <td>{{ panier.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
-        <td> {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ panier.prixActuel  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
       </tr>
     </tbody>
     <tfoot>

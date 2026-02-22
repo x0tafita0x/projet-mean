@@ -74,7 +74,7 @@ export class PanierListComponent implements OnInit {
      this.panierUpdated.set({
         utilisateur: panier.utilisateur,
         produit: panier.produit._id,
-        prix: panier.prix,
+        prix: panier.prixActuel,
         quantite: this.panierUpdated().quantite,
         etat: 'validé',
         typeCommande: panier.typeCommande

@@ -56,12 +56,12 @@ ngOnInit() {
         _id: panier._id,
         utilisateur: panier.utilisateur,
         produit: panier.produit._id,
-        prix: panier.prix,
+        prix: panier.prixActuel,
         quantite: panier.quantite,
         etat: 'validé',
         typeCommande: panier.typeCommande
       };
-this.total.update(total => total + (panier.prix * panier.quantite));
+this.total.update(total => total + (panier.prixActuel * panier.quantite));
       this.PaniertoValidate.update(list => [...list, panierIntermediaire]);
     }
   }

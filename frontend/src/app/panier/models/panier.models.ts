@@ -26,7 +26,7 @@ export interface PanierList {
         _id: string;
         nom: string;
     };
-    prix: number;
+    prixActuel: number;
     quantite: number;
     promotion?: string;
     typeCommande: string;
