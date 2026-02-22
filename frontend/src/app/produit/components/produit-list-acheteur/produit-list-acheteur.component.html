@@ -51,7 +51,13 @@
                                     class="img-fluid mb-3">
 
                                 <!-- Nom produit -->
-                                <h3>{{ produitSelectionne().nom }}</h3>
+                                <h3>{{ produitSelectionne().nom }} 
+                                    <i
+                                    class="bi favori-icon"
+                                    [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                                    (click)="toggleFavori(produitSelectionne(), $event)">
+                                    </i>
+                                </h3>
 
                                 <!-- Sous-type + type -->
                                 <p class="text-muted"

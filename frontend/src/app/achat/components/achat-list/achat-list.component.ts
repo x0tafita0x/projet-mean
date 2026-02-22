@@ -6,7 +6,6 @@ import { AchatService } from '../../services/achat.services';
 import {  Achat } from '../../models/achat.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
-import { PanierList } from '../../../panier/models/panier.models';
 
 @Component({
   selector: 'app-achat-list',

@@ -39,6 +39,10 @@ export const routes: Routes = [
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
       
+      // Favori routes
+      { path: 'favori', loadComponent: () => import('./favori/components/favori-list/favori-list.component').then(m => m.FavoriListComponent) },
+
+
       // Panier routes
       { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
       { path: 'panier/validation', loadComponent: () => import('./panier/components/panier-validation/panier-validation.component').then(m => m.PanierValidationComponent) },

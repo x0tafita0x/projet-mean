@@ -9,6 +9,7 @@ import { StockService } from '../../../stock/services/stock.services';
 import { PanierService } from '../../../panier/services/panier.services';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
+import { FavoriService } from '../../../favori/services/favori.services';
 
 @Component({
   selector: 'produit-list-acheteur',
@@ -24,6 +25,7 @@ export class ProduitListAcheteurComponent {
     private panierService = inject(PanierService);
     private route = inject(ActivatedRoute);
     private authService = inject(AuthService);
+    private favoriService = inject(FavoriService);
 
     user : User | null = null;
     produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
@@ -33,6 +35,7 @@ export class ProduitListAcheteurComponent {
     sousTypeProduits = signal<SousTypeProduit[]>([]);
     prixProduit = signal<string>('0');
     max_stock = signal<number>(0);
+    favori = signal<boolean>(false);
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -42,7 +45,7 @@ ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
 this.loadProduits(id);
 this.loadSousTypeProduits();
-}
+  }
 
  loadProduits(id: string | null) {
     this.stockService.getProduits('',id || '','','','').subscribe({
@@ -108,6 +111,7 @@ this.loadSousTypeProduits();
       error: (err) => console.error('Error creating panier:', err)
     });
   }
+
   getStockById(id: string | ''): void {
     this.stockService.getStockById(id).subscribe({
       next: (data) => {
@@ -118,5 +122,35 @@ this.loadSousTypeProduits();
  
   }
 
+  toggleFavori(produit: ProduitDetail, event: Event) {
+  event.stopPropagation(); // évite le clic sur la carte
+  if (this.favori()) {
+    this.favoriService.deleteFavori(produit._id).subscribe({
+      next: () => {
+        this.favori.set(false);
+        alert('Produit retiré des favoris');
+      },
+      error: (err) => {
+        console.error('Error removing favori', err);
+        alert('Erreur lors de la suppression du favori');
+      }
+    });
+  } else {
+    this.favoriService.createFavori({
+      utilisateur: this.user?.id || '',
+      produit: produit._id || ''
+    }).subscribe({
+      next: () => {
+        this.favori.set(true);
+        alert('Produit ajouté aux favoris');
+      },
+      error: (err) => {
+        console.error('Error adding favori', err);
+        alert('Erreur lors de l\'ajout du favori');
+      }
+    });
+  }
+ 
 
+}
 }

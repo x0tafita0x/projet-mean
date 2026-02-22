@@ -243,24 +243,28 @@
               <i class="bi-cart me-2"></i> Etat
             </a>
           </li>
+        </ul>
+        }
+      </li>
 
-          <!-- <li class="nav-item">
-             Sous-menu de niveau 2 (Configuration) 
-            <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('ConfigurationBoutique')"
-              style="cursor: pointer;">
-              <span><i class="bi-gear me-2"></i> Configuration</span>
-              <i class="bi bi-chevron-right" [class.bi-chevron-down]="isExpanded('ConfigurationBoutique')"></i>
+      <!-- Gestion Favori Section -->
+      <li class="nav-item">
+        <!-- Menu avec sous-menu Level 1 -->
+        <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Favori')"
+          style="cursor: pointer;">
+          <span><i class="bi-box-seam me-2"></i> Gestion Favori</span>
+          <i class="bi" [class.bi-chevron-down]="!isExpanded('Gestion Favori')"
+            [class.bi-chevron-up]="isExpanded('Gestion Favori')"></i>
+        </a>
+
+        @if (isExpanded('Gestion Favori')) {
+        <ul class="nav flex-column ms-3">
+          <li class="nav-item">
+            <!-- Simple Link Level 2 -->
+            <a class="nav-link" routerLink="/home/favori" routerLinkActive="active">
+              <i class="bi-cart me-2"></i> Favori
             </a>
-            @if (isExpanded('ConfigurationBoutique')) {
-            <ul class="nav flex-column ms-3">
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/home/type-boutique" routerLinkActive="active">
-                  <i class="bi-tags me-2"></i> Types
-                </a>
-              </li>
-            </ul>
-            }
-          </li> -->
+          </li>
         </ul>
         }
       </li>

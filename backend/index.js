@@ -34,6 +34,7 @@ app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.r
 app.use("/api/panier", require("./routes/panier.routes"));
 app.use("/api/achat", require("./routes/achat.routes"));
 app.use("/api/etat", require("./routes/etat.routes"));
+app.use("/api/favori", require("./routes/favori.routes"));
 
 
 // route test
