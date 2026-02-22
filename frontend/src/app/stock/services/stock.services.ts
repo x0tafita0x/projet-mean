@@ -44,5 +44,9 @@ export class StockService {
         return this.apiService.getList<StockProduit[]>('stock/produits-avec-stock');
     }
 
+    getStockById(id: string | ''): Observable<StockProduit[]> {
+        return this.apiService.getList<StockProduit[]>(`stock/produits-avec-stock?id=${id}`);
+    }
+
 
 }

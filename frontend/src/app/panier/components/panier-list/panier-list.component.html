@@ -77,11 +77,12 @@
                                                 Prix unitaire:
                                                 {{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}
                                                 /
-                                                Quantité :
+                                                Quantité <strong style="color: red;">(max : {{ max_stock() }})</strong> :
 
                                                 <input
                                                     type="number"
                                                     min="1"
+                                                    max="{{ max_stock }}"
                                                     class="panier-qte-input"
                                                     [(ngModel)]="panierUpdated().quantite"
                                                 >

@@ -70,8 +70,8 @@
                                         <form (ngSubmit)="addToPanier()" class="d-flex align-items-center w-100" style="gap: 42px; "> 
                                         <!-- Input quantité -->
                                         <div class="qte-input">
-                                                    <label style="color: green;" for="qte" class="form-label mb-0">Qté</label>
-                                                    <input type="number" name="quantite" #nom="ngModel" [(ngModel)]="panierItem().quantite" id="qte" class="form-control" min="1" max="4" value="1">
+                                                    <label style="color: green;" for="qte" class="form-label mb-0">Qté <strong style="color: red;">(max : {{ max_stock() }})</strong></label>
+                                                    <input type="number" name="quantite" #nom="ngModel" [(ngModel)]="panierItem().quantite" id="qte" class="form-control" min="1" max="{{ max_stock() }}" value="1">
                                                 </div>
                                                 
                                                 <!-- Bouton ajouter panier -->

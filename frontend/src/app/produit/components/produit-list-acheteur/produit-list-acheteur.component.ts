@@ -11,7 +11,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 
 @Component({
-  selector: 'app-home',
+  selector: 'produit-list-acheteur',
   standalone:true,
   imports: [CommonModule,FormsModule,RouterModule],
   templateUrl: './produit-list-acheteur.component.html',
@@ -32,6 +32,7 @@ export class ProduitListAcheteurComponent {
     produits = signal<StockResponse[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
     prixProduit = signal<string>('0');
+    max_stock = signal<number>(0);
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -74,6 +75,7 @@ this.loadSousTypeProduits();
     this.prixProduit.set(produit.prixUnitaire || '0');
     this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
+    this.getStockById(produit._id as string || '');
   }
 
   fermerDetails() {
@@ -93,17 +95,28 @@ this.loadSousTypeProduits();
   }
 
   addToPanier() {
-    
+    if (this.panierItem().quantite > this.max_stock()) {
+      alert(`Quantité demandée dépasse le stock disponible (${this.max_stock()}).`);
+      return;
+    }else if (this.panierItem().quantite < 1) {
+      alert(`Quantité doit être au moins 1.`);
+      return;
+    }
     const item = this.panierItem();
     this.panierService.createPanier(item).subscribe({
       next: (data) => alert('Produit ajouté au panier avec succès !'),
       error: (err) => console.error('Error creating panier:', err)
     });
   }
-
-//     });
-//   }
-  
+  getStockById(id: string | ''): void {
+    this.stockService.getStockById(id).subscribe({
+      next: (data) => {
+        this.max_stock.set(data[0].stockRestant || 0);
+      },
+      error: (err) => console.error('Error loading stock', err)
+    });
+ 
+  }
 
 
 }

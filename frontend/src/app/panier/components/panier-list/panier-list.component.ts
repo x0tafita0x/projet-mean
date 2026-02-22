@@ -6,6 +6,7 @@ import { PanierService } from '../../services/panier.services';
 import { Panier, PanierList } from '../../models/panier.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
+import { StockService } from '../../../stock/services/stock.services';
 
 @Component({
   selector: 'app-panier-list',
@@ -18,11 +19,13 @@ export class PanierListComponent implements OnInit {
   private panierService = inject(PanierService);
      private authService = inject(AuthService);
      private router = inject(Router);
+     private stockService = inject(StockService);
   canValidate = signal(false);
   paniers = signal<PanierList[]>([]);
   panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
   PaniertoValidate = signal<Panier[]>([]);
     user : User | null = null;
+    max_stock = signal<number>(0);
 
 
 
@@ -54,10 +57,19 @@ export class PanierListComponent implements OnInit {
     }else{
       panier.edit = false;
     }
+    this.getStockById(panier.produit._id as string || '');
 
   }
 
   validerModifPanier(panier: PanierList) {
+     if (this.panierUpdated().quantite > this.max_stock()) {
+      alert(`Quantité demandée dépasse le stock disponible (${this.max_stock()}).`);
+      return;
+    }else if (this.panierUpdated().quantite < 1) {
+      alert(`Quantité doit être au moins 1.`);
+      return;
+    }
+
     if (confirm('Êtes-vous sûr de vouloir modifier ce panier ?')) {
      this.panierUpdated.set({
         utilisateur: panier.utilisateur,
@@ -106,5 +118,15 @@ export class PanierListComponent implements OnInit {
      sessionStorage.setItem('produitSelected', JSON.stringify(paniersToValidateIntermedaire));
     this.router.navigate(['/home/panier/validation']);
 
+  }
+
+    getStockById(id: string | ''): void {
+    this.stockService.getStockById(id).subscribe({
+      next: (data) => {
+        this.max_stock.set(data[0].stockRestant || 0);
+      },
+      error: (err) => console.error('Error loading stock', err)
+    });
+ 
   }
   }

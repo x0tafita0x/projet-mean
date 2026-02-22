@@ -180,6 +180,7 @@ exports.getProduitToSellByBoutiqueId = async (req, res) => {
 
 exports.getProduitsAvecStock = async (req, res) => {
   try {
+    const id = req.query.id ? new mongoose.Types.ObjectId(req.query.id) : null;
     const produits = await Produit.aggregate([
       {
         $lookup: {
@@ -197,6 +198,11 @@ exports.getProduitsAvecStock = async (req, res) => {
               { $sum: "$mouvements.out" }
             ]
           }
+        }
+      },
+      {
+        $match: {
+          ...(id ? { "_id": id } : {})
         }
       },
       {
