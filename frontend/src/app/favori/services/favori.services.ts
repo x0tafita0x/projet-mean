@@ -21,6 +21,9 @@ export class FavoriService {
     deleteFavori(id: string): Observable<void> {
         return this.apiService.delete('favori', id);
     }
+    isFavoriExist(produit: string | '', utilisateur: string | ''): Observable<FavoriList[]> {
+        return this.apiService.getList<FavoriList[]>(`favori?utilisateur=${utilisateur}&produit=${produit}`);
+    }
 
 
 

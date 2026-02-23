@@ -79,6 +79,7 @@ this.loadSousTypeProduits();
     this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
     this.getStockById(produit._id as string || '');
+    this.isFavori(produit._id as string || '');
   }
 
   fermerDetails() {
@@ -150,7 +151,13 @@ this.loadSousTypeProduits();
       }
     });
   }
- 
-
+  }
+isFavori(produitId: string): void {
+  this.favoriService.isFavoriExist(produitId, this.user?.id || '').subscribe({
+    next: (data) => {
+      this.favori.set(data.length > 0);
+    },
+    error: (err) => console.error('Error checking favori', err)
+  });
 }
 }

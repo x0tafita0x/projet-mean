@@ -12,9 +12,10 @@ exports.createFavori = async (req, res) => {
 // lister tous les favoris
 exports.getAllFavoris = async (req, res) => {
   try {
-    const { utilisateur } = req.query;
+    const { utilisateur , produit } = req.query;
     const filter = {};
     if (utilisateur) filter.utilisateur = utilisateur;
+    if (produit) filter.produit = produit;
     const favoris = await Favori.find(filter).populate({
       path: "produit",
       populate: [
