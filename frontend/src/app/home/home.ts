@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -21,11 +21,13 @@ export class Home {
     private authService = inject(AuthService);  
     private boutiqueService = inject(BoutiqueService);  
       private achatService = inject(AchatService);
+      private cdr = inject(ChangeDetectorRef);
 
     user : User | null = null;
     boutiques = signal<Boutique[]>([]);
     typeBoutiques = signal<TypeBoutique[]>([]);
     recentAchats = signal<Achat[]>([]);
+    private minuteTimer!: any;
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -34,18 +36,29 @@ ngOnInit() {
  this.user = this.authService.currentUser();
 this.loadBoutiques();
 this.loadTypeBoutique();
-this.getRecentAchats();
+this.getRecentAchats(); 
+this.minuteTimer = setInterval(() => {
+    this.calculerEtat();
+  }, 30000);
+}
+ngOnDestroy() {
+  clearInterval(this.minuteTimer);
 }
 
  loadBoutiques() {
     this.boutiqueService.getBoutiques('','','','asc').subscribe({
-      next: (data) => this.boutiques.set(data),
+      next: (data) => {
+        this.boutiques.set(data);
+        this.calculerEtat();
+      },
       error: (err) => console.error('Error loading boutiques', err)
     });
   }
   loadTypeBoutique(){
     this.boutiqueService.getTypeBoutiques().subscribe({
-      next: (data) => this.typeBoutiques.set(data),
+      next: (data) => {
+        this.typeBoutiques.set(data);
+      },
       error: (err) => console.error('Error loading boutiques', err)
     });
   }
@@ -71,4 +84,32 @@ this.getRecentAchats();
       }
     });
   }
+  calculerEtat() {
+  const now = new Date();
+    this.boutiques.set(this.boutiques().map(b => ({
+    ...b,
+    isOuverte: this.isBoutiqueOuverte(b, now)
+  })))
+  for (let i = 0; i < this.boutiques().length; i++) {
+    const b = this.boutiques()[i];
+    console.log(b);
+  }
+}
+  isBoutiqueOuverte(boutique: Boutique, now: Date): boolean {
+  if (!boutique.heureOuverture || !boutique.heureFermeture) {
+    return false;
+  }
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+
+  const [openH, openM] = boutique.heureOuverture.split(':').map(Number);
+  const openMinutes = openH * 60 + openM;
+
+  const [closeH, closeM] = boutique.heureFermeture.split(':').map(Number);
+  const closeMinutes = closeH * 60 + closeM;
+  console.log(`Boutique ${boutique.nom} - Current: ${currentMinutes} min, Open: ${openMinutes} min, Close: ${closeMinutes} min = ${currentMinutes >= openMinutes && currentMinutes <= closeMinutes ? 'Ouverte' : 'Fermée'}`);
+
+  return currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
+}
 }

@@ -33,19 +33,19 @@
 
                 <div class="mb-3">
                     <label for="heureOuverture" class="form-label">Heure d'ouverture</label>
-                    <input type="text" id="heureOuverture" name="heureOuverture" class="form-control" [(ngModel)]="boutique().heureOuverture" required
+                    <input type="time" id="heureOuverture" name="heureOuverture" class="form-control" [(ngModel)]="boutique().heureOuverture" required
                             #heureOuverture="ngModel">
                 </div>
 
                 <div class="mb-3">
                     <label for="heureFermeture" class="form-label">Heure de fermeture</label>
-                    <input type="text" id="heureFermeture" name="heureFermeture" class="form-control" [(ngModel)]="boutique().heureFermeture" required
+                    <input type="time" id="heureFermeture" name="heureFermeture" class="form-control" [(ngModel)]="boutique().heureFermeture" required
                             #heureFermeture="ngModel">
                 </div>
                 
                 <div class="mb-3">
                     <label for="nbjourOuverture" class="form-label">Jour d'ouverture /7</label>
-                    <input type="text" id="nbjourOuverture" name="nbjourOuverture" class="form-control" [(ngModel)]="boutique().nbJoursOuverture" required
+                    <input type="number" id="nbjourOuverture" name="nbjourOuverture" class="form-control" [(ngModel)]="boutique().nbJoursOuverture" required
                             #jourOuverture="ngModel">
                 </div>
 

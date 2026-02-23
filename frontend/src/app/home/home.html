@@ -43,8 +43,17 @@
                                             alt="">
                                         <div class="boutique-info">
                                         <h3 class="boutique-nom">{{ boutique.nom }}</h3>
-                                        <p class="boutique-type">{{ getTypeBoutiqueName(boutique.typeBoutique) }}</p>
+                                        <p class="boutique-type">
+                                        {{ getTypeBoutiqueName(boutique.typeBoutique) }}
+                                        </p>
+                                        
                                         </div>
+                                        <span class="etat-wrapper">
+                                            <span 
+                                            [ngClass]=" boutique.isOuverte ? 'ouvert' : 'ferme'">
+                                            {{ boutique.isOuverte ? 'Ouverte' : 'Fermée' }}
+                                            </span>
+                                        </span>
                                     </div>
                                     </a>                               
                                 

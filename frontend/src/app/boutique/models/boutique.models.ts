@@ -13,6 +13,7 @@ export interface Boutique {
     heureFermeture: string;
     nbJoursOuverture: string;
     photo?: string;
+    isOuverte?: boolean;
     createdAt?: string;
     updatedAt?: string;
 }
