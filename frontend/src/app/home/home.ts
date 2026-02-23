@@ -6,6 +6,8 @@ import { AuthService } from '../auth/services/auth.service';
 import { BoutiqueService } from '../boutique/services/boutique.services';
 import { User } from '../auth/models/auth.models';
 import { Boutique , TypeBoutique } from '../boutique/models/boutique.models';
+import { Achat  } from '../achat/models/achat.models';
+import { AchatService } from '../achat/services/achat.services';
 
 @Component({
   selector: 'app-home',
@@ -18,10 +20,12 @@ export class Home {
 
     private authService = inject(AuthService);  
     private boutiqueService = inject(BoutiqueService);  
+      private achatService = inject(AchatService);
 
     user : User | null = null;
     boutiques = signal<Boutique[]>([]);
     typeBoutiques = signal<TypeBoutique[]>([]);
+    recentAchats = signal<Achat[]>([]);
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -30,6 +34,7 @@ ngOnInit() {
  this.user = this.authService.currentUser();
 this.loadBoutiques();
 this.loadTypeBoutique();
+this.getRecentAchats();
 }
 
  loadBoutiques() {
@@ -56,7 +61,14 @@ this.loadTypeBoutique();
       error: (err) => console.error('Error loading boutiques', err)
     });
   }
-  
-
-
+  getRecentAchats(): void {
+    this.achatService.getAchatRecent().subscribe({
+      next: (data) => {
+        this.recentAchats.set(data);
+      },
+      error: (err) => {
+        console.error('Error fetching recent achats:', err);
+      }
+    });
+  }
 }

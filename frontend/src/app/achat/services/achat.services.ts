@@ -37,6 +37,8 @@ export class AchatService {
     getAchatDetails(achatId: string): Observable<AchatDetails[]> {
         return this.apiService.getList<AchatDetails[]>(`achat/achat-details/${achatId}`);
     }
-       
+    getAchatRecent(): Observable<Achat[]> {
+        return this.apiService.getList<Achat[]>(`achat/recent`);
+    }
 
 }

@@ -61,3 +61,12 @@ exports.getAchatDetails = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
+exports.achatRecent = async (req, res) => {
+    try {
+        const recentAchats = await achat.find().sort({ createdAt: -1 }).limit(3).populate('etat');
+        res.status(200).json(recentAchats);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+        }
+};
