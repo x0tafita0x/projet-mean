@@ -47,14 +47,6 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label for="boutique" class="form-label">Boutique</label>
-                        <select id="boutique" name="boutique" class="form-select" [(ngModel)]="produit().boutique"
-                            required>
-                            <option value="" disabled selected>Sélectionnez une boutique</option>
-                            <option *ngFor="let b of boutiques()" [value]="b._id">{{ b.nom }}</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="row" [style.display]="isEdit() ? 'block' : 'none'">

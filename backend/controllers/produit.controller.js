@@ -35,6 +35,7 @@ exports.getAllProduits = async (req, res) => {
     if (sousTypeProduit) {
       filter.sousTypeProduit = sousTypeProduit;
     }
+    console.log("Query parameters received:", filter);
 
     let query = Produit.find(filter)
       .populate({

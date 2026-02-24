@@ -15,15 +15,15 @@ export class MouvementPrixProduitService {
             return this.apiService.create<MouvementPrixProduitInsert>('mouvements-prix-produit', mouvementPrixProduit);
     }
 
-    getMouvementsPrixByProduit(produitId: string): Observable<MouvementPrixProduit[]> {
-        return this.apiService.getList<MouvementPrixProduit[]>(`mouvements-prix-produit?produitId=${encodeURIComponent(produitId)}`);
+    getMouvementsPrixByProduit(boutique: string): Observable<MouvementPrixProduit[]> {
+        return this.apiService.getList<MouvementPrixProduit[]>(`mouvements-prix-produit?boutique=${encodeURIComponent(boutique)}`);
     }
     getLastMouvementPrixByProduit(produitId: string): Observable<MouvementPrixProduit> {
         return this.apiService.getList<MouvementPrixProduit>('mouvements-prix-produit/last/'+produitId);
     }
    
-    getPrixActuelByProduit(): Observable<MouvementPrixProduitByProduit[]> {
-        return this.apiService.getList<MouvementPrixProduitByProduit[]>('mouvements-prix-produit/prix-actuel/');
+    getPrixActuelByProduit(boutique: string): Observable<MouvementPrixProduitByProduit[]> {
+        return this.apiService.getList<MouvementPrixProduitByProduit[]>('mouvements-prix-produit/prix-actuel?boutique='+encodeURIComponent(boutique));
     }
 
 }

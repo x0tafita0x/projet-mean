@@ -28,6 +28,7 @@ export class PanierValidationComponent implements OnInit {
   canValidate = signal(false);
     paniers = signal<PanierList[]>([]);
   PaniertoValidate = signal<Panier[]>([]);
+  RefBoutique = signal<Panier[]>([]);
   total = signal(0);
   date = new Date();
   dateString = this.date.toLocaleDateString('fr-FR');
@@ -50,6 +51,24 @@ ngOnInit() {
   this.purify();
   this.user = this.authService.currentUser();
 }
+
+createRefBoutiqueStock(){
+   for (const panier of this.paniers()) {
+      const panierIntermediaire: Panier = {
+        _id: panier._id,
+        utilisateur: panier.utilisateur,
+        produit: panier.produit._id,
+        prix: panier.prixActuel,
+        quantite: panier.quantite,
+        etat: 'validé',
+        typeCommande: panier.typeCommande,
+        boutique: panier.produit.boutique.nom
+      };
+this.total.update(total => total + (panier.prixActuel * panier.quantite));
+      this.RefBoutique.update(list => [...list, panierIntermediaire]);
+    }
+}
+
   purify(){
      for (const panier of this.paniers()) {
       const panierIntermediaire: Panier = {
@@ -79,11 +98,12 @@ this.total.update(total => total + (panier.prixActuel * panier.quantite));
 
 createMouvementStock() {
   const mouvementsStock = [];
-  for (const panier of this.PaniertoValidate()) {
+  for (const panier of this.RefBoutique()) {
     const mouvementStockIntermediaire = {
       produit: panier.produit,
       in: '0',
-      out: panier.quantite.toString()
+      out: panier.quantite.toString(),
+      boutique : panier.boutique || ''
     };
     mouvementsStock.push(mouvementStockIntermediaire);
   }

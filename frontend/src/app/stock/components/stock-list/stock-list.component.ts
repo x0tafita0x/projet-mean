@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { StockService } from '../../services/stock.services';
 import { StockList } from '../../models/stock.models';
 import { Produit, SousTypeProduit } from '../../../produit/models/produit.models';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-stock-list',
@@ -14,13 +16,16 @@ import { Produit, SousTypeProduit } from '../../../produit/models/produit.models
 export class StockListComponent implements OnInit {
   private stockService = inject(StockService);
   stocks = signal<StockList[]>([]);
+  authService = inject(AuthService);
+  user : User | null = null;
 
   ngOnInit() {
+    this.user = this.authService.currentUser();
     this.loadStocks();
   }
 
   loadStocks() {
-    this.stockService.getListeMouvementsStocks().subscribe({
+    this.stockService.getListeMouvementsStocks(this.user?.boutique || '').subscribe({
       next: (data) => this.stocks.set(data),
       error: (err) => console.error('Error loading stocks', err)
     });

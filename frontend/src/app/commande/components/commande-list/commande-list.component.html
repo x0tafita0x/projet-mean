@@ -1,0 +1,32 @@
+<div class="container mt-4">
+
+  <h2 class="mb-4">📄 Liste des commandes</h2>
+
+  <div class="facture-list">
+
+    <div class="facture-card"
+     *ngFor="let commande of commandes()">
+
+  <div class="facture-left">
+    <h5 class="facture-date">
+      Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
+    </h5>
+    <p class="facture-items">
+      Nombre d’articles : {{ commande.totalQuantite }}
+    </p>
+  </div>
+
+  <div class="facture-right">
+    <span class="facture-total">
+      {{ commande.totalPrix | currency:'MGA ':'symbol':'1.0-0' }}
+    </span>
+  </div>
+
+</div>
+
+    <div *ngIf="commandes().length === 0" class="no-facture">
+    Aucune Commande en cours.
+  </div>
+
+  </div>
+</div>

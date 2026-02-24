@@ -9,6 +9,5 @@ router.post("/multiple", upload.none(), stockController.createMouvementsProduits
 router.get("/", stockController.getAllMouvementsProduits);
 router.get("/produits-avec-stock", stockController.getProduitsAvecStock);
 router.get("/toSell", stockController.getProduitToSellByBoutiqueId);
-router.delete("/:id", stockController.deleteMouvementProduit);
 
 module.exports = router;

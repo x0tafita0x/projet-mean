@@ -20,7 +20,7 @@ exports.extractAchat = (paniers) => {
             client: paniers[0].utilisateur,
             total : paniers.reduce((total, panier) => total + (panier.prix * panier.quantite), 0),
             nombreItems: paniers.reduce((total, panier) => total + panier.quantite, 0),
-            etatModel: '6997d956319cef48fa23a812'
+            etat: '6997d956319cef48fa23a812'
         };
         return achatData;
     } catch (err) {

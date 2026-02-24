@@ -6,6 +6,9 @@ const AchatInfoSchema = new mongoose.Schema(
     panier: { type: mongoose.Schema.Types.ObjectId, ref: "panier", required: true },
     prix: { type: Number, required: true },
     quantite: { type: Number, required: true },
+    etat: { type: mongoose.Schema.Types.ObjectId, ref: "etat", required: true }
+  },
+  { timestamps: true
  }
 );
 

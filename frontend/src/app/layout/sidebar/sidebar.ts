@@ -2,6 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../shared/service/sidebar.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../auth/services/auth.service';
+import { User } from '../../auth/models/auth.models';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -12,13 +14,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class Sidebar implements OnInit {
   currentMenu: string = 'default';
   expandedMenus = signal<string[]>(['Gestion Produits']);
+  user : User | null = null;
 
-  constructor(private sidebarService: SidebarService) { }
+  constructor(private sidebarService: SidebarService, private authService: AuthService) { }
 
   ngOnInit() {
     this.sidebarService.menu$.subscribe(menu => {
       this.currentMenu = menu;
     });
+    this.user = this.authService.currentUser();
+    console.log('User in Sidebar:', this.user); // Debug: Affiche les informations de l'utilisateur dans la console
   }
 
   toggleMenu(label: string) {

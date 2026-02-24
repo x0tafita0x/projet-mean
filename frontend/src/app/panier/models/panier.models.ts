@@ -7,6 +7,7 @@ export interface Panier {
     promotion?: string;
     etat: string;
     typeCommande: string;
+    boutique?: string;
     dateHeureRecuperation?: Date;
 }
 

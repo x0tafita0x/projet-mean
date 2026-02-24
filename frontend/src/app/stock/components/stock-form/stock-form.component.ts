@@ -8,6 +8,8 @@ import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/ser
 import { StockInsert } from '../../models/stock.models';
 import { Produit } from '../../../produit/models/produit.models';
 import { MouvementPrixProduitInsert } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-stock-form',
@@ -22,20 +24,22 @@ export class StockFormComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  stock = signal<StockInsert>({ produit:'', in: '', out: '', prix: '' });
+  stock = signal<StockInsert>({ produit:'', in: '', out: '', prix: '' , boutique: ''});
   mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
   produits = signal<Produit[]>([]);
   loading = signal(false);
   selectedFile: File | null = null;
+  user : User | null = null;
+  private authService = inject(AuthService);
 
   ngOnInit() {
     this.loadMetadata();
-
+this.user = this.authService.currentUser();
 
 }
 
 loadMetadata(){
-    this.produitService.getProduits('','','', '', 'asc').subscribe({
+    this.produitService.getProduits('','', this.user?.boutique || '', '', 'asc').subscribe({
       next: (data) => this.produits.set(data),
       error: (err) => console.error('Error loading produits', err)
     });
@@ -57,7 +61,13 @@ if (this.stock().in && parseFloat(this.stock().in || '0') !== 0) {
   }
     
    
-
+  this.stock.set({
+    produit: this.stock().produit,
+    in: this.stock().in,
+    out: this.stock().out,
+    prix: this.stock().prix,
+    boutique: this.user?.boutique || ''
+  });
 
     const obs =  this.stockService.createStock(this.stock());
 

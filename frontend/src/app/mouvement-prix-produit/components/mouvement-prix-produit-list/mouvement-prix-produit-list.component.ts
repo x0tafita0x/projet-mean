@@ -2,7 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';import { Router, RouterModule,ActivatedRoute } from '@angular/router';
 import { MouvementPrixProduitService } from '../../services/mouvement-prix-produit.services';
 import { MouvementPrixProduit } from '../../models/mouvement-prix-produit.models';
-import { Produit, SousTypeProduit } from '../../../produit/models/produit.models';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-mouvement-prix-produit-list',
@@ -13,15 +14,17 @@ import { Produit, SousTypeProduit } from '../../../produit/models/produit.models
 export class MouvementPrixProduitListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private mouvementPrixProduitService = inject(MouvementPrixProduitService);
+  private authService = inject(AuthService);
   mouvementsPrixProduits = signal<MouvementPrixProduit[]>([]);
+  user : User | null = null;
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.loadMouvementsPrixProduits(id || '');
+    this.user = this.authService.currentUser();
+    this.loadMouvementsPrixProduits(this.user?.boutique || '');
   }
 
-  loadMouvementsPrixProduits(id: string) {
-    this.mouvementPrixProduitService.getMouvementsPrixByProduit(id).subscribe({
+  loadMouvementsPrixProduits(boutique: string) {
+    this.mouvementPrixProduitService.getMouvementsPrixByProduit(boutique).subscribe({
       next: (data) => this.mouvementsPrixProduits.set(data),
       error: (err) => console.error('Error loading mouvements prix produits', err)
     });

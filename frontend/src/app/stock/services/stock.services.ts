@@ -10,8 +10,8 @@ export class StockService {
     private apiService = inject(ApiService);
 
     // Boutiques
-    getListeMouvementsStocks(): Observable<StockList[]> {
-        return this.apiService.getList<StockList[]>('stock');
+    getListeMouvementsStocks(boutique : string | ''): Observable<StockList[]> {
+        return this.apiService.getList<StockList[]>(`stock?boutique=${boutique}`);
     }
 
      getProduits(nom : string ,boutique : string,prixMin : string,prixMax : string,sousTypeProduit : string): Observable<StockResponse[]> {
@@ -40,8 +40,8 @@ export class StockService {
         return this.apiService.delete('stock', id);
     }
 
-  getListeMouvementsStocksByProduit(): Observable<StockProduit[]> {
-        return this.apiService.getList<StockProduit[]>('stock/produits-avec-stock');
+  getListeMouvementsStocksByProduit(boutique : string | ''): Observable<StockProduit[]> {
+        return this.apiService.getList<StockProduit[]>(`stock/produits-avec-stock?boutique=${boutique}`);
     }
 
     getStockById(id: string | ''): Observable<StockProduit[]> {

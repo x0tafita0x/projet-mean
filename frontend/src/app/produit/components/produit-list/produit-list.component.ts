@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProduitService } from '../../services/produit.services';
 import { Produit, SousTypeProduit } from '../../models/produit.models';
-import { MouvementPrixProduit } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
 import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/services/mouvement-prix-produit.services';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
+
 
 @Component({
   selector: 'app-produit-list',
@@ -15,13 +17,17 @@ import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/ser
 export class ProduitListComponent implements OnInit {
   private produitService = inject(ProduitService);
   produits = signal<Produit[]>([]);
-  private mouvementPrixProduitService = inject(MouvementPrixProduitService);
+  private authService = inject(AuthService);
+
+  user : User | null = null;
+
   ngOnInit() {
+    this.user = this.authService.currentUser();
     this.loadProduits();
   }
 
   loadProduits() {
-    this.produitService.getProduits('', '', '', '', 'asc').subscribe({
+    this.produitService.getProduits('', this.user?.boutique || '', '', '', 'asc').subscribe({
       next: (data) => this.produits.set(data),
       error: (err) => console.error('Error loading products', err)
     });

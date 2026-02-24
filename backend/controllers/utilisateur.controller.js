@@ -49,7 +49,18 @@ const loginWithRole = async (req, res, requiredRole) => {
             process.env.JWT_SECRET || "fallback_secret",
             { expiresIn: "1d" }
         );
-
+        if ( user.role === "boutique" ) {
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                nom: user.nom,
+                email: user.email,
+                role: user.role,
+                boutique: user.boutique, 
+            },
+        });
+    } else {
         res.json({
             token,
             user: {
@@ -59,6 +70,7 @@ const loginWithRole = async (req, res, requiredRole) => {
                 role: user.role,
             },
         });
+    }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

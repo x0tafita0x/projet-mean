@@ -6,6 +6,7 @@ export interface StockInsert {
   prix?: string;
   in: string;
   out: string;
+  boutique: string;
   createdAt?: string;
   updatedAt?: string;
 }

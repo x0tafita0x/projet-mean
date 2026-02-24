@@ -3,6 +3,8 @@ const achatInfo = require("../models/achatInfo.model");
 const panier = require("../models/panier.model");
 const achatService = require("../services/achat.service");
 const panierController = require("./panier.controller");
+const mongoose = require("mongoose");
+
 
 exports.createAchat = async (req, res) => {
   try {
@@ -69,4 +71,74 @@ exports.achatRecent = async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
         }
+};
+
+exports.listCommmandes = async (req, res) => {
+    try {
+        const {boutique} = req.params;
+        const boutiqueId = boutique? new mongoose.Types.ObjectId(boutique) : null;
+        const etat =  new mongoose.Types.ObjectId("6997d956319cef48fa23a812");
+        console.log("Boutique ID:", boutiqueId);
+        console.log("Etat ID:", etat);
+        
+        const commandes = await achatInfo.aggregate([
+            { $lookup: {
+                from: 'achats',
+                localField: 'achat',
+                foreignField: '_id',
+                as: 'achatDetails'
+             }
+            },
+            {
+                $unwind: '$achatDetails'
+            },
+            { $lookup: {
+                from: 'paniers',
+                localField: 'panier',
+                foreignField: '_id',
+                as: 'panierDetails'
+            }},
+            { $unwind: '$panierDetails' },
+            { $lookup: {
+                from: 'utilisateurs',
+                localField: 'panierDetails.utilisateur',
+                foreignField: '_id',
+                as: 'clientDetails'
+             }
+            },
+            { $unwind: '$clientDetails' },
+
+            { $lookup: {
+                from: 'produits',
+                localField: 'panierDetails.produit',
+                foreignField: '_id',
+                as: 'produitDetails'
+             }
+            },
+            { $unwind: '$produitDetails' },
+
+            { $match: { "produitDetails.boutique": boutiqueId, "panierDetails.etat": etat } },
+            { $group: {
+                _id: '$achat',
+                totalPrix: { $sum: { $multiply: ["$panierDetails.quantite", "$panierDetails.prix"] } },
+                totalQuantite: { $sum: "$panierDetails.quantite" },
+                createdAt: { $first: "$achatDetails.createdAt" },
+                client: { $first: "$clientDetails.nom" },
+                etat: { $first: "$achatDetails.etat" }
+            } },
+            { $project: {
+                _id: 1,
+                totalPrix: 1,
+                totalQuantite: 1,
+                createdAt: 1,
+                client: 1,
+                etat: 1
+            }
+            }
+        ]);
+        // console.log(commandes);
+        res.status(200).json(commandes);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };

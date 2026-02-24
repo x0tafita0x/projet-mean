@@ -5,7 +5,6 @@ const upload = require("../middlewares/upload.middleware");
 
 exports.createMouvementPrixProduit = async (req, res) => {
   try {
-    console.log("Received MouvementPrixProduit data:", req.body);
     const mouvementPrix = await MouvementPrix.create(req.body);
     res.status(201).json(mouvementPrix);
     } catch (err) {
@@ -15,17 +14,17 @@ exports.createMouvementPrixProduit = async (req, res) => {
 
 exports.getAllMouvementsPrixByProduit = async (req, res) => {
   try {
-    const { produitId } = req.params;
-    const filter = {};
-    if (produitId) {
-      filter.produit = produitId;
-    }
+    const { produit, boutique } = req.query;
+    const produitId = produit ? new mongoose.Types.ObjectId(produit) : null;
+    const boutiqueId = boutique ? new mongoose.Types.ObjectId(boutique) : null;
     
     const mouvementsPrix = await MouvementPrix
-      .find(filter)
+      .find()
       .populate({
         path: "produit",
         select: "nom",
+        $match: { boutique: boutiqueId,
+               ...(produitId ? { _id: produitId } : {}) },
         populate: {
           path:"sousTypeProduit",
           select: "nom"
@@ -61,6 +60,9 @@ exports.getAllMouvementsPrixByProduit = async (req, res) => {
 
   exports.getProduitsAvecDernierPrix = async (req, res) => {
   try {
+    const { boutique } = req.query;
+
+    const boutiqueId = boutique ? new mongoose.Types.ObjectId(boutique) : null; 
     const produits = await Produit.aggregate([
       // 1️⃣ Lookup des mouvements de prix
       {
@@ -95,6 +97,11 @@ exports.getAllMouvementsPrixByProduit = async (req, res) => {
         }
       }
       },
+    {
+        $match: {
+          ...(boutiqueId ? { "boutique": boutiqueId } : {}),
+        }
+    },
 
       // 3️⃣ Nettoyage
       {
