@@ -117,15 +117,18 @@ exports.listCommmandes = async (req, res) => {
             },
             { $unwind: '$produitDetails' },
 
-            { $match: { "produitDetails.boutique": boutiqueId, "panierDetails.etat": etat } },
+            { $match: { "produitDetails.boutique": boutiqueId, "etat": etat } },
             { $group: {
                 _id: '$achat',
-                totalPrix: { $sum: { $multiply: ["$panierDetails.quantite", "$panierDetails.prix"] } },
-                totalQuantite: { $sum: "$panierDetails.quantite" },
+                totalPrix: { $sum: { $multiply: ["$quantite", "$prix"] } },
+                totalQuantite: { $sum: "$quantite" },
                 createdAt: { $first: "$achatDetails.createdAt" },
                 client: { $first: "$clientDetails.nom" },
-                etat: { $first: "$achatDetails.etat" }
+                etat: { $first: "$etat" }
             } },
+            {
+                $sort: { createdAt: 1 }
+            },
             { $project: {
                 _id: 1,
                 totalPrix: 1,
@@ -136,8 +139,52 @@ exports.listCommmandes = async (req, res) => {
             }
             }
         ]);
-        // console.log(commandes);
         res.status(200).json(commandes);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+exports.commandeDetails = async (req, res) => {
+    try {
+        const {achat , boutique} = req.query;
+        const filter = {};
+        if (achat) {
+            filter.achat = new mongoose.Types.ObjectId(achat);
+        }
+        const boutiqueId = new mongoose.Types.ObjectId(boutique);
+
+        const achatDetails = await achatInfo.find(filter).populate({
+            path: 'panier',
+            select: 'utilisateur',
+            populate: {
+                path: 'produit',
+                select: 'nom photo',
+                populate: {
+                    path: 'boutique',
+                    select: 'nom',
+                    match: { _id: boutiqueId }
+                },
+                populate: {
+                    path: 'sousTypeProduit',
+                    select: 'nom'
+                }
+            }
+        });
+        res.status(200).json(achatDetails);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+exports.ChangeToCommandeARecuperer = async (req, res) => {
+    try {
+        const { achatId } = req.params;
+        const etat = new mongoose.Types.ObjectId("6997d981319cef48fa23a815"); // ID de l'état "Commande à récupérer"
+        const result = await achatInfo.updateMany(
+                        { achat: new mongoose.Types.ObjectId(achatId) },
+                        { $set: { etat: etat } }
+                        );
+        res.status(200).json(result);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

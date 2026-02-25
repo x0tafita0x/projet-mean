@@ -28,3 +28,9 @@ export interface AchatDetails {
     prix: number;
     quantite: number;
 }
+export interface AchatInsert {
+    client: string;
+    total: number;
+    nombreItems: number;
+    etat: string;
+}

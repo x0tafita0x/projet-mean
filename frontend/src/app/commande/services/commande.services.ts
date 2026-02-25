@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable,BehaviorSubject } from 'rxjs';
-import { Commande } from '../models/commande.models';
+import { Commande, CommandeDetails } from '../models/commande.models';
 
 
 
@@ -18,5 +18,13 @@ export class CommandeService {
    getCommandes(boutique: string): Observable<Commande[]> {
         return this.apiService.getList<Commande[]>(`achat/commandes/${boutique}`);
     }
+    getCommandeDetails(commandeId: string, boutiqueId: string): Observable<CommandeDetails[]> {
+        return this.apiService.getList<CommandeDetails[]>(`achat/commandes-details?achat=${commandeId}&boutique=${boutiqueId}`);
+     }
+    updateCommandeToRecuperer(achatId: string): Observable<any> {
+        console.log('ID de l\'achat à mettre à jour :', achatId);
+        return this.apiService.getList<any>('achat/to-recup/' + achatId);
+     }
+    
 
 }

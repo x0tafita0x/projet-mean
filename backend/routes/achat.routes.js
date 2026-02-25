@@ -4,10 +4,12 @@ const achatController = require("../controllers/achat.controller");
 
 // CRUD achats
 router.post("/", achatController.createAchat);
+router.get("/commandes-details", achatController.commandeDetails);
+router.get("/to-recup/:achatId", achatController.ChangeToCommandeARecuperer);
 router.get("/achat/:achatId", achatController.getAchatById);
 router.get("/recent/", achatController.achatRecent);
-router.get("/:userId", achatController.getAchatsByUser);
 router.get("/achat-details/:achatId", achatController.getAchatDetails);
 router.get("/commandes/:boutique", achatController.listCommmandes);
+router.get("/:userId", achatController.getAchatsByUser);
 
 module.exports = router;

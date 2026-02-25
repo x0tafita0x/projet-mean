@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule,Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommandeService } from '../../services/commande.services';
-import {  Commande } from '../../models/commande.models';
+import {  Commande,CommandeDetails } from '../../models/commande.models';
+import {  AchatInsert } from '../../../achat/models/achat.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-commande-list',
@@ -19,9 +21,12 @@ export class CommandeListComponent implements OnInit {
      private authService = inject(AuthService);
      private router = inject(Router);
 
-
+  commandeSelectionnee=signal<CommandeDetails []>([]);
   commandes = signal<Commande[]>([]);
+  isValid = signal(false);
     user : User | null = null;
+  produitsSelectionnes: CommandeDetails[] = [];
+
 
 
 
@@ -37,8 +42,57 @@ export class CommandeListComponent implements OnInit {
     });
   }
 
- 
 
+ouvrirDetails(commande: any) {
+  this.commandeService.getCommandeDetails(commande._id, this.user?.boutique || "").subscribe({
+    next: (data) =>{ this.commandeSelectionnee.set(data); this.isValided();},
+    error: (err) => console.error('Error loading commande details', err)
+  });
+}
+
+fermerDetails() {
+  this.commandeSelectionnee.set([]);
+}
+ 
+toggleSelection(produit: any) {
+  const index = this.produitsSelectionnes.findIndex(p => p._id === produit._id);
+  if (index > -1) {
+    this.produitsSelectionnes.splice(index, 1);
+  } else {
+    this.produitsSelectionnes.push(produit);
+    this.isValided();
+  }
+}
+
+estSelectionne(produit: any): boolean {
+  return this.produitsSelectionnes.some(p => p._id === produit._id);
+}
+
+isValided(){
+  const tousPresent = this.commandeSelectionnee().every(cmd =>
+  this.produitsSelectionnes.some(prod => prod._id === cmd._id)
+);
+
+  this.isValid.set(tousPresent);
+}
+
+validerProduits() {
+  const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
+  
+  
+  this.commandeService.updateCommandeToRecuperer(achatId).subscribe({
+    next: () => {
+      alert('Commande mise à jour avec succès !');
+      this.loadCommandes();
+      this.fermerDetails();
+    },
+    error: (err) => alert('Erreur lors de la mise à jour de la commande')
+  });
+
+  console.log('Produits sélectionnés pour cette commande :', this.produitsSelectionnes);
+  // ici tu peux envoyer les produits sélectionnés au backend
+  this.fermerDetails();
+}
 
 
   }

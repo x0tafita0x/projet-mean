@@ -5,7 +5,8 @@ exports.extractAchatInfo = (paniers) => {
         const achatInfos = paniers.map(panier => ({
             panier: panier._id,
             prix: panier.prix,
-            quantite: panier.quantite
+            quantite: panier.quantite,
+            etat: '6997d956319cef48fa23a812'
         }));
         console.log("AchatInfos extraites:", achatInfos);
         return achatInfos;
