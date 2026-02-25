@@ -4,7 +4,6 @@ import { RouterModule,Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommandeService } from '../../services/commande.services';
 import {  Commande,CommandeDetails } from '../../models/commande.models';
-import {  AchatInsert } from '../../../achat/models/achat.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { map } from 'rxjs';
