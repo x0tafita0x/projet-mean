@@ -6,21 +6,24 @@
          (click)="ouvrirDetails(commande)">
       <div class="facture-left">
         <h5 class="facture-date">
-          Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
+         {{ commande.client }}
         </h5>
         <p class="facture-items">
-          Nombre d’articles : {{ commande.totalQuantite }}
+             Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
         </p>
       </div>
       <div class="facture-right">
         <span class="facture-total">
           {{ commande.totalPrix | currency:'MGA ':'symbol':'1.0-0' }}
         </span>
+        <p class="facture-items" style="color: rgb(175, 172, 10);">
+          Nombre d’articles : {{ commande.totalQuantite }}
+        </p>
       </div>
     </div>
 
     <div *ngIf="commandes().length === 0" class="no-facture">
-      Aucune Commande en cours.
+      Aucune Commande trouvée.
     </div>
   </div>
 
@@ -63,3 +66,10 @@
               </div>
             </div>
 </div>
+
+<app-facture-ticket
+*ngIf="commandeSelectionnee().length > 0" 
+  [commande]="commandeSelectionnee()"
+  [data]="data()"
+  #facture>
+</app-facture-ticket>

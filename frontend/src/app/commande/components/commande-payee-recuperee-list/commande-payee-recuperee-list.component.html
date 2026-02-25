@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2 class="mb-4">📄 Liste des commandes</h2>
+  <h2 class="mb-4">📄 Liste des commandes payées et récuperées</h2>
 
   <div class="facture-list">
     <div class="facture-card" *ngFor="let commande of commandes()"
@@ -9,7 +9,7 @@
           {{ commande.client }}
         </h5>
         <p class="facture-items">
-          Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
         </p>
       </div>
       <div class="facture-right">
@@ -23,7 +23,7 @@
     </div>
 
     <div *ngIf="commandes().length === 0" class="no-facture">
-      Aucune Commande en cours.
+      Aucune Commande trouvée.
     </div>
   </div>
 
@@ -38,13 +38,8 @@
               <h3>Produits de la commande</h3>
 
               <div class="liste-produit">
-                <div *ngFor="let commande of commandeSelectionnee()" class="custom-produit" (click)="toggleSelection(commande)">
+                <div *ngFor="let commande of commandeSelectionnee()" class="custom-produit" >
                   <div class="produit-content">
-                    <input type="checkbox"
-                          class="form-check-input me-3"
-                          [checked]="estSelectionne(commande)"
-                          (click)="$event.stopPropagation()"
-                          (change)="toggleSelection(commande)">
                     <img class="custom-image img-fluid"
                         [src]="commande.panier.produit.photo ? 'http://localhost:3000/' + commande.panier.produit.photo : 'assets/placeholder.png'">
                     <div class="produit-info">
@@ -65,10 +60,17 @@
               <!-- BOUTON VALIDER -->
               <div class="modal-footer-fixed">
                 <button class="btn btn-success w-100"
-                        [disabled]="!isValid()"
-                        (click)="validerProduits()">
-                  Valider ({{ produitsSelectionnes.length }})
+                (click)="exportFacture()">
+                  Exporter
                 </button>
               </div>
             </div>
 </div>
+
+<app-facture-ticket
+*ngIf="commandeSelectionnee().length > 0" 
+  [commande]="commandeSelectionnee()"
+  [data]="data()"
+  #facture>
+</app-facture-ticket>
+

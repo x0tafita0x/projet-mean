@@ -154,22 +154,24 @@ exports.commandeDetails = async (req, res) => {
         const boutiqueId = new mongoose.Types.ObjectId(boutique);
 
         const achatDetails = await achatInfo.find(filter).populate({
-            path: 'panier',
-            select: 'utilisateur',
-            populate: {
-                path: 'produit',
-                select: 'nom photo',
+                path: 'panier',
+                select: 'utilisateur',
                 populate: {
-                    path: 'boutique',
-                    select: 'nom',
-                    match: { _id: boutiqueId }
-                },
-                populate: {
-                    path: 'sousTypeProduit',
-                    select: 'nom'
+                    path: 'produit',
+                    select: 'nom photo',
+                    populate: [
+                        {
+                            path: 'boutique',
+                            select: 'nom',
+                            match: { _id: boutiqueId } // ton filtre
+                        },
+                        {
+                            path: 'sousTypeProduit',
+                            select: 'nom'
+                        }
+                    ]
                 }
-            }
-        });
+            });
         res.status(200).json(achatDetails);
     } catch (err) {
         res.status(400).json({ error: err.message });

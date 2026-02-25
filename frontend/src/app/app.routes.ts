@@ -57,7 +57,11 @@ export const routes: Routes = [
       // Commande routes
       { path: 'commande-non-traitée', loadComponent: () => import('./commande/components/commande-list/commande-list.component').then(m => m.CommandeListComponent) },
       { path: 'commande-a-récupérer', loadComponent: () => import('./commande/components/commande-a-recuperer-liste/commande-a-recuperer-list.component').then(m => m.CommandeARecupererListComponent) },
-
+      { path: 'commande-payée-récupérée', loadComponent: () => import('./commande/components/commande-payee-recuperee-list/commande-payee-recuperee-list.component').then(m => m.CommandePayeeRecupereeListComponent) },
+      
+      // facture
+      { path: 'facture-template', loadComponent: () => import('./facture-ticket/facture-ticket.component').then(m => m.FactureTicketComponent) },
+     
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
       { path: 'produits-avec-stock', loadComponent: () => import('./stock/components/stock-list-by-produit/stock-list-by-produit.component').then(m => m.StockListComponentByProduit) },
