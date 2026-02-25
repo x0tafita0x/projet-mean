@@ -75,11 +75,11 @@ exports.achatRecent = async (req, res) => {
 
 exports.listCommmandes = async (req, res) => {
     try {
-        const {boutique} = req.params;
+        const {boutique, etat} = req.params;
         const boutiqueId = boutique? new mongoose.Types.ObjectId(boutique) : null;
-        const etat =  new mongoose.Types.ObjectId("6997d956319cef48fa23a812");
+        const etatId = etat? new mongoose.Types.ObjectId(etat) : null;
         console.log("Boutique ID:", boutiqueId);
-        console.log("Etat ID:", etat);
+        console.log("Etat ID:", etatId);
         
         const commandes = await achatInfo.aggregate([
             { $lookup: {
@@ -117,7 +117,7 @@ exports.listCommmandes = async (req, res) => {
             },
             { $unwind: '$produitDetails' },
 
-            { $match: { "produitDetails.boutique": boutiqueId, "etat": etat } },
+            { $match: { "produitDetails.boutique": boutiqueId, "etat": etatId } },
             { $group: {
                 _id: '$achat',
                 totalPrix: { $sum: { $multiply: ["$quantite", "$prix"] } },
@@ -180,6 +180,19 @@ exports.ChangeToCommandeARecuperer = async (req, res) => {
     try {
         const { achatId } = req.params;
         const etat = new mongoose.Types.ObjectId("6997d981319cef48fa23a815"); // ID de l'état "Commande à récupérer"
+        const result = await achatInfo.updateMany(
+                        { achat: new mongoose.Types.ObjectId(achatId) },
+                        { $set: { etat: etat } }
+                        );
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+exports.ChangeToCommandePayeEtRecupere = async (req, res) => {
+    try {
+        const { achatId } = req.params;
+        const etat = new mongoose.Types.ObjectId("6997d98f319cef48fa23a818"); // ID de l'état "Commande payée et récupérée"
         const result = await achatInfo.updateMany(
                         { achat: new mongoose.Types.ObjectId(achatId) },
                         { $set: { etat: etat } }

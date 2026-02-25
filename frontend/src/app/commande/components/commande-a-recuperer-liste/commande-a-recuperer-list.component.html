@@ -1,0 +1,65 @@
+<div class="container mt-4">
+  <h2 class="mb-4">📄 Liste des commandes à récuperer</h2>
+
+  <div class="facture-list">
+    <div class="facture-card" *ngFor="let commande of commandes()"
+         (click)="ouvrirDetails(commande)">
+      <div class="facture-left">
+        <h5 class="facture-date">
+          Date : {{ commande.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </h5>
+        <p class="facture-items">
+          Nombre d’articles : {{ commande.totalQuantite }}
+        </p>
+      </div>
+      <div class="facture-right">
+        <span class="facture-total">
+          {{ commande.totalPrix | currency:'MGA ':'symbol':'1.0-0' }}
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="commandes().length === 0" class="no-facture">
+      Aucune Commande en cours.
+    </div>
+  </div>
+
+
+                            <!-- OVERLAY -->
+            <div class="overlay" *ngIf="commandeSelectionnee().length > 0" (click)="fermerDetails()"></div>
+
+            <!-- BOX DETAIL CENTRÉE -->
+            <div class="produit-detail-modal" *ngIf="commandeSelectionnee().length > 0">
+              <button class="btn-close" (click)="fermerDetails()">✕</button>
+
+              <h3>Produits de la commande</h3>
+
+              <div class="liste-produit">
+                <div *ngFor="let commande of commandeSelectionnee()" class="custom-produit" >
+                  <div class="produit-content">
+                    <img class="custom-image img-fluid"
+                        [src]="commande.panier.produit.photo ? 'http://localhost:3000/' + commande.panier.produit.photo : 'assets/placeholder.png'">
+                    <div class="produit-info">
+                      <h3 class="produit-nom">{{ commande.panier.produit.nom }}</h3>
+                      <p class="produit-type">{{ commande.panier.produit.sousTypeProduit.nom }}</p>
+                    </div>
+                  </div>
+                  <div class="produit-prix-quantite">
+                      <div class="produit-quantite">Qté : {{ commande.quantite }}</div>
+                      <div class="produit-prix">{{ commande.prix | currency:'MGA ':'symbol':'1.0-0' }}</div>
+                    </div>
+                </div>
+                <div *ngIf="commandeSelectionnee().length === 0" class="text-center py-4 text-muted">
+                  Aucun produit dans cette commande
+                </div>
+              </div>
+
+              <!-- BOUTON VALIDER -->
+              <div class="modal-footer-fixed">
+                <button class="btn btn-success w-100"
+                        (click)="validerProduits()">
+                  Valider ({{ commandeSelectionnee().length }})
+                </button>
+              </div>
+            </div>
+</div>

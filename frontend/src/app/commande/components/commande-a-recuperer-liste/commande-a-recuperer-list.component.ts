@@ -9,22 +9,21 @@ import { User } from '../../../auth/models/auth.models';
 import { map } from 'rxjs';
 
 @Component({
-  selector: 'app-commande-list',
+  selector: 'app-commande-a-recuperer-list',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './commande-list.component.html',
-  styleUrl: './commande-list.component.css'
+  templateUrl: './commande-a-recuperer-list.component.html',
+  styleUrl: './commande-a-recuperer-list.component.css'
 })
-export class CommandeListComponent implements OnInit {
+export class CommandeARecupererListComponent implements OnInit {
   private commandeService = inject(CommandeService);
      private authService = inject(AuthService);
      private router = inject(Router);
 
   commandeSelectionnee=signal<CommandeDetails []>([]);
   commandes = signal<Commande[]>([]);
-  isValid = signal(false);
     user : User | null = null;
-  produitsSelectionnes: CommandeDetails[] = [];
+
 
 
 
@@ -35,7 +34,7 @@ export class CommandeListComponent implements OnInit {
   }
 
   loadCommandes() {
-    this.commandeService.getCommandes(this.user?.boutique || "","6997d956319cef48fa23a812").subscribe({
+    this.commandeService.getCommandes(this.user?.boutique || "","6997d981319cef48fa23a815").subscribe({
       next: (data) => this.commandes.set(data),
       error: (err) => console.error('Error loading commandes', err)
     });
@@ -44,7 +43,7 @@ export class CommandeListComponent implements OnInit {
 
 ouvrirDetails(commande: any) {
   this.commandeService.getCommandeDetails(commande._id, this.user?.boutique || "").subscribe({
-    next: (data) =>{ this.commandeSelectionnee.set(data); this.isValided();},
+    next: (data) =>{ this.commandeSelectionnee.set(data); },
     error: (err) => console.error('Error loading commande details', err)
   });
 }
@@ -52,34 +51,17 @@ ouvrirDetails(commande: any) {
 fermerDetails() {
   this.commandeSelectionnee.set([]);
 }
- 
-toggleSelection(produit: any) {
-  const index = this.produitsSelectionnes.findIndex(p => p._id === produit._id);
-  if (index > -1) {
-    this.produitsSelectionnes.splice(index, 1);
-  } else {
-    this.produitsSelectionnes.push(produit);
-    this.isValided();
-  }
-}
 
-estSelectionne(produit: any): boolean {
-  return this.produitsSelectionnes.some(p => p._id === produit._id);
-}
 
-isValided(){
-  const tousPresent = this.commandeSelectionnee().every(cmd =>
-  this.produitsSelectionnes.some(prod => prod._id === cmd._id)
-);
 
-  this.isValid.set(tousPresent);
-}
+
+
 
 validerProduits() {
   const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
   
   
-  this.commandeService.updateCommandeToRecuperer(achatId).subscribe({
+  this.commandeService.updateCommandeToPayeEtRecupere(achatId).subscribe({
     next: () => {
       alert('Commande mise à jour avec succès !');
       this.loadCommandes();
@@ -88,8 +70,6 @@ validerProduits() {
     error: (err) => alert('Erreur lors de la mise à jour de la commande')
   });
 
-  console.log('Produits sélectionnés pour cette commande :', this.produitsSelectionnes);
-  // ici tu peux envoyer les produits sélectionnés au backend
   this.fermerDetails();
 }
 

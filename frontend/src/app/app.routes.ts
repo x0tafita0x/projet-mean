@@ -56,6 +56,7 @@ export const routes: Routes = [
 
       // Commande routes
       { path: 'commande-non-traitée', loadComponent: () => import('./commande/components/commande-list/commande-list.component').then(m => m.CommandeListComponent) },
+      { path: 'commande-a-récupérer', loadComponent: () => import('./commande/components/commande-a-recuperer-liste/commande-a-recuperer-list.component').then(m => m.CommandeARecupererListComponent) },
 
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
