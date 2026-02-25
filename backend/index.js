@@ -32,6 +32,7 @@ app.use("/api/boutique", require("./routes/boutique.routes"));
 app.use("/api/stock", require("./routes/stock.routes"));
 app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.routes"));
 app.use("/api/panier", require("./routes/panier.routes"));
+app.use("/api/admin", require("./routes/admin.routes"));
 
 
 // route test
@@ -41,6 +42,6 @@ app.get("/", (req, res) => {
 
 // serveur
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });

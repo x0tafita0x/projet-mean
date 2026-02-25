@@ -1,7 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../shared/service/sidebar.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../auth/services/auth.service';
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -12,6 +14,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class Sidebar implements OnInit {
   currentMenu: string = 'default';
   expandedMenus = signal<string[]>(['Gestion Produits']);
+
+  private authService = inject(AuthService);
+  isAdmin = computed(() => this.authService.currentUser()?.role === 'admin');
 
   constructor(private sidebarService: SidebarService) { }
 
