@@ -1,0 +1,17 @@
+/* Admin Dashboard Styles */
+:host {
+    display: block;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}

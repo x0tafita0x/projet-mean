@@ -1,0 +1,6 @@
+<app-base-login [title]="'Connexion Acheteur'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)">
+    <div class="text-center mt-3">
+        <p class="mb-0">Pas encore de compte ? <a routerLink="/auth/register/acheteur"
+                class="text-primary fw-bold">S'inscrire</a></p>
+    </div>
+</app-base-login>

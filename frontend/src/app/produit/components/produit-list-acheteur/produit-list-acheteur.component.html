@@ -1,0 +1,126 @@
+  <div class="title-group mb-3">
+                        <h1 class="h2 mb-0">Overview</h1>
+
+                        <small class="text-muted">Hello Thomas, welcome back!</small>
+                    </div>
+
+                    <div class="row my-4">
+                        <div class="col-lg-12 col-12">
+                            <div class="custom-block"> 
+                                <a routerLink="/home"> <i  class="bi bi-caret-left-fill"></i> Retour</a>
+                                <h3> Liste des Produits</h3>
+                                <!-- <form >
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
+                                            <select id="typeBoutique" name="typeBoutique" [(ngModel)]="typeBoutique" class="form-select" required (change)="filterBoutiques()">
+                                                <option value="" disabled selected>Sélectionnez un type</option>
+                                                <option *ngFor="let t of typeBoutiques()" [value]="t._id">
+                                                    {{ t.nom }}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="ordre">Ordre</label>
+                                            <select class="form-select" name="ordre" [(ngModel)]="order" id="ordre" (change)="filterBoutiques()">
+                                                <option value="asc">Croissant</option>
+                                                <option value="desc">Décroissant</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form> -->
+                               
+                            </div>
+
+
+                           <!-- OVERLAY -->
+                            <div class="overlay" *ngIf="showDetails()" (click)="fermerDetails()"></div>
+
+                            <!-- BOX DETAIL CENTRÉE -->
+                            <div class="produit-detail-modal" *ngIf="showDetails()">
+
+                                <!-- Bouton fermer -->
+                                <button class="btn-close" (click)="fermerDetails()">✕</button>
+
+                                <!-- Image produit -->
+                                <img
+                                    [src]="produitSelectionne().photo 
+                                    ? 'http://localhost:3000/' + produitSelectionne().photo 
+                                    : 'assets/placeholder.png'"
+                                    class="img-fluid mb-3">
+
+                                <!-- Nom produit -->
+                                <h3>{{ produitSelectionne().nom }} 
+                                    <i
+                                    class="bi favori-icon"
+                                    [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                                    (click)="toggleFavori(produitSelectionne(), $event)">
+                                    </i>
+                                </h3>
+
+                                <!-- Sous-type + type -->
+                                <p class="text-muted"
+                                    *ngIf="produitSelectionne().sousTypeProduit 
+                                        && typeof produitSelectionne().sousTypeProduit !== 'string'">
+                                    {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
+                                    {{ produitSelectionne().sousTypeProduit.nom }}
+                                </p>
+                                <h6 style="color: rgb(180, 157, 27);"> {{  prixProduit() | currency:'MGA ':'symbol':'1.0-0' }}</h6>
+
+                                <!-- Info produit -->
+                                <p>{{ produitSelectionne().info }}</p>
+
+                                    <!-- Bouton collé en bas avec input quantité -->
+                                    <div class="modal-footer-fixed d-flex align-items-center ">
+                                        <form (ngSubmit)="addToPanier()" class="d-flex align-items-center w-100" style="gap: 42px; "> 
+                                        <!-- Input quantité -->
+                                        <div class="qte-input">
+                                                    <label style="color: green;" for="qte" class="form-label mb-0">Qté <strong style="color: red;">(max : {{ max_stock() }})</strong></label>
+                                                    <input type="number" name="quantite" #nom="ngModel" [(ngModel)]="panierItem().quantite" id="qte" class="form-control" min="1" max="{{ max_stock() }}" value="1">
+                                                </div>
+                                                
+                                                <!-- Bouton ajouter panier -->
+                                                <button type="submit" class="btn btn-success flex-grow-1">
+                                                    <i class="bi bi-cart-plus"></i> Ajouter au panier
+                                                </button>
+                                        </form>
+                                    </div>
+
+                            </div>
+
+
+
+                            <div class="custom-block liste-produit">
+                                <div *ngFor="let produit of produits()"
+                                    (click)="selectProduit(produit)"
+                                    class="custom-produit">
+                                    
+                                    <div class="produit-content">
+                                        <img class="custom-image img-fluid"
+                                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
+                                            alt="">
+                                        
+                                        <div class="produit-info">
+                                            <h3 class="produit-nom">{{ produit.produit }}</h3>
+                                            <p class="produit-type">{{ produit.sousTypeProduit }}</p>
+                                        </div>
+
+                                        <!-- Prix en bas à droite -->
+                                        <div class="produit-prix">
+                                            {{  produit.prixUnitaire | currency:'MGA ':'symbol':'1.0-0' }}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
+                                    Aucun produit disponible
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                    </div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

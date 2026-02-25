@@ -1,0 +1,48 @@
+<div class="facture-container">
+  <!-- Bouton Export PDF -->
+  <div class="facture-header">
+    <a class="bouton-retour" style="color: red;" routerLink="/home/achat"> <i  class="bi bi-caret-left-fill"></i> Retour</a>
+    <button class="btn btn-success" (click)="exportPDF()">
+      <i class="bi bi-file-earmark-pdf"></i> Export PDF
+    </button>
+  </div>
+
+  <!-- Infos client -->
+  <div class="client-info">
+    <p><strong>Client :</strong> {{ user?.nom }}</p>
+    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+  </div>
+
+  <!-- Tableau produits -->
+  <table class="table table-striped table-bordered facture-table">
+    <thead>
+      <tr >
+        <th>Produit</th>
+        <th>Boutique</th>
+        <th>Quantité</th>
+        <th>Prix unitaire (MGA)</th>
+        <th>Total (MGA)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let achatDetails of achatsDetails()">
+        <td>{{ achatDetails.panier.produit.nom }}</td>
+        <td>{{ achatDetails.panier.produit.boutique.nom }}</td>
+        <td>{{ achatDetails.quantite }}</td>
+        <td>{{ achatDetails.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="4" class="text-end">Total :</th>
+        <th>{{ this.total() | currency:'MGA ':'symbol':'1.0-0' }}</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- Notes -->
+  <div class="facture-notes">
+    <p><strong>Notes :</strong> Merci pour votre achat !</p>
+  </div>
+</div>

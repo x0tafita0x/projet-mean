@@ -1,0 +1,104 @@
+/* Style de base du bloc boutique */
+.custom-boutique {
+    border: 1px solid #ddd;       
+    border-radius: 10px;          
+    padding: 20px;                /* Plus d'espace interne */
+    margin: 15px;                 /* Espace entre les boutiques */                /* Largeur un peu plus grande */
+    /* text-align: center; */
+    background-color: #fff;       
+    transition: all 0.3s ease;    
+    cursor: pointer;              
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+}
+
+/* Image du boutique */
+.custom-boutique .custom-image {  
+    width: 110px;
+    height: 100px;
+    border-radius: 20px;        
+    transition: transform 0.3s ease;
+}
+
+/* Effet au survol du bloc */
+.custom-boutique:hover {
+    transform: translateY(-5px);          
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2); 
+    border-color: #a9c9eb;               
+}
+
+/* Effet sur l'image au survol */
+.custom-boutique:hover .custom-image {
+    transform: scale(1.1);                
+}
+/* Nom de la boutique */
+.boutique-nom {
+    font-size: 1.3rem; /* plus grand */
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Type de boutique */
+.boutique-type {
+    font-size: 1rem;
+    color: rgb(187, 176, 19);
+    margin: 5px 0 0 0;
+    display: flex;
+    align-items: center;      /* centre sur l’axe Y */
+    width: 100%;
+    margin: 5px 0 0 0;
+}
+/* Contenu interne flex pour aligner image + texte */
+.boutique-content {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* espace entre image et texte */
+}
+/* Conteneur de la liste */
+.liste-boutique {
+    max-height: 800px;          /* hauteur max de la liste */
+    overflow-y: auto;           /* scroll vertical */
+    padding-right: 10px;        /* évite que le scroll colle au contenu */
+}
+
+/* Optionnel : scrollbar plus clean (Chrome / Edge) */
+.liste-boutique::-webkit-scrollbar {
+    width: 6px;
+}
+
+.liste-boutique::-webkit-scrollbar-thumb {
+    background-color: #a9c9eb;
+    border-radius: 10px;
+}
+
+.liste-boutique::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+.form-row {
+    display: flex;
+    gap: 15px;           /* espace entre les deux selects */
+}
+
+.form-group {
+    flex: 1;             /* les deux prennent la même largeur */
+}
+.no-achat {
+    text-align: center;
+    padding: 40px 0;
+    color: #888;
+    font-size: 1.1rem;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    background: #fafafa;
+}
+.ouvert {
+  color: #198754;
+  font-weight: bold;
+}
+
+.ferme {
+  color: #dc3545;
+  font-weight: bold;
+}
+.etat-wrapper {
+    margin-left: auto;
+}

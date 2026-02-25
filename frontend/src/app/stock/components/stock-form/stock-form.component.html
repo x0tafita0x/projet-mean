@@ -1,0 +1,69 @@
+<div class="container mt-4 pb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/home/stock">Mouvement de stock</a></li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm col-md-8 mx-auto">
+        <div class="card-header bg-white">
+            <h2 class="h4 mb-0">Inserer un Mouvement de Produit</h2>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="save()">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="produit" class="form-label">Produit</label>
+                        <select id="produit" name="produit" class="form-select" [(ngModel)]="stock().produit"
+                            required>
+                            <option value="" disabled selected>Sélectionnez un produit</option>
+                            <option *ngFor="let p of produits()" [value]="p._id">{{ p.nom }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="entree" class="form-label">Entrée</label>
+                        <input type="number" id="entree" name="entree" class="form-control" 
+                            [(ngModel)]="stock().in" min="0" #entree="ngModel">
+                        <div *ngIf="entree.invalid && (entree.dirty || entree.touched)" class="text-danger small">
+                        La quantité d'entrée est requise.
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="sortie" class="form-label">Sortie</label>
+                        <input type="number" id="sortie" name="sortie" class="form-control" 
+                            [(ngModel)]="stock().out" min="0" #sortie="ngModel">
+                        <div *ngIf="sortie.invalid && (sortie.dirty || sortie.touched)" class="text-danger small">
+                        La quantité de sortie est requise.
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="prix" class="form-label">Prix unitaire</label>
+                        <input type="number" id="prix" name="prix" class="form-control" 
+                            [(ngModel)]="stock().prix" min="0" #prix="ngModel">
+                        <div *ngIf="prix.invalid && (prix.dirty || prix.touched)" class="text-danger small">
+                        Le prix unitaire est requis.
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+               
+
+                
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" routerLink="/home/stock">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="loading() || !stock().produit || (!stock().in && !stock().out)">
+                        {{ loading() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

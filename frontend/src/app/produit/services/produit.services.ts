@@ -1,0 +1,94 @@
+import { Injectable, inject } from '@angular/core';
+import { ApiService } from '../../shared/service/api.service';
+import { Observable } from 'rxjs';
+import { Produit, TypeProduit, SousTypeProduit, ProduitDetail } from '../models/produit.models';
+import { Boutique, TypeBoutique } from '../../boutique/models/boutique.models';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ProduitService {
+    private apiService = inject(ApiService);
+
+    // Boutiques
+    getBoutiques(): Observable<Boutique[]> {
+        return this.apiService.getList<Boutique[]>('boutique');
+    }
+
+     getProduits(nom : string ,boutique : string,typeProduit : string,sousTypeProduit : string,order : string): Observable<Produit[]> {
+        const params: string[] = [];
+
+        if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
+        if (boutique) params.push(`boutique=${encodeURIComponent(boutique)}`);
+        if (typeProduit) params.push(`typeProduit=${encodeURIComponent(typeProduit)}`);
+        if (sousTypeProduit) params.push(`sousTypeProduit=${encodeURIComponent(sousTypeProduit)}`);
+        if (order) params.push(`order=${encodeURIComponent(order)}`);
+         
+        // Coller tous les paramètres avec '&'
+        const queryString = params.length ? '?' + params.join('&') : '';
+
+         return this.apiService.getList<Produit[]>(`produits${queryString}`);
+     }
+
+    getProduitsByBoutiqueId(id: string | null): Observable<Produit[]> {
+    return this.getProduits('', id || '', '', '', 'asc');
+    }
+    
+    getProduitById(id: string | null): Observable<ProduitDetail> {
+        return this.apiService.getById<ProduitDetail>('produits', id || '');
+    }
+
+    createProduit(produit: Produit | FormData): Observable<Produit> {
+        return this.apiService.create<Produit>('produits', produit as any);
+    }
+
+    updateProduit(id: string, produit: Produit | FormData): Observable<Produit> {
+        return this.apiService.update<Produit>(`produits/${id}`, produit as any);
+    }
+
+    deleteProduit(id: string): Observable<void> {
+        return this.apiService.delete('produits', id);
+    }
+
+    // TypeProduits
+    getTypeProduits(): Observable<TypeProduit[]> {
+        return this.apiService.getList<TypeProduit[]>('type-sous-type/type-produit');
+    }
+
+    getTypeProduitById(id: string): Observable<TypeProduit> {
+        return this.apiService.getById<TypeProduit>('type-sous-type/type-produit', id);
+    }
+
+    createTypeProduit(typeProduit: TypeProduit): Observable<TypeProduit> {
+        return this.apiService.create<TypeProduit>('type-sous-type/type-produit', typeProduit);
+    }
+
+    updateTypeProduit(id: string, typeProduit: TypeProduit): Observable<TypeProduit> {
+        return this.apiService.update<TypeProduit>(`type-sous-type/type-produit/${id}`, typeProduit);
+    }
+
+    deleteTypeProduit(id: string): Observable<void> {
+        return this.apiService.delete('type-sous-type/type-produit', id);
+    }
+
+    // SousTypeProduits
+    getSousTypeProduits(): Observable<SousTypeProduit[]> {
+        return this.apiService.getList<SousTypeProduit[]>('type-sous-type/sous-type-produit');
+    }
+
+    getSousTypeProduitById(id: string): Observable<SousTypeProduit> {
+        return this.apiService.getById<SousTypeProduit>('type-sous-type/sous-type-produit', id);
+    }
+
+    createSousTypeProduit(sousTypeProduit: SousTypeProduit): Observable<SousTypeProduit> {
+        return this.apiService.create<SousTypeProduit>('type-sous-type/sous-type-produit', sousTypeProduit);
+    }
+
+    updateSousTypeProduit(id: string, sousTypeProduit: SousTypeProduit): Observable<SousTypeProduit> {
+        return this.apiService.update<SousTypeProduit>(`type-sous-type/sous-type-produit/${id}`, sousTypeProduit);
+    }
+
+    deleteSousTypeProduit(id: string): Observable<void> {
+        return this.apiService.delete('type-sous-type/sous-type-produit', id);
+    }
+}

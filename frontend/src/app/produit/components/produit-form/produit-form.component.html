@@ -1,0 +1,69 @@
+<div class="container mt-4 pb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/home/produit">Produits</a></li>
+            <li class="breadcrumb-item active">{{ isEdit() ? 'Modifier' : 'Nouveau' }} Produit</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm col-md-8 mx-auto">
+        <div class="card-header bg-white">
+            <h2 class="h4 mb-0">{{ isEdit() ? 'Modifier le Produit' : 'Nouveau Produit' }}</h2>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nom" class="form-label">Nom du Produit</label>
+                        <input type="text" id="nom" name="nom" class="form-control" [(ngModel)]="produit().nom" required
+                            #nom="ngModel">
+                        <div *ngIf="nom.invalid && (nom.dirty || nom.touched)" class="text-danger small">Le nom est
+                            requis.</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="photo" class="form-label">Photo du Produit</label>
+                        <input type="file" id="photo" class="form-control" (change)="onFileSelected($event)"
+                            accept="image/*">
+                        <div *ngIf="imagePreview" class="mt-2 text-center">
+                            <img [src]="imagePreview" class="img-thumbnail" style="max-height: 150px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="info" class="form-label">Informations / Description</label>
+                    <textarea id="info" name="info" class="form-control" [(ngModel)]="produit().info"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="sousTypeProduit" class="form-label">Sous-Type de Produit</label>
+                        <select id="sousTypeProduit" name="sousTypeProduit" class="form-select"
+                            [(ngModel)]="produit().sousTypeProduit" required>
+                            <option value="" disabled selected>Sélectionnez un sous-type</option>
+                            <option *ngFor="let st of sousTypeProduits()" [value]="st._id">{{ st.nom }}</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="row" [style.display]="isEdit() ? 'block' : 'none'">
+                    <div class="col-md-6 mb-3">
+                        <label for="prix" class="form-label">Prix Actuel</label>
+                        <input type="number" id="prix" name="prix" class="form-control" [(ngModel)]="mouvementPrixProduit().prix" >
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" routerLink="/home/produit">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="loading() || !produit().nom || !produit().sousTypeProduit || !produit().boutique">
+                        {{ loading() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
