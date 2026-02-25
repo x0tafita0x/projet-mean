@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BoutiqueService } from '../../services/boutique.services';
 import { Boutique, TypeBoutique } from '../../models/boutique.models';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-boutique-form',
@@ -15,6 +17,7 @@ export class BoutiqueFormComponent implements OnInit {
   private boutiqueService = inject(BoutiqueService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   boutique = signal<Boutique>({ nom: '', typeBoutique: '', heureOuverture: '', heureFermeture: '', nbJoursOuverture: '' });
   typeBoutiques = signal<TypeBoutique[]>([]);
@@ -22,8 +25,10 @@ export class BoutiqueFormComponent implements OnInit {
   loading = signal(false);
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  user : User | null = null;
 
   ngOnInit() {
+    this.user = this.authService.currentUser();
     this.loadMetadata();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -87,7 +92,12 @@ export class BoutiqueFormComponent implements OnInit {
     obs.subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/home/boutique']);
+        if (this.user?.role === 'admin') {
+          this.router.navigate(['/home/boutique']);
+        } else {  
+        // this.router.navigate(['/home/boutique',this.user?.boutique]);
+        alert('Boutique modifiée avec succès !');
+        }
       },
       error: (err) => {
         console.error('Error saving boutique', err);

@@ -11,7 +11,7 @@
   <div class="client-info">
     <p><strong>Client :</strong> {{ user?.nom }}</p>
     <p><strong>Date :</strong> {{ dateString }}</p>
-    <p><strong>Facture N° :</strong> 000123</p>
+    <p><strong>Etat :</strong> Brouillon</p>
   </div>
 
   <!-- Tableau produits -->
@@ -32,6 +32,8 @@
         <td>{{ panier.quantite }}</td>
         <td>{{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td> {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ panier.prixActuel  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
       </tr>
     </tbody>
     <tfoot>

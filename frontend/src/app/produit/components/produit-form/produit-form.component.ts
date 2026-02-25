@@ -6,6 +6,8 @@ import { ProduitService } from '../../services/produit.services';
 import { MouvementPrixProduitService } from '../../../mouvement-prix-produit/services/mouvement-prix-produit.services';
 import { Produit, SousTypeProduit } from '../../models/produit.models';
 import { MouvementPrixProduitInsert } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
+import { User } from '../../../auth/models/auth.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-produit-form',
@@ -21,13 +23,16 @@ export class ProduitFormComponent implements OnInit {
    mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
   produit = signal<Produit>({ nom: '', sousTypeProduit: '', boutique: '' });
   sousTypeProduits = signal<SousTypeProduit[]>([]);
-  boutiques = signal<any[]>([]);
+  user : User | null = null;
+  private authService = inject(AuthService);
+
   isEdit = signal(false);
   loading = signal(false);
   selectedFile: File | null = null;
   imagePreview: string | null = null;
 
   ngOnInit() {
+    this.user = this.authService.currentUser();
     this.loadMetadata();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -58,10 +63,7 @@ export class ProduitFormComponent implements OnInit {
       next: (data) => this.sousTypeProduits.set(data),
       error: (err) => console.error('Error loading sous-types', err)
     });
-    this.produitService.getBoutiques().subscribe({
-      next: (data) => this.boutiques.set(data),
-      error: (err) => console.error('Error loading boutiques', err)
-    });
+    
   }
 
   onFileSelected(event: any) {
@@ -82,7 +84,7 @@ export class ProduitFormComponent implements OnInit {
     formData.append('nom', this.produit().nom);
     formData.append('info', this.produit().info || '');
     formData.append('sousTypeProduit', (this.produit().sousTypeProduit as string) || '');
-    formData.append('boutique', (this.produit().boutique as string) || '');
+    formData.append('boutique', this.user?.boutique || '');
 
     if (this.selectedFile) {
       formData.append('photo', this.selectedFile);

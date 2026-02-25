@@ -1,0 +1,58 @@
+<div #facture id="facture-pdf" class="ticket">
+
+  <!-- EN-TÊTE -->
+  <div class="ticket-header">
+    <h2 class="shop-name">{{ data.boutique }}</h2>
+    <p>Antananarivo</p>
+    <p>Tél : 034 00 000 00</p>
+    <p class="separator">-----------------------------</p>
+  </div>
+
+  <!-- INFOS COMMANDE -->
+  <div class="ticket-info">
+    <p>Date Commande: {{ data.dateFacture }}</p>
+    <p>Date Paiement: {{ datePaiement }}</p>
+    <p>Commande : #CMD-{{ data.idFFacture }}</p>
+    <p>Client : {{ data.client }}</p>
+    <p class="separator">-----------------------------</p>
+  </div>
+
+  <!-- LISTE PRODUITS -->
+  <div class="ticket-items">
+
+    <div class="item" *ngFor="let p of commande">
+      <div class="item-left">
+        <span class="item-name" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.panier.produit.nom }}</span>
+        <span class="item-qty">{{ p.quantite }} x {{ p.prix }}</span>
+      </div>
+      <div class="item-right">
+        {{ p.quantite * p.prix }}
+      </div>
+    </div>
+
+  </div>
+
+  <p class="separator">-----------------------------</p>
+
+  <!-- TOTAUX -->
+  <div class="ticket-total">
+    <div class="total-line">
+      <span>Total articles</span>
+      <span>{{ totalQuantite }}</span>
+    </div>
+
+    <div class="total-line total-amount">
+      <span>TOTAL</span>
+      <span>{{ totalPrix }} MGA</span>
+    </div>
+  </div>
+
+  <p class="separator">-----------------------------</p>
+
+  <!-- PIED -->
+  <div class="ticket-footer">
+    <p>Merci pour votre achat 🙏</p>
+    <p>À très bientôt</p>
+  </div>
+
+</div>

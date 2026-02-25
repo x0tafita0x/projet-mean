@@ -9,9 +9,10 @@ import { StockService } from '../../../stock/services/stock.services';
 import { PanierService } from '../../../panier/services/panier.services';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
+import { FavoriService } from '../../../favori/services/favori.services';
 
 @Component({
-  selector: 'app-home',
+  selector: 'produit-list-acheteur',
   standalone:true,
   imports: [CommonModule,FormsModule,RouterModule],
   templateUrl: './produit-list-acheteur.component.html',
@@ -24,6 +25,7 @@ export class ProduitListAcheteurComponent {
     private panierService = inject(PanierService);
     private route = inject(ActivatedRoute);
     private authService = inject(AuthService);
+    private favoriService = inject(FavoriService);
 
     user : User | null = null;
     produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
@@ -32,6 +34,8 @@ export class ProduitListAcheteurComponent {
     produits = signal<StockResponse[]>([]);
     sousTypeProduits = signal<SousTypeProduit[]>([]);
     prixProduit = signal<string>('0');
+    max_stock = signal<number>(0);
+    favori = signal<boolean>(false);
 
     typeBoutique : string = '';
     order : string = 'asc';
@@ -41,7 +45,7 @@ ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
 this.loadProduits(id);
 this.loadSousTypeProduits();
-}
+  }
 
  loadProduits(id: string | null) {
     this.stockService.getProduits('',id || '','','','').subscribe({
@@ -74,6 +78,8 @@ this.loadSousTypeProduits();
     this.prixProduit.set(produit.prixUnitaire || '0');
     this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
+    this.getStockById(produit._id as string || '');
+    this.isFavori(produit._id as string || '');
   }
 
   fermerDetails() {
@@ -86,24 +92,72 @@ this.loadSousTypeProduits();
       utilisateur: this.user?.id || '', 
       produit: produit._id || '',
       prix: parseFloat(prix),
-      quantite: 1,
-      etat: 'en cours',
+      quantite: this.panierItem().quantite,
+      etat: '6997d94d319cef48fa23a80f',
       typeCommande: 'normal'
     });
   }
 
   addToPanier() {
-    
+    if (this.panierItem().quantite > this.max_stock()) {
+      alert(`Quantité demandée dépasse le stock disponible (${this.max_stock()}).`);
+      return;
+    }else if (this.panierItem().quantite < 1) {
+      alert(`Quantité doit être au moins 1.`);
+      return;
+    }
     const item = this.panierItem();
     this.panierService.createPanier(item).subscribe({
-      next: (data) => console.log('Panier created:', data),
+      next: (data) => alert('Produit ajouté au panier avec succès !'),
       error: (err) => console.error('Error creating panier:', err)
     });
   }
 
-//     });
-//   }
-  
+  getStockById(id: string | ''): void {
+    this.stockService.getStockById(id).subscribe({
+      next: (data) => {
+        this.max_stock.set(data[0].stockRestant || 0);
+      },
+      error: (err) => console.error('Error loading stock', err)
+    });
+ 
+  }
 
-
+  toggleFavori(produit: ProduitDetail, event: Event) {
+  event.stopPropagation(); // évite le clic sur la carte
+  if (this.favori()) {
+    this.favoriService.deleteFavori(produit._id).subscribe({
+      next: () => {
+        this.favori.set(false);
+        alert('Produit retiré des favoris');
+      },
+      error: (err) => {
+        console.error('Error removing favori', err);
+        alert('Erreur lors de la suppression du favori');
+      }
+    });
+  } else {
+    this.favoriService.createFavori({
+      utilisateur: this.user?.id || '',
+      produit: produit._id || ''
+    }).subscribe({
+      next: () => {
+        this.favori.set(true);
+        alert('Produit ajouté aux favoris');
+      },
+      error: (err) => {
+        console.error('Error adding favori', err);
+        alert('Erreur lors de l\'ajout du favori');
+      }
+    });
+  }
+  }
+isFavori(produitId: string): void {
+  this.favoriService.isFavoriExist(produitId, this.user?.id || '').subscribe({
+    next: (data) => {
+      this.favori.set(data.length > 0);
+    },
+    error: (err) => console.error('Error checking favori', err)
+  });
+}
 }

@@ -179,3 +179,12 @@
     color: #333;
     font-size: 1rem; /* taille du prix */
 }
+.favori-icon {
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.favori-icon:hover {
+  transform: scale(1.15);
+}

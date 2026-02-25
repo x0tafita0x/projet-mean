@@ -16,3 +16,9 @@ export interface MouvementPrixProduitInsert {
     produit: string;
     prix: string;
 }
+
+export interface MouvementPrixProduitByProduit {
+    nom: string;
+    prix: string;
+    date: Date
+}

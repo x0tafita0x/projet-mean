@@ -40,7 +40,11 @@
 /* Type de boutique */
 .boutique-type {
     font-size: 1rem;
-    color: green;
+    color: rgb(187, 176, 19);
+    margin: 5px 0 0 0;
+    display: flex;
+    align-items: center;      /* centre sur l’axe Y */
+    width: 100%;
     margin: 5px 0 0 0;
 }
 /* Contenu interne flex pour aligner image + texte */
@@ -77,4 +81,24 @@
 .form-group {
     flex: 1;             /* les deux prennent la même largeur */
 }
+.no-achat {
+    text-align: center;
+    padding: 40px 0;
+    color: #888;
+    font-size: 1.1rem;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    background: #fafafa;
+}
+.ouvert {
+  color: #198754;
+  font-weight: bold;
+}
 
+.ferme {
+  color: #dc3545;
+  font-weight: bold;
+}
+.etat-wrapper {
+    margin-left: auto;
+}

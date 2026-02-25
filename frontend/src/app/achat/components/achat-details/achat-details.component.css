@@ -1,0 +1,58 @@
+.facture-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 24px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+.facture-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.client-info p {
+    margin: 0 0 6px 0;
+}
+
+.facture-table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.facture-table th, .facture-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.facture-table tfoot th, .facture-table tfoot td {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.facture-notes {
+    margin-top: 20px;
+    font-style: italic;
+}
+
+.btn-success {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.bouton-retour {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    font-weight: 300;
+    font-style: normal;
+    font-family: 'unbounded';
+    
+}
+

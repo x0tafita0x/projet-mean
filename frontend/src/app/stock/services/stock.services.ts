@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
-import { StockList,StockInsert, StockResponse } from '../models/stock.models';
+import { StockList,StockInsert, StockResponse, StockProduit } from '../models/stock.models';
 
 @Injectable({
     providedIn: 'root'
@@ -10,8 +10,8 @@ export class StockService {
     private apiService = inject(ApiService);
 
     // Boutiques
-    getListeMouvementsStocks(): Observable<StockList[]> {
-        return this.apiService.getList<StockList[]>('stock');
+    getListeMouvementsStocks(boutique : string | ''): Observable<StockList[]> {
+        return this.apiService.getList<StockList[]>(`stock?boutique=${boutique}`);
     }
 
      getProduits(nom : string ,boutique : string,prixMin : string,prixMax : string,sousTypeProduit : string): Observable<StockResponse[]> {
@@ -29,15 +29,24 @@ export class StockService {
          return this.apiService.getList<StockResponse[]>(`stock/toSell${queryString}`);
      }
 
-    createStock(produit: StockInsert ): Observable<StockInsert> {
-        return this.apiService.create<StockInsert>('stock', produit );
+    createStock(stock: StockInsert ): Observable<StockInsert> {
+        return this.apiService.create<StockInsert>('stock', stock );
+    }
+    createStocks(stocks: StockInsert[] ): Observable<StockInsert[]> {
+        return this.apiService.create<StockInsert[]>('stock/multiple', stocks );
     }
 
     deleteStock(id: string): Observable<void> {
         return this.apiService.delete('stock', id);
     }
 
-  
+  getListeMouvementsStocksByProduit(boutique : string | ''): Observable<StockProduit[]> {
+        return this.apiService.getList<StockProduit[]>(`stock/produits-avec-stock?boutique=${boutique}`);
+    }
+
+    getStockById(id: string | ''): Observable<StockProduit[]> {
+        return this.apiService.getList<StockProduit[]>(`stock/produits-avec-stock?id=${id}`);
+    }
 
 
 }

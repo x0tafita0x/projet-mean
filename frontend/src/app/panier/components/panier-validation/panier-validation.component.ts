@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { PanierService } from '../../services/panier.services';
 import { Panier, PanierList } from '../../models/panier.models';
 import { AuthService } from '../../../auth/services/auth.service';
+import { AchatService } from '../../../achat/services/achat.services';
+import { StockService } from '../../../stock/services/stock.services';
 import { User } from '../../../auth/models/auth.models';
 import { ApiService } from '../../../shared/service/api.service';
 import jsPDF from 'jspdf';
@@ -19,14 +21,15 @@ import autoTable from 'jspdf-autotable';
 })
 export class PanierValidationComponent implements OnInit {
   private panierService = inject(PanierService);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private apiService = inject(ApiService);
+     private authService = inject(AuthService);
+     private achatService = inject(AchatService);
+     private stockService = inject(StockService);
+     private router = inject(Router);
 
   canValidate = signal(false);
-  paniers = signal<PanierList[]>([]);
-  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
+    paniers = signal<PanierList[]>([]);
   PaniertoValidate = signal<Panier[]>([]);
+  RefBoutique = signal<Panier[]>([]);
   total = signal(0);
   date = new Date();
   dateString = this.date.toLocaleDateString('fr-FR');
@@ -47,22 +50,45 @@ export class PanierValidationComponent implements OnInit {
           this.router.navigate(['/home/panier']);
         }
       }
-    });
-    this.purify();
-    this.user = this.authService.currentUser();
-  }
+    }
+  });
+  this.purify();
+  this.user = this.authService.currentUser();
+}
 
-  purify() {
-    for (const panier of this.paniers()) {
+createRefBoutiqueStock(){
+   for (const panier of this.paniers()) {
       const panierIntermediaire: Panier = {
+        _id: panier._id,
         utilisateur: panier.utilisateur,
         produit: panier.produit._id,
-        prix: panier.prix,
+        prix: panier.prixActuel,
+        quantite: panier.quantite,
+        etat: 'validé',
+        typeCommande: panier.typeCommande,
+        boutique: panier.produit.boutique.nom
+      };
+this.total.update(total => total + (panier.prixActuel * panier.quantite));
+      this.RefBoutique.update(list => [...list, panierIntermediaire]);
+    }
+}
+
+  purify(){
+     for (const panier of this.paniers()) {
+      const panierIntermediaire: Panier = {
+        _id: panier._id,
+        utilisateur: panier.utilisateur,
+        produit: panier.produit._id,
+        prix: panier.prixActuel,
         quantite: panier.quantite,
         etat: 'validé',
         typeCommande: panier.typeCommande
       };
+<<<<<<< admin
       this.total.update(total => total + (panier.prix * panier.quantite));
+=======
+this.total.update(total => total + (panier.prixActuel * panier.quantite));
+>>>>>>> develop
       this.PaniertoValidate.update(list => [...list, panierIntermediaire]);
     }
   }
@@ -84,21 +110,37 @@ export class PanierValidationComponent implements OnInit {
       return;
     }
 
-    this.confirming = true;
-    this.apiService.create<any>('panier/valider', { panierIds }).subscribe({
-      next: (res) => {
-        this.confirming = false;
-        this.confirmed = true;
-        this.achatResult = res.achat;
-        // Nettoyer session
-        sessionStorage.removeItem('produitSelected');
-      },
-      error: (err) => {
-        this.confirming = false;
-        alert(err.error?.error || 'Erreur lors de la validation.');
-      }
-    });
+  doc.save('facture.pdf');
+}
+
+createMouvementStock() {
+  const mouvementsStock = [];
+  for (const panier of this.RefBoutique()) {
+    const mouvementStockIntermediaire = {
+      produit: panier.produit,
+      in: '0',
+      out: panier.quantite.toString(),
+      boutique : panier.boutique || ''
+    };
+    mouvementsStock.push(mouvementStockIntermediaire);
   }
+  this.stockService.createStocks(mouvementsStock).subscribe({
+    next: (response) => {
+      console.log('Mouvements de stock créés avec succès :', response);
+    },
+    error: (error) => {
+      console.error('Erreur lors de la création des mouvements de stock :', error);
+    }
+  });
+}
+confirmerFacture() {
+  // Action à effectuer quand on confirme la facture
+  console.log('Facture confirmée', this.PaniertoValidate());
+  this.achatService.createAchat(this.PaniertoValidate());
+  this.createMouvementStock();
+  this.router.navigate(['/home/achat']);
+  // Ici tu peux déclencher l'export PDF, l'enregistrement, etc.
+}
 
   annulerFacture() {
     this.router.navigate(['/home/panier']);

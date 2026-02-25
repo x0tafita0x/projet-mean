@@ -4,7 +4,8 @@ const MouvementProduitSchema = new mongoose.Schema(
   {
     produit: { type: mongoose.Schema.Types.ObjectId, ref: "produit", required: true },
     in: { type: Number, required: true },
-    out: { type: Number, required: true }
+    out: { type: Number, required: true },
+    boutique: { type: mongoose.Schema.Types.ObjectId, ref: "boutique", required: true },
  },
   { timestamps: true }
 );

@@ -9,6 +9,7 @@ const utilisateurSchema = new mongoose.Schema(
         role: { type: String, enum: ["admin", "boutique", "acheteur"], default: "acheteur" },
         isActive: { type: Boolean, default: true },
         isDeleted: { type: Boolean, default: false },
+        boutique: { type: mongoose.Schema.Types.ObjectId, ref: "boutique" }, // Référence à la boutique (si applicable)
     },
     { timestamps: true }
 );

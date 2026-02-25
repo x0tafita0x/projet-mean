@@ -5,6 +5,7 @@ const MouvementPrixProduitController = require("../controllers/mouvementPrixProd
 // CRUD mouvements de prix de produits
 router.post("/", MouvementPrixProduitController.createMouvementPrixProduit);
 router.get("/", MouvementPrixProduitController.getAllMouvementsPrixByProduit);
+router.get("/prix-actuel", MouvementPrixProduitController.getProduitsAvecDernierPrix);
 router.get("/last/:produitId", MouvementPrixProduitController.getLastMouvementPrixByProduit);
 
 module.exports = router;
