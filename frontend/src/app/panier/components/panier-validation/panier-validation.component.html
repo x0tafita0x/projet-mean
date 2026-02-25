@@ -17,7 +17,7 @@
   <!-- Tableau produits -->
   <table class="table table-striped table-bordered facture-table">
     <thead>
-      <tr >
+      <tr>
         <th>Produit</th>
         <th>Boutique</th>
         <th>Quantité</th>
@@ -30,6 +30,8 @@
         <td>{{ panier.produit.nom }}</td>
         <td>{{ panier.produit.boutique.nom }}</td>
         <td>{{ panier.quantite }}</td>
+        <td>{{ panier.prix | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+panier.prix) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td>{{ panier.prixActuel  | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td> {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
       </tr>
@@ -41,18 +43,40 @@
       </tr>
     </tfoot>
   </table>
-  
-  <div class="facture-actions mt-4">
-  <!-- Bouton Confirmer -->
-  <button class="btn btn-success" (click)="confirmerFacture()">
-    <i class="bi bi-check-lg"></i> Confirmer
-  </button>
 
-  <!-- Bouton Annuler -->
-  <button class="btn btn-danger" (click)="annulerFacture()">
-    <i class="bi bi-x-lg"></i> Annuler
-  </button>
-</div>
+  <div class="facture-actions mt-4">
+    <!-- Bouton Confirmer -->
+    @if (!confirmed) {
+    <button class="btn btn-success me-2" (click)="confirmerFacture()" [disabled]="confirming">
+      @if (confirming) {
+      <span class="spinner-border spinner-border-sm me-1"></span> Traitement...
+      } @else {
+      <i class="bi bi-check-lg"></i> Confirmer
+      }
+    </button>
+
+    <!-- Bouton Annuler -->
+    <button class="btn btn-danger" (click)="annulerFacture()" [disabled]="confirming">
+      <i class="bi bi-x-lg"></i> Annuler
+    </button>
+    }
+  </div>
+
+  @if (confirmed && achatResult) {
+  <div class="alert alert-success mt-4">
+    <h5 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Achat validé !</h5>
+    <p class="mb-1">Total : <strong>{{ achatResult.total | currency:'MGA ':'symbol':'1.0-0' }}</strong></p>
+    <p class="mb-1">Commission centre : <strong>{{ achatResult.commission | currency:'MGA ':'symbol':'1.0-0' }}</strong>
+    </p>
+    <hr>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-success btn-sm" (click)="exportPDF()">
+        <i class="bi bi-file-earmark-pdf"></i> Télécharger PDF
+      </button>
+      <a routerLink="/home/panier" class="btn btn-primary btn-sm">Retour au panier</a>
+    </div>
+  </div>
+  }
 
 
   <!-- Notes -->

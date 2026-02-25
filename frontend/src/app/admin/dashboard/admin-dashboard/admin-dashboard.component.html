@@ -1,0 +1,139 @@
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi-speedometer2 me-2"></i>Tableau de Bord Admin</h2>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                <i class="bi-arrow-counterclockwise"></i> Réinitialiser
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Date de début</label>
+                    <input type="date" class="form-control form-control-sm" [ngModel]="filters().startDate"
+                        (ngModelChange)="updateFilters('startDate', $event)">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Date de fin</label>
+                    <input type="date" class="form-control form-control-sm" [ngModel]="filters().endDate"
+                        (ngModelChange)="updateFilters('endDate', $event)">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Filtrer par Boutique</label>
+                    <select class="form-select form-select-sm" [ngModel]="filters().boutiqueId"
+                        (ngModelChange)="updateFilters('boutiqueId', $event)">
+                        <option value="">Toutes les boutiques</option>
+                        @for (b of boutiques(); track b._id) {
+                        <option [value]="b._id">{{ b.nom }}</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex justify-content-end">
+                    @if (loading()) {
+                    <div class="spinner-border spinner-border-sm text-primary"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+    }
+
+    <!-- Global Totals Cards -->
+    @if (stats()) {
+    <div class="row g-4 mb-4">
+        <div class="col-md-2">
+            <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="text-white-50 small text-uppercase fw-bold">Boutiques</h6>
+                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalBoutiques }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-0 shadow-sm h-100 bg-info text-white">
+                <div class="card-body">
+                    <h6 class="text-white-50 small text-uppercase fw-bold">Produits</h6>
+                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalProduits }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-0 shadow-sm h-100 bg-secondary text-white">
+                <div class="card-body">
+                    <h6 class="text-white-50 small text-uppercase fw-bold">Commandes</h6>
+                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalOrders }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-success text-white">
+                <div class="card-body">
+                    <h6 class="text-white-50 small text-uppercase fw-bold">Chiffre d'affaires</h6>
+                    <div class="h4 fw-bold mb-0">{{ stats().totals.totalRevenue | number:'1.0-0' }} MGA</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
+                <div class="card-body">
+                    <h6 class="text-dark-50 small text-uppercase fw-bold">Total Commissions</h6>
+                    <div class="h4 fw-bold mb-0">{{ stats().totals.totalCommissions | number:'1.0-0' }} MGA</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row g-4 mb-4">
+        <!-- Daily Orders Line Chart -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Achats par jour (7
+                    derniers jours)</div>
+                <div class="card-body" style="height: 350px;">
+                    <canvas #dailyChart></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Top Boutiques Doughnut Chart -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-pie-chart me-2"></i>Top 5 Boutiques
+                    (Revenue)</div>
+                <div class="card-body" style="height: 350px;">
+                    <canvas #boutiqueChart></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Monthly Sales Bar Chart -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-bar-chart me-2"></i>Ventes par mois</div>
+                <div class="card-body" style="height: 350px;">
+                    <canvas #monthlyChart></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Top Products Polar Area Chart -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-star me-2"></i>Top 5 Produits (Revenue)
+                </div>
+                <div class="card-body" style="height: 350px;">
+                    <canvas #productChart></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

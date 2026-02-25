@@ -1,0 +1,115 @@
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi-percent me-2"></i>Système de Commissions</h2>
+
+    @if (loading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+    } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+    } @else {
+    <div class="row g-4">
+
+        <!-- Taux global -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi-sliders me-2"></i>Taux global</h6>
+                    <p class="text-muted small">Appliqué à toutes les boutiques sans taux spécifique.</p>
+                    <div class="display-4 fw-bold text-primary mb-3">{{ config()?.tauxGlobal }}%</div>
+                    <div class="input-group">
+                        <input type="number" class="form-control" [ngModel]="nouvelTaux()"
+                            (ngModelChange)="nouvelTaux.set($event)" min="0" max="100" step="0.5">
+                        <span class="input-group-text">%</span>
+                        <button class="btn btn-primary" (click)="saveGlobalRate()" [disabled]="saving()">
+                            @if (saving()) { <span class="spinner-border spinner-border-sm"></span> } @else {
+                            Enregistrer
+                            }
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Résumé global -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-success bg-opacity-10 h-100">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <p class="text-muted mb-1">Total commissions encaissées</p>
+                    <div class="display-5 fw-bold text-success">{{ totalCommissions() | number:'1.0-0' }} MGA</div>
+                    <small class="text-muted">Sur {{ commissionsBoutiques().length }} boutiques actives</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commissions par boutique -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header fw-bold"><i class="bi-shop me-2"></i>Commissions par boutique</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Boutique</th>
+                                <th class="text-center">Nb commandes</th>
+                                <th class="text-end">Total ventes</th>
+                                <th class="text-end">Total commissions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (b of commissionsBoutiques(); track b._id) {
+                            <tr>
+                                <td class="fw-semibold">{{ b.boutique?.nom || 'Boutique supprimée' }}</td>
+                                <td class="text-center">{{ b.nbCommandes }}</td>
+                                <td class="text-end">{{ b.totalVentes | number:'1.0-0' }} MGA</td>
+                                <td class="text-end fw-bold text-success">{{ b.totalCommissions | number:'1.0-0' }} MGA
+                                </td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">Aucune commission enregistrée.</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commissions mensuelles -->
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header fw-bold"><i class="bi-calendar3 me-2"></i>Commissions mensuelles</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mois</th>
+                                <th class="text-center">Nb commandes</th>
+                                <th class="text-end">Total ventes</th>
+                                <th class="text-end">Total commissions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (m of commissionsMensuelles(); track m._id) {
+                            <tr>
+                                <td class="fw-semibold">{{ monthLabel(m) }}</td>
+                                <td class="text-center">{{ m.nbCommandes }}</td>
+                                <td class="text-end">{{ m.totalVentes | number:'1.0-0' }} MGA</td>
+                                <td class="text-end fw-bold text-success">{{ m.totalCommissions | number:'1.0-0' }} MGA
+                                </td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">Aucune donnée mensuelle.</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    }
+</div>

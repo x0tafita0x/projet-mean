@@ -1,0 +1,98 @@
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi-people me-2"></i>Gestion Utilisateurs</h2>
+        <span class="badge bg-primary rounded-pill">{{ utilisateurs().length }} acheteurs</span>
+    </div>
+
+    @if (loading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+    } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+    } @else {
+    <div class="table-responsive card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Statut</th>
+                    <th>Inscrit le</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (u of utilisateurs(); track u._id) {
+                <tr>
+                    <td class="fw-semibold">{{ u.nom }}</td>
+                    <td class="text-muted">{{ u.email }}</td>
+                    <td>
+                        <span class="badge {{ u.isActive ? 'bg-success' : 'bg-secondary' }}">
+                            {{ u.isActive ? 'Actif' : 'Désactivé' }}
+                        </span>
+                    </td>
+                    <td class="text-muted small">{{ u.createdAt | date:'dd/MM/yyyy' }}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-info me-1" (click)="loadHistorique(u._id, u.nom)"
+                            title="Historique achats">
+                            <i class="bi-clock-history"></i>
+                        </button>
+                        <button class="btn btn-sm me-1" [class.btn-outline-warning]="u.isActive"
+                            [class.btn-outline-success]="!u.isActive" (click)="toggleActive(u._id)"
+                            [title]="u.isActive ? 'Désactiver' : 'Activer'">
+                            <i [class]="u.isActive ? 'bi-person-slash' : 'bi-person-check'"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(u._id)" title="Supprimer">
+                            <i class="bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Aucun acheteur trouvé.</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    <!-- Panneau Historique -->
+    @if (historique()) {
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold"><i class="bi-clock-history me-2"></i>Historique — {{ historiquePour() }}</h6>
+            <button class="btn btn-sm btn-outline-secondary" (click)="closeHistorique()">Fermer</button>
+        </div>
+        <div class="card-body p-0">
+            @if (historique().achats?.length === 0) {
+            <p class="text-muted text-center py-3">Aucune commande.</p>
+            } @else {
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Commission</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (a of historique().achats; track a._id) {
+                    <tr>
+                        <td>{{ a.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                        <td>{{ a.total | currency:'MGA ':'symbol':'1.0-0' }}</td>
+                        <td>{{ a.commission | currency:'MGA ':'symbol':'1.0-0' }}</td>
+                        <td><span
+                                class="badge {{ a.status === 'Payé' ? 'bg-success' : a.status === 'Annulé' ? 'bg-danger' : 'bg-warning text-dark' }}">{{
+                                a.status }}</span></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </div>
+    </div>
+    }
+</div>

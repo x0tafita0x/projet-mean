@@ -1,0 +1,50 @@
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi-receipt me-2"></i>Gestion Commandes</h2>
+        <span class="badge bg-primary rounded-pill">{{ commandes().length }}</span>
+    </div>
+
+    @if (loading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+    } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+    } @else {
+    <div class="table-responsive card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Boutique</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-end">Commission</th>
+                    <th class="text-end">Détail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (c of commandes(); track c._id) {
+                <tr>
+                    <td class="text-muted small">{{ c.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td class="fw-semibold">{{ c.client?.nom }}<br><small class="text-muted">{{ c.client?.email
+                            }}</small></td>
+                    <td>{{ c.boutique?.nom || '—' }}</td>
+                    <td class="text-end">{{ c.total | number:'1.0-0' }} MGA</td>
+                    <td class="text-end text-success fw-bold">{{ c.commission | number:'1.0-0' }} MGA</td>
+                    <td class="text-end">
+                        <a [routerLink]="['/home/admin/commandes', c._id]" class="btn btn-sm btn-outline-primary">
+                            <i class="bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">Aucune commande.</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>

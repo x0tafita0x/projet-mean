@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink,Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PanierService } from '../../services/panier.services';
 import { Panier, PanierList } from '../../models/panier.models';
@@ -8,13 +8,14 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { AchatService } from '../../../achat/services/achat.services';
 import { StockService } from '../../../stock/services/stock.services';
 import { User } from '../../../auth/models/auth.models';
+import { ApiService } from '../../../shared/service/api.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-panier-validation',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './panier-validation.component.html',
   styleUrl: './panier-validation.component.css'
 })
@@ -32,19 +33,22 @@ export class PanierValidationComponent implements OnInit {
   total = signal(0);
   date = new Date();
   dateString = this.date.toLocaleDateString('fr-FR');
-    user : User | null = null;
-ngOnInit() {
-  this.panierService.data$.subscribe(data => {
-    if (data && Object.keys(data).length > 0) {
-        console.log('Données reçues du service :', data);
-      this.paniers.set(data);
-    } else {
-      const produitStr = sessionStorage.getItem('produitSelected');
-      if (produitStr) {
-        console.log('Données récupérées de la session :', produitStr);
-        this.paniers.set(JSON.parse(produitStr));
-      }else{
-        this.router.navigate(['/home/panier']);
+  user: User | null = null;
+  confirming = false;
+  confirmed = false;
+  achatResult: any = null;
+
+  ngOnInit() {
+    this.panierService.data$.subscribe(data => {
+      if (data && Object.keys(data).length > 0) {
+        this.paniers.set(data);
+      } else {
+        const produitStr = sessionStorage.getItem('produitSelected');
+        if (produitStr) {
+          this.paniers.set(JSON.parse(produitStr));
+        } else {
+          this.router.navigate(['/home/panier']);
+        }
       }
     }
   });
@@ -80,18 +84,31 @@ this.total.update(total => total + (panier.prixActuel * panier.quantite));
         etat: 'validé',
         typeCommande: panier.typeCommande
       };
+<<<<<<< admin
+      this.total.update(total => total + (panier.prix * panier.quantite));
+=======
 this.total.update(total => total + (panier.prixActuel * panier.quantite));
+>>>>>>> develop
       this.PaniertoValidate.update(list => [...list, panierIntermediaire]);
     }
   }
 
   exportPDF() {
-  const doc = new jsPDF();
+    const doc = new jsPDF();
+    doc.text("Facture N°000123", 14, 20);
+    autoTable(doc, { html: '.facture-table', startY: 30 });
+    doc.save('facture.pdf');
+  }
 
-  doc.text("Facture N°000123", 14, 20);
+  confirmerFacture() {
+    const panierIds = this.paniers()
+      .filter(p => p._id)
+      .map(p => p._id as string);
 
-  // Tableau avec autoTable
-  autoTable(doc, { html: '.facture-table', startY: 30 });
+    if (panierIds.length === 0) {
+      alert('Aucun panier à valider.');
+      return;
+    }
 
   doc.save('facture.pdf');
 }
@@ -125,8 +142,8 @@ confirmerFacture() {
   // Ici tu peux déclencher l'export PDF, l'enregistrement, etc.
 }
 
-annulerFacture() {
- this.router.navigate(['/home/panier']);
+  annulerFacture() {
+    this.router.navigate(['/home/panier']);
+  }
 }
 
-  }

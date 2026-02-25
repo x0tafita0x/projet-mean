@@ -52,6 +52,7 @@
       </li>
 
       <!-- Gestion Produits Section -->
+      <li class="nav-item">
       <li class="nav-item" *ngIf="user?.role === 'boutique'">
         <!-- Menu avec sous-menu Level 1 -->
         <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Produits')"
@@ -64,12 +65,14 @@
         @if (isExpanded('Gestion Produits')) {
         <ul class="nav flex-column ms-3">
           <li class="nav-item">
-            <!-- Simple Link Level 2 -->
             <a class="nav-link" routerLink="/home/produit" routerLinkActive="active">
               <i class="bi-cart me-2"></i> Produits
             </a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link d-flex justify-content-between align-items-center"
+              (click)="toggleMenu('ConfigurationProduit')" style="cursor: pointer;">
           <!-- <li class="nav-item">
             <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('ConfigurationProduit')"
               style="cursor: pointer;">
@@ -96,11 +99,12 @@
       </li>
 
       <!-- Gestion Boutique Section -->
+      <li class="nav-item">
       <li class="nav-item" *ngIf="user?.role === 'admin'">
         <!-- Menu avec sous-menu Level 1 -->
         <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Boutique')"
           style="cursor: pointer;">
-          <span><i class="bi-box-seam me-2"></i> Gestion Boutique</span>
+          <span><i class="bi-shop me-2"></i> Gestion Boutique</span>
           <i class="bi" [class.bi-chevron-down]="!isExpanded('Gestion Boutique')"
             [class.bi-chevron-up]="isExpanded('Gestion Boutique')"></i>
         </a>
@@ -108,12 +112,27 @@
         @if (isExpanded('Gestion Boutique')) {
         <ul class="nav flex-column ms-3">
           <li class="nav-item">
-            <!-- Simple Link Level 2 -->
             <a class="nav-link" routerLink="/home/boutique" routerLinkActive="active">
-              <i class="bi-cart me-2"></i> Boutique
+              <i class="bi-shop me-2"></i> Boutique
             </a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link d-flex justify-content-between align-items-center"
+              (click)="toggleMenu('ConfigurationBoutique')" style="cursor: pointer;">
+              <span><i class="bi-gear me-2"></i> Configuration</span>
+              <i class="bi bi-chevron-right" [class.bi-chevron-down]="isExpanded('ConfigurationBoutique')"></i>
+            </a>
+            @if (isExpanded('ConfigurationBoutique')) {
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/home/type-boutique" routerLinkActive="active">
+                  <i class="bi-tags me-2"></i> Types
+                </a>
+              </li>
+            </ul>
+            }
+          </li>
          
         </ul>
         }
@@ -122,6 +141,7 @@
       
 
       <!-- Gestion Stock Section -->
+      <li class="nav-item">
       <li class="nav-item" *ngIf="user?.role === 'boutique' ">
         <!-- Menu avec sous-menu Level 1 -->
         <a class="nav-link d-flex justify-content-between align-items-center" (click)="toggleMenu('Gestion Stock')"
@@ -134,6 +154,15 @@
         @if (isExpanded('Gestion Stock')) {
         <ul class="nav flex-column ms-3">
           <li class="nav-item">
+            <a class="nav-link" routerLink="/home/stock" routerLinkActive="active">
+              <i class="bi-boxes me-2"></i> Stock
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home/mouvement-prix-produit" routerLinkActive="active">
+              <i class="bi-graph-up-arrow me-2"></i> Mouvements Prix
+            </a>
+          </li>
             <!-- Simple Link Level 2 -->
             <a class="nav-link active" routerLink="/home/stock" routerLinkActive="active">
               <i class="bi-cart me-2"></i> Stock Général
@@ -204,6 +233,51 @@
         }
       </li>
 
+      <!-- ═══ SECTION ADMINISTRATION (Admin uniquement) ═══ -->
+      @if (isAdmin()) {
+      <li class="nav-item mt-3">
+        <div class="sidebar-section-label px-2 mb-1">
+          <small class="text-uppercase fw-bold"
+            style="font-size: 0.7rem; letter-spacing: 0.08em; opacity: 0.6;">Administration</small>
+        </div>
+      </li>
+
+      <!-- Dashboard Admin -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home/admin" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bi-speedometer2 me-2"></i> Dashboard Admin
+        </a>
+      </li>
+
+      <!-- Supervision Boutiques -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home/admin/boutiques" routerLinkActive="active">
+          <i class="bi-shop-window me-2"></i> Supervision Boutiques
+        </a>
+      </li>
+
+      <!-- Gestion Utilisateurs -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home/admin/utilisateurs" routerLinkActive="active">
+          <i class="bi-people me-2"></i> Utilisateurs
+        </a>
+      </li>
+
+      <!-- Gestion Commandes -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home/admin/commandes" routerLinkActive="active">
+          <i class="bi-receipt me-2"></i> Commandes
+        </a>
+      </li>
+
+      <!-- Commissions -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/home/admin/commissions" routerLinkActive="active">
+          <i class="bi-percent me-2"></i> Commissions
+        </a>
+      </li>
+      }
 <!-- Gestion Etat Section -->
       <li class="nav-item" *ngIf="user?.role === 'admin' ">
         <!-- Menu avec sous-menu Level 1 -->

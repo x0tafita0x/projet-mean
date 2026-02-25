@@ -1,0 +1,76 @@
+<div class="container py-4">
+    <a routerLink="/home/admin/boutiques" class="btn btn-sm btn-outline-secondary mb-3">
+        <i class="bi-arrow-left me-1"></i> Retour
+    </a>
+
+    @if (loading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+    } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+    } @else if (boutique()) {
+    <div class="row g-4">
+        <!-- Infos générales -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold">{{ boutique().nom }}</h4>
+                    <span class="badge {{ statusBadge(boutique().status) }} mb-3">{{ boutique().status }}</span>
+                    <table class="table table-sm table-borderless">
+                        <tr>
+                            <th>Type</th>
+                            <td>{{ boutique().typeBoutique?.nom || '—' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ouverture</th>
+                            <td>{{ boutique().heureOuverture }} – {{ boutique().heureFermeture }}</td>
+                        </tr>
+                        <tr>
+                            <th>Jours</th>
+                            <td>{{ boutique().nbJoursOuverture }} j/sem</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Changer statut -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi-toggle-on me-2"></i>Changer le statut</h6>
+                    <div class="d-flex gap-2 flex-wrap">
+                        @for (s of statusOptions; track s) {
+                        <button class="btn btn-sm" [class.btn-success]="s === 'active'"
+                            [class.btn-secondary]="s === 'inactive'" [class.btn-warning]="s === 'suspendue'"
+                            [disabled]="boutique().status === s || saving()" (click)="setStatus(s)">
+                            {{ s }}
+                        </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commission -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi-percent me-2"></i>Taux de commission</h6>
+                    <p class="text-muted small mb-2">Laissez vide pour utiliser le taux global.</p>
+                    <div class="input-group">
+                        <input type="number" [ngModel]="tauxInput()" (ngModelChange)="tauxInput.set($event)"
+                            class="form-control" min="0" max="100" step="0.5" placeholder="% taux">
+                        <button class="btn btn-primary" (click)="saveCommission()" [disabled]="saving()">
+                            @if (saving()) { <span class="spinner-border spinner-border-sm"></span> } @else {
+                            Enregistrer
+                            }
+                        </button>
+                    </div>
+                    <small class="text-muted">Taux actuel : {{ boutique().tauxCommission !== null ?
+                        boutique().tauxCommission + ' %' : 'Taux global' }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

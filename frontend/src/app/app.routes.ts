@@ -38,10 +38,13 @@ export const routes: Routes = [
       { path: 'produit/new', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
+<<<<<<< admin
+=======
       
       // Favori routes
       { path: 'favori', loadComponent: () => import('./favori/components/favori-list/favori-list.component').then(m => m.FavoriListComponent) },
 
+>>>>>>> develop
 
       // Panier routes
       { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
@@ -80,7 +83,16 @@ export const routes: Routes = [
       { path: 'boutique', loadComponent: () => import('./boutique/components/boutique-list/boutique-list.component').then(m => m.BoutiqueListComponent) },
       { path: 'boutique/new', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
       { path: 'boutique/edit/:id', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
-      
+
+      // ─── Admin routes ─────────────────────────────────────────────────────────
+      { path: 'admin', loadComponent: () => import('./admin/dashboard/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
+      { path: 'admin/boutiques', loadComponent: () => import('./admin/boutiques/admin-boutique-list/admin-boutique-list.component').then(m => m.AdminBoutiqueListComponent) },
+      { path: 'admin/boutiques/:id', loadComponent: () => import('./admin/boutiques/admin-boutique-detail/admin-boutique-detail.component').then(m => m.AdminBoutiqueDetailComponent) },
+      { path: 'admin/utilisateurs', loadComponent: () => import('./admin/utilisateurs/admin-utilisateur-list/admin-utilisateur-list.component').then(m => m.AdminUtilisateurListComponent) },
+      { path: 'admin/commandes', loadComponent: () => import('./admin/commandes/admin-commande-list/admin-commande-list.component').then(m => m.AdminCommandeListComponent) },
+      { path: 'admin/commandes/:id', loadComponent: () => import('./admin/commandes/admin-commande-detail/admin-commande-detail.component').then(m => m.AdminCommandeDetailComponent) },
+      { path: 'admin/commissions', loadComponent: () => import('./admin/commissions/admin-commission-dashboard/admin-commission-dashboard.component').then(m => m.AdminCommissionDashboardComponent) },
+
     ]
   },
 ];
