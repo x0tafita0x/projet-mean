@@ -6,6 +6,7 @@ const { authMiddleware } = require("../middlewares/auth.middleware");
 // CRUD paniers
 router.post("/", panierController.createPanier);
 router.get("/", panierController.getAllPanier);
+router.get("/is-panier-vide/:utilisateur", panierController.isPanierVide);
 router.get("/:id", panierController.getPanierById);
 router.put("/:id", panierController.updatePanier);
 router.delete("/:id", panierController.deletePanier);

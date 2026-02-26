@@ -129,4 +129,14 @@ export class PanierListComponent implements OnInit {
     });
  
   }
+  deletePanierSelected() {
+    const paniersToDelete = this.paniers().filter(p => p.selected);
+    if (paniersToDelete.length === 0) {
+      alert('Veuillez sélectionner au moins un panier à supprimer.');
+      return;
+    }
+    if (confirm('Êtes-vous sûr de vouloir supprimer les paniers sélectionnés ?')) {
+      paniersToDelete.forEach(p => this.deletePanier(p._id!));
+    }
+  }
   }

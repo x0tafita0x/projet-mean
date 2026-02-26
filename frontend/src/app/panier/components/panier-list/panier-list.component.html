@@ -9,11 +9,18 @@
                                 <!-- Ligne titre + bouton -->
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     <h3 class="mb-0">Mon Panier</h3>
-
-                                    <button class="btn btn-warning" (click)="validerPanier()"
-                                    [disabled]="paniers().length === 0 || !canValidate()">    
-                                         Valider panier
-                                    </button>
+                                    
+                                    
+                                    <div class="d-flex align-items-right justify-content-between mb-3" style="gap: 42px; ">
+                                        <button class="btn btn-outline-danger" (click)="deletePanierSelected()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </button>
+                                        <button class="btn btn-warning" (click)="validerPanier()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            Valider panier
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- <form>

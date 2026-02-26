@@ -53,8 +53,8 @@
                     <tbody>
                         <tr *ngFor="let stock of stocks()">
                             <td>
-                                <div class="fw-bold">{{ stock.produit?.nom || 'N/A' }}</div>
-                                <small class="text-muted">{{ stock.produit?.sousTypeProduit?.nom || 'N/A' }}</small>
+                                <div class="fw-bold">{{ stock.produit.nom || 'N/A' }}</div>
+                                <small class="text-muted">{{ stock.produit.sousTypeProduit.nom || 'N/A' }}</small>
                             </td>
                             <td [ngStyle]="{'color': +stock.in > 0 ? '#0cdf0c' : '#dee2e6'}">{{ stock.in }}</td>
                             <td [ngStyle]="{'color': +stock.out > 0 ? '#dc3545' : '#dee2e6'}">{{ stock.out }}</td>

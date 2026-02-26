@@ -34,6 +34,10 @@ export class PanierService {
     this.dataSource.next(data);
   }
 
+    isPanierVide(utilisateurId: string): Observable<{ isEmpty: boolean }> {
+        return this.apiService.getById<{ isEmpty: boolean }>('panier/is-panier-vide', utilisateurId);
+      }
+
    // Etat
        getEtats(): Observable<Etat[]> {
            return this.apiService.getList<Etat[]>('etat');

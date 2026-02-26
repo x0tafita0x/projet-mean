@@ -149,3 +149,12 @@ exports.deletePanier = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.isPanierVide = async (req, res) => {
+  try {
+    const paniers = await Panier.find({ utilisateur: req.params.utilisateur, etat: "6997d94d319cef48fa23a80f" });
+    res.json({ isEmpty: paniers.length === 0 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

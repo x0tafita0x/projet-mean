@@ -22,7 +22,6 @@ export class Home {
   private authService = inject(AuthService);
   private boutiqueService = inject(BoutiqueService);
   private achatService = inject(AchatService);
-  private cdr = inject(ChangeDetectorRef);
 
   user: User | null = null;
   boutiques = signal<Boutique[]>([]);
