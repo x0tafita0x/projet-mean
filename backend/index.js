@@ -32,13 +32,10 @@ app.use("/api/boutique", require("./routes/boutique.routes"));
 app.use("/api/stock", require("./routes/stock.routes"));
 app.use("/api/mouvements-prix-produit", require("./routes/mouvementPrixProduit.routes"));
 app.use("/api/panier", require("./routes/panier.routes"));
-<<<<<<< admin
 app.use("/api/admin", require("./routes/admin.routes"));
-=======
 app.use("/api/achat", require("./routes/achat.routes"));
 app.use("/api/etat", require("./routes/etat.routes"));
 app.use("/api/favori", require("./routes/favori.routes"));
->>>>>>> develop
 
 
 // route test

@@ -1,40 +1,60 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';import { Router, RouterModule,ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common'; import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FavoriService } from '../../services/favori.services';
 import { FavoriList } from '../../models/favori.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { FilterCriteria } from '../../../shared/models/pagination.models';
 
 @Component({
   selector: 'app-favori-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, PaginationComponent],
   templateUrl: './favori-list.component.html'
 })
 export class FavoriListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private favoriService = inject(FavoriService);
-    private authService = inject(AuthService);
+  private authService = inject(AuthService);
+
   favoris = signal<FavoriList[]>([]);
-    user : User | null = null;
+  totalItems = signal(0);
+  currentPage = signal(1);
+  pageSize = signal(10);
+  user: User | null = null;
 
   ngOnInit() {
     this.user = this.authService.currentUser();
-    this.loadFavoris(this.user?.id || '');
+    this.loadFavoris();
   }
 
-  loadFavoris(id: string) {
-    this.favoriService.getListeFavoris(id).subscribe({
-      next: (data) => this.favoris.set(data),
+  loadFavoris() {
+    const criteria: FilterCriteria = {
+      clientId: this.user?.id || '',
+      page: this.currentPage(),
+      limit: this.pageSize()
+    };
+
+    this.favoriService.getListeFavoris(criteria).subscribe({
+      next: (response) => {
+        this.favoris.set(response.data);
+        this.totalItems.set(response.total);
+      },
       error: (err) => console.error('Error loading favoris', err)
     });
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadFavoris();
   }
   deleteFavori(id: string) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce favori ?')) {
       this.favoriService.deleteFavori(id).subscribe({
         next: () => {
           alert('Favori supprimé avec succès');
-          this.loadFavoris(this.user?.id || '');
+          this.loadFavoris();
         },
         error: (err) => {
           console.error('Error deleting favori', err);

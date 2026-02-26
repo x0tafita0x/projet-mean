@@ -20,10 +20,10 @@ export class ProduitFormComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private mouvementPrixProduitService = inject(MouvementPrixProduitService);
-   mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
+  mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
   produit = signal<Produit>({ nom: '', sousTypeProduit: '', boutique: '' });
   sousTypeProduits = signal<SousTypeProduit[]>([]);
-  user : User | null = null;
+  user: User | null = null;
   private authService = inject(AuthService);
 
   isEdit = signal(false);
@@ -59,11 +59,10 @@ export class ProduitFormComponent implements OnInit {
   }
 
   loadMetadata() {
-    this.produitService.getSousTypeProduits().subscribe({
-      next: (data) => this.sousTypeProduits.set(data),
+    this.produitService.getSousTypeProduits({ limit: 1000 }).subscribe({
+      next: (response) => this.sousTypeProduits.set(response.data),
       error: (err) => console.error('Error loading sous-types', err)
     });
-    
   }
 
   onFileSelected(event: any) {
@@ -97,10 +96,10 @@ export class ProduitFormComponent implements OnInit {
     obs.subscribe({
       next: () => {
 
-  this.mouvementPrixProduitService.createMouvementPrixProduit(this.mouvementPrixProduit()).subscribe({
-      next: (data) => console.log('MouvementPrixProduit created', data),
-      error: (err) => console.error('Error creating MouvementPrixProduit', err)
-    });
+        this.mouvementPrixProduitService.createMouvementPrixProduit(this.mouvementPrixProduit()).subscribe({
+          next: (data) => console.log('MouvementPrixProduit created', data),
+          error: (err) => console.error('Error creating MouvementPrixProduit', err)
+        });
         this.loading.set(false);
         this.router.navigate(['/home/produit']);
       },
@@ -112,8 +111,8 @@ export class ProduitFormComponent implements OnInit {
   }
 
   getPrixActuelle(produitId: string): number {
-    
-     this.mouvementPrixProduitService.getLastMouvementPrixByProduit(produitId).subscribe({
+
+    this.mouvementPrixProduitService.getLastMouvementPrixByProduit(produitId).subscribe({
       next: (data) => {
         console.log('Last MouvementPrixProduit', data);
         this.mouvementPrixProduit.set({
@@ -121,7 +120,7 @@ export class ProduitFormComponent implements OnInit {
           prix: data.prix.toString() || '0'
         });
         return data.prix;
-  }
+      }
     });
     return 0;
   }

@@ -1,4 +1,6 @@
 const Produit = require("../models/produit.model");
+const mongoose = require("mongoose");
+const { paginate } = require("../utils/pagination");
 
 // créer un produit
 exports.createProduit = async (req, res) => {
@@ -14,10 +16,10 @@ exports.createProduit = async (req, res) => {
   }
 };
 
-// lister tous les produits avec filtre + tri
+// lister tous les produits avec filtre + tri + pagination
 exports.getAllProduits = async (req, res) => {
   try {
-    const { nom, boutique, sousTypeProduit, typeProduit, order } = req.query;
+    const { nom, boutique, sousTypeProduit, typeProduit, order, page = 1, limit = 10, startDate, endDate } = req.query;
 
     let filter = {};
 
@@ -35,38 +37,46 @@ exports.getAllProduits = async (req, res) => {
     if (sousTypeProduit) {
       filter.sousTypeProduit = sousTypeProduit;
     }
-    console.log("Query parameters received:", filter);
 
-    let query = Produit.find(filter)
-      .populate({
-        path: "sousTypeProduit",
-        select: "nom",
-        populate: {
-          path: "typeProduit",
-          select: "nom"
-        }
-      })
-      .populate("boutique", "nom");
-
-    // 🔎 filtre par typeProduit (via populate)
+    // 🔎 filtre par typeProduit
     if (typeProduit) {
-      query = query.where("sousTypeProduit").in(
-        await mongoose
-          .model("sous_type_produit")
-          .find({ typeProduit })
-          .distinct("_id")
-      );
+      const sousTypes = await mongoose.model("sous_type_produit").find({ typeProduit }).distinct("_id");
+      filter.sousTypeProduit = { $in: sousTypes };
     }
 
-    // 🔁 tri (par nom uniquement)
-    if (order === "asc") {
-      query = query.sort({ nom: 1 });
-    } else if (order === "desc") {
-      query = query.sort({ nom: -1 });
+    // 🔎 filtre par date
+    if (startDate || endDate) {
+      filter.createdAt = {};
+      if (startDate) filter.createdAt.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = end;
+      }
     }
 
-    const produits = await query.exec();
-    res.json(produits);
+    let sort = { nom: 1 };
+    if (order === "desc") {
+      sort = { nom: -1 };
+    }
+
+    const result = await paginate(
+      Produit,
+      filter,
+      Number(page),
+      Number(limit),
+      [
+        {
+          path: "sousTypeProduit",
+          select: "nom",
+          populate: { path: "typeProduit", select: "nom" }
+        },
+        { path: "boutique", select: "nom" }
+      ],
+      sort
+    );
+
+    res.json(result);
 
   } catch (err) {
     res.status(500).json({ error: err.message });

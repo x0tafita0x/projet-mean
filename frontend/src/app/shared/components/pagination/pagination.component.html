@@ -1,0 +1,19 @@
+<nav *ngIf="totalPages > 1" class="d-flex justify-content-center mt-4">
+    <ul class="pagination pagination-sm">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                <span aria-hidden="true">&laquo;</span>
+            </button>
+        </li>
+
+        <li *ngFor="let page of pages" class="page-item" [class.active]="page === currentPage">
+            <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+                <span aria-hidden="true">&raquo;</span>
+            </button>
+        </li>
+    </ul>
+</nav>

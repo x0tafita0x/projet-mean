@@ -36,20 +36,36 @@ export class AdminDashboardComponent implements OnInit {
     loading = signal(false);
     error = signal('');
 
-    constructor() {
-        // Reload data when filters change
-        effect(() => {
-            this.loadStats();
+    constructor() { }
+
+    ngOnInit() {
+        this.initializeMonthFilters();
+        this.loadBoutiques();
+        this.loadStats();
+    }
+
+    private initializeMonthFilters() {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        const formatDate = (date: Date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        this.filters.set({
+            startDate: formatDate(firstDay),
+            endDate: formatDate(lastDay),
+            boutiqueId: ''
         });
     }
 
-    ngOnInit() {
-        this.loadBoutiques();
-    }
-
     loadBoutiques() {
-        this.adminService.getBoutiques().subscribe({
-            next: (data) => this.boutiques.set(data),
+        this.adminService.getBoutiques({ limit: 1000 }).subscribe({
+            next: (response) => this.boutiques.set(response.data),
             error: (err) => console.error('Erreur chargement boutiques', err)
         });
     }
@@ -74,11 +90,8 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     resetFilters() {
-        this.filters.set({
-            startDate: '',
-            endDate: '',
-            boutiqueId: ''
-        });
+        this.initializeMonthFilters();
+        this.loadStats();
     }
 
     private updateCharts() {

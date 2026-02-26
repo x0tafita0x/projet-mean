@@ -2,12 +2,14 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
     selector: 'app-admin-commission-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, DecimalPipe, CurrencyPipe],
+    imports: [CommonModule, FormsModule, DecimalPipe, CurrencyPipe, PaginationComponent],
     templateUrl: './admin-commission-dashboard.component.html',
+    styleUrl: './admin-commission-dashboard.component.css'
 })
 export class AdminCommissionDashboardComponent implements OnInit {
     private adminService = inject(AdminService);
@@ -20,9 +22,19 @@ export class AdminCommissionDashboardComponent implements OnInit {
     saving = signal<boolean>(false);
     error = signal<string>('');
 
-    totalCommissions = computed(() => {
-        return this.commissionsBoutiques().reduce((s, b) => s + b.totalCommissions, 0);
-    });
+    // Pagination Boutique
+    totalBoutiquesCount = signal(0);
+    currentBoutiquePage = signal(1);
+    boutiquePageSize = signal(10);
+
+    // Pagination Mensuelle
+    totalMonthsCount = signal(0);
+    currentMonthPage = signal(1);
+    monthPageSize = signal(12);
+
+    // Stats Globales
+    totalCommissions = signal(0);
+    nbBoutiques = signal(0);
 
     ngOnInit() {
         this.loadAll();
@@ -32,7 +44,6 @@ export class AdminCommissionDashboardComponent implements OnInit {
         this.loading.set(true);
         this.error.set('');
 
-        // On parallélise un peu ou on enchaîne
         this.adminService.getCommissionConfig().subscribe({
             next: (c) => {
                 this.config.set(c);
@@ -40,15 +51,40 @@ export class AdminCommissionDashboardComponent implements OnInit {
             }
         });
 
-        this.adminService.getCommissionsByBoutique().subscribe({
-            next: (d) => {
-                this.commissionsBoutiques.set(d);
+        this.loadStats();
+        this.loadCommissionsByBoutique();
+        this.loadMonthlyCommissions();
+    }
+
+    loadStats() {
+        this.adminService.getCommissionStats().subscribe({
+            next: (s) => {
+                this.totalCommissions.set(s.totalCommissions);
+                this.nbBoutiques.set(s.nbBoutiques);
             }
         });
+    }
 
-        this.adminService.getMonthlyCommissions().subscribe({
-            next: (d) => {
-                this.commissionsMensuelles.set(d);
+    loadCommissionsByBoutique() {
+        this.adminService.getCommissionsByBoutique({
+            page: this.currentBoutiquePage(),
+            limit: this.boutiquePageSize()
+        }).subscribe({
+            next: (res) => {
+                this.commissionsBoutiques.set(res.data);
+                this.totalBoutiquesCount.set(res.total);
+            }
+        });
+    }
+
+    loadMonthlyCommissions() {
+        this.adminService.getMonthlyCommissions({
+            page: this.currentMonthPage(),
+            limit: this.monthPageSize()
+        }).subscribe({
+            next: (res) => {
+                this.commissionsMensuelles.set(res.data);
+                this.totalMonthsCount.set(res.total);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -56,6 +92,16 @@ export class AdminCommissionDashboardComponent implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onBoutiquePageChange(page: number) {
+        this.currentBoutiquePage.set(page);
+        this.loadCommissionsByBoutique();
+    }
+
+    onMonthPageChange(page: number) {
+        this.currentMonthPage.set(page);
+        this.loadMonthlyCommissions();
     }
 
     saveGlobalRate() {
@@ -73,8 +119,8 @@ export class AdminCommissionDashboardComponent implements OnInit {
     }
 
     monthLabel(item: any): string {
-        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun',
-            'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+        const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
         return `${months[item._id.month - 1]} ${item._id.year}`;
     }
 }

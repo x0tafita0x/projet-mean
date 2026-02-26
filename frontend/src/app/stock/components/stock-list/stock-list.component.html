@@ -6,33 +6,73 @@
         </button>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm border-0 mb-4 bg-light">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Produit</th>
-                        <th>Entrée</th>
-                        <th>Sortie</th>
-                        <th>Date de transaction</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let stock of stocks()">
-                        
-                        <td>
-                            <strong>{{ stock.produit.nom }}</strong><br>
-                            <small class="text-muted">{{ stock.produit.sousTypeProduit.nom }}</small>
-                        </td>
-                        <td [ngStyle]="{'color': +stock.in > 0 ? '#0cdf0c' : 'light grey'}">{{ stock.in }}</td>
-                        <td [ngStyle]="{'color': +stock.out > 0 ? 'red' : 'light grey'}">{{ stock.out }}</td>
-                        <td>{{ stock.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-                    </tr>
-                    <tr *ngIf="stocks().length === 0">
-                        <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement de stock trouvé</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted">Rechercher</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" placeholder="Nom du produit..."
+                            [(ngModel)]="filters().search">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold text-muted">Date Min</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().startDate">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold text-muted">Date Max</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().endDate">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+                        <i class="bi bi-funnel"></i> Filtrer
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()" title="Réinitialiser">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Produit</th>
+                            <th>Entrée</th>
+                            <th>Sortie</th>
+                            <th>Date de transaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let stock of stocks()">
+                            <td>
+                                <div class="fw-bold">{{ stock.produit?.nom || 'N/A' }}</div>
+                                <small class="text-muted">{{ stock.produit?.sousTypeProduit?.nom || 'N/A' }}</small>
+                            </td>
+                            <td [ngStyle]="{'color': +stock.in > 0 ? '#0cdf0c' : '#dee2e6'}">{{ stock.in }}</td>
+                            <td [ngStyle]="{'color': +stock.out > 0 ? '#dc3545' : '#dee2e6'}">{{ stock.out }}</td>
+                            <td class="text-muted small">{{ stock.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                        </tr>
+                        <tr *ngIf="stocks().length === 0">
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-box-seam d-block mb-2 fs-2"></i>
+                                Aucun mouvement de stock trouvé
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
         </div>
     </div>
 </div>

@@ -6,48 +6,104 @@
         </button>
     </div>
 
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Nom de la boutique</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="Rechercher..."
+                        [(ngModel)]="filters().nom">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold text-muted">Type</label>
+                    <select class="form-select form-select-sm" [(ngModel)]="filters().typeBoutique">
+                        <option value="">Tous</option>
+                        <option *ngFor="let t of typeBoutiques()" [value]="t._id">{{t.nom}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold text-muted">Créée après</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().startDate">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold text-muted">Créée avant</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().endDate">
+                </div>
+                <div class="col-md-2 d-flex gap-2 align-items-end">
+                    <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+                        <i class="bi bi-funnel"></i> Filtrer
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-end">
+                    <div class="d-inline-flex align-items-center gap-2">
+                        <span class="small text-muted fw-bold">Tri :</span>
+                        <select class="form-select form-select-sm w-auto" [(ngModel)]="filters().order"
+                            (change)="applyFilters()">
+                            <option value="asc">Nom (A-Z)</option>
+                            <option value="desc">Nom (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Photo</th>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Jour d'ouverture</th>
-                        <th>Heure Ouverture</th>
-                        <th>Heure Fermeture</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let boutique of boutiques()">
-                        <td>
-                            <img [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
-                                class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                        </td>
-                        <td>
-                            <strong>{{ boutique.nom }}</strong><br>
-                        </td>
-                        <td>{{ getTypeBoutiqueName(boutique.typeBoutique) }}</td>
-                        <td>{{ boutique.nbJoursOuverture }}</td>
-                        <td>{{ boutique.heureOuverture }}</td>
-                        <td>{{ boutique.heureFermeture }}</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary me-2"
-                                [routerLink]="['/home/boutique/edit', boutique._id]">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" (click)="deleteBoutique(boutique._id!)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr *ngIf="boutiques().length === 0">
-                        <td colspan="7" class="text-center py-4 text-muted">Aucune boutique active</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Photo</th>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>Jours d'ouverture</th>
+                            <th>Horaires</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let boutique of boutiques()">
+                            <td>
+                                <img [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
+                                    class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                            </td>
+                            <td>
+                                <strong>{{ boutique.nom }}</strong>
+                            </td>
+                            <td><span class="badge bg-light text-dark">{{ getTypeBoutiqueName(boutique.typeBoutique)
+                                    }}</span></td>
+                            <td>{{ boutique.nbJoursOuverture }} jours</td>
+                            <td><small class="text-muted">{{ boutique.heureOuverture }} – {{ boutique.heureFermeture
+                                    }}</small></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-2"
+                                    [routerLink]="['/home/boutique/edit', boutique._id]">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" (click)="deleteBoutique(boutique._id!)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="boutiques().length === 0">
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-shop d-block mb-2 fs-2"></i>
+                                Aucune boutique trouvée
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
         </div>
     </div>
 </div>

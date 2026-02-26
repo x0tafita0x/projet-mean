@@ -1,18 +1,30 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { FilterCriteria } from '../../../shared/models/pagination.models';
 
 @Component({
     selector: 'app-admin-boutique-list',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
     templateUrl: './admin-boutique-list.component.html',
 })
 export class AdminBoutiqueListComponent implements OnInit {
     private adminService = inject(AdminService);
 
     boutiques = signal<any[]>([]);
+    totalItems = signal(0);
+    currentPage = signal(1);
+    pageSize = signal(10);
+
+    filters = signal<FilterCriteria>({
+        search: '',
+        status: ''
+    });
+
     loading = signal<boolean>(false);
     error = signal<string>('');
 
@@ -23,9 +35,17 @@ export class AdminBoutiqueListComponent implements OnInit {
     loadBoutiques() {
         this.loading.set(true);
         this.error.set('');
-        this.adminService.getBoutiques().subscribe({
-            next: (data) => {
-                this.boutiques.set(data);
+
+        const criteria: FilterCriteria = {
+            ...this.filters(),
+            page: this.currentPage(),
+            limit: this.pageSize()
+        };
+
+        this.adminService.getBoutiques(criteria).subscribe({
+            next: (response) => {
+                this.boutiques.set(response.data);
+                this.totalItems.set(response.total);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -33,6 +53,28 @@ export class AdminBoutiqueListComponent implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPageChange(page: number) {
+        this.currentPage.set(page);
+        this.loadBoutiques();
+    }
+
+    applyFilters() {
+        this.currentPage.set(1);
+        this.loadBoutiques();
+    }
+
+    resetFilters() {
+        this.filters.set({
+            search: '',
+            status: ''
+        });
+        this.applyFilters();
+    }
+
+    updateFilters(key: string, value: any) {
+        this.filters.update(prev => ({ ...prev, [key]: value }));
     }
 
     setStatus(id: string, status: string) {
