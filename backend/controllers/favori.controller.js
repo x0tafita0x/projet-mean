@@ -13,19 +13,33 @@ exports.createFavori = async (req, res) => {
 // lister tous les favoris
 exports.getAllFavoris = async (req, res) => {
   try {
-    const { utilisateur, produit, page, limit } = req.query;
+    const { utilisateur, boutique, page, limit } = req.query;
     const filter = {};
     if (utilisateur) filter.utilisateur = utilisateur;
-    if (produit) filter.produit = produit;
+    if (boutique) filter.boutique = boutique;
+    console.log('Filter applied:', filter);
 
     const result = await paginate(Favori, filter, page, limit, {
-      path: "produit",
-      populate: [
-        { path: "sousTypeProduit", select: "nom" },
-        { path: "boutique", select: "nom" }
-      ]
+      path: "boutique",
+      select: "nom photo",
+      populate: 
+        { path: "typeBoutique", select: "nom" }
     });
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.isFavoriteExist = async (req, res) => {
+  try {
+    const { utilisateur, boutique } = req.query;
+    const filter = {};
+    if (utilisateur) filter.utilisateur = utilisateur;
+    if (boutique) filter.boutique = boutique;
+
+    const favori = await Favori.findOne(filter);
+    res.json(favori ? { exists: true } : { exists: false });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

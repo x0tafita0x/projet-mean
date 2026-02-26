@@ -10,22 +10,20 @@
                     <tr>
                         <th>Photo</th>
                         <th>Nom</th>
-                        <th>Sous-Type</th>
-                        <th>Boutique</th>
+                        <th>Type</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let favori of favoris()">
                         <td>
-                            <img [src]="favori.produit.photo ? 'http://localhost:3000/' + favori.produit.photo : 'assets/placeholder.png'"
+                            <img [src]="favori.boutique.photo ? 'http://localhost:3000/' + favori.boutique.photo : 'assets/placeholder.png'"
                                 class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                         </td>
                         <td>
-                            <strong>{{ favori.produit.nom }}</strong><br>
+                            <strong>{{ favori.boutique.nom }}</strong><br>
                         </td>
-                        <td>{{ favori.produit.sousTypeProduit.nom }}</td>
-                        <td>{{ favori.produit.boutique.nom }}</td>
+                        <td>{{ favori.boutique.typeBoutique.nom }}</td>
                         <td class="text-end">
                             <button class="btn btn-sm btn-outline-danger" (click)="deleteFavori(favori._id!)">
                                 <i class="bi bi-trash"></i>

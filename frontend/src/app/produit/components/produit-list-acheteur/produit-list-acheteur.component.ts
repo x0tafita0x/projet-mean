@@ -7,6 +7,7 @@ import { Produit, ProduitDetail, SousTypeProduit } from '../../../produit/models
 import { StockResponse } from '../../../stock/models/stock.models';
 import { StockService } from '../../../stock/services/stock.services';
 import { PanierService } from '../../../panier/services/panier.services';
+import { BoutiqueService } from '../../../boutique/services/boutique.services';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { FavoriService } from '../../../favori/services/favori.services';
@@ -27,6 +28,7 @@ export class ProduitListAcheteurComponent {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private favoriService = inject(FavoriService);
+  private boutiqueService = inject(BoutiqueService);
 
   user: User | null = null;
   filters = signal<FilterCriteria>({
@@ -42,6 +44,10 @@ export class ProduitListAcheteurComponent {
   prixProduit = signal<string>('0');
   max_stock = signal<number>(0);
   favori = signal<boolean>(false);
+  boutique : {
+    _id: string;
+    nom: string;
+  } = { _id: '', nom: '' };
 
   typeBoutique: string = '';
   order: string = 'asc';
@@ -50,7 +56,9 @@ export class ProduitListAcheteurComponent {
     this.user = this.authService.currentUser();
     const id = this.route.snapshot.paramMap.get('id');
     this.loadProduits(id);
+    this.loadBoutiqueDetails(id || '');
     this.loadSousTypeProduits();
+    this.isFavori(id || '');
   }
 
   applyFilters() {
@@ -69,6 +77,16 @@ export class ProduitListAcheteurComponent {
 
   updateFilters(key: string, value: any) {
     this.filters.update(prev => ({ ...prev, [key]: value }));
+  }
+
+  loadBoutiqueDetails(id: string | '') {
+    this.boutiqueService.getBoutiqueById(id).subscribe({
+      next: (data) => {
+        this.boutique._id = data._id || '';
+        this.boutique.nom = data.nom || '';
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   loadProduits(id: string | null) {
@@ -108,7 +126,6 @@ export class ProduitListAcheteurComponent {
     this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
     this.getStockById(produit._id as string || '');
-    this.isFavori(produit._id as string || '');
   }
 
   fermerDetails() {
@@ -152,10 +169,10 @@ export class ProduitListAcheteurComponent {
 
   }
 
-  toggleFavori(produit: ProduitDetail, event: Event) {
+  toggleFavori(boutique: string, event: Event) {
     event.stopPropagation(); // évite le clic sur la carte
     if (this.favori()) {
-      this.favoriService.deleteFavori(produit._id).subscribe({
+      this.favoriService.deleteFavori(boutique).subscribe({
         next: () => {
           this.favori.set(false);
           alert('Produit retiré des favoris');
@@ -168,7 +185,7 @@ export class ProduitListAcheteurComponent {
     } else {
       this.favoriService.createFavori({
         utilisateur: this.user?.id || '',
-        produit: produit._id || ''
+        boutique: boutique
       }).subscribe({
         next: () => {
           this.favori.set(true);
@@ -181,10 +198,11 @@ export class ProduitListAcheteurComponent {
       });
     }
   }
-  isFavori(produitId: string): void {
-    this.favoriService.isFavoriExist(produitId, this.user?.id || '').subscribe({
+  isFavori(boutiqueId: string): void {
+    console.log('Checking if boutique is favori for user', boutiqueId, this.user?.id);
+    this.favoriService.isFavoriExist(boutiqueId, this.user?.id || '').subscribe({
       next: (data) => {
-        this.favori.set(data.length > 0);
+        this.favori.set(data);
       },
       error: (err) => console.error('Error checking favori', err)
     });
