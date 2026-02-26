@@ -36,6 +36,7 @@ app.use("/api/admin", require("./routes/admin.routes"));
 app.use("/api/achat", require("./routes/achat.routes"));
 app.use("/api/etat", require("./routes/etat.routes"));
 app.use("/api/favori", require("./routes/favori.routes"));
+app.use("/api/avis-note", require("./routes/avisNote.routes"));
 
 
 // route test

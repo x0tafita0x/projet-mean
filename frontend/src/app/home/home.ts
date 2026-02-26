@@ -38,7 +38,7 @@ export class Home {
     this.user = this.authService.currentUser();
     this.filterBoutiques();
     this.loadTypeBoutique();
-    this.getRecentAchats();
+    // this.getRecentAchats();
     this.minuteTimer = setInterval(() => {
       this.calculerEtat();
     }, 30000);
@@ -86,26 +86,22 @@ export class Home {
       error: (err) => console.error('Error loading boutiques', err)
     });
   }
-  getRecentAchats(): void {
-    this.achatService.getAchatRecent().subscribe({
-      next: (data) => {
-        this.recentAchats.set(data);
-      },
-      error: (err) => {
-        console.error('Error fetching recent achats:', err);
-      }
-    });
-  }
+  // getRecentAchats(): void {
+  //   this.achatService.getAchatRecent().subscribe({
+  //     next: (data) => {
+  //       this.recentAchats.set(data);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching recent achats:', err);
+  //     }
+  //   });
+  // }
   calculerEtat() {
     const now = new Date();
     this.boutiques.set(this.boutiques().map(b => ({
       ...b,
       isOuverte: this.isBoutiqueOuverte(b, now)
     })))
-    for (let i = 0; i < this.boutiques().length; i++) {
-      const b = this.boutiques()[i];
-      console.log(b);
-    }
   }
   isBoutiqueOuverte(boutique: Boutique, now: Date): boolean {
     if (!boutique.heureOuverture || !boutique.heureFermeture) {
@@ -123,5 +119,14 @@ export class Home {
     console.log(`Boutique ${boutique.nom} - Current: ${currentMinutes} min, Open: ${openMinutes} min, Close: ${closeMinutes} min = ${currentMinutes >= openMinutes && currentMinutes <= closeMinutes ? 'Ouverte' : 'Fermée'}`);
 
     return currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
+  }
+  formatNbAvis(nb: number | 0): string {
+  if (nb >= 1_000_000_000) return (nb / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'Md';
+  if (nb >= 1_000_000)     return (nb / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (nb >= 1_000)         return (nb / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return nb.toString();
+}
+roundNote(note: number | 0) {
+    return Math.round(note);
   }
 }

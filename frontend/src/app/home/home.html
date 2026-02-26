@@ -39,25 +39,42 @@
         </div>
         <div class="custom-block liste-boutique">
 
-            <a *ngFor="let boutique of boutiques()" [routerLink]="['/home/produitByBoutique', boutique._id]"
-                class="custom-boutique" style="display: block;">
-                <div class="boutique-content">
-                    <img class="custom-image img-fluid"
-                        [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
-                        alt="">
-                    <div class="boutique-info">
-                        <h3 class="boutique-nom">{{ boutique.nom }}</h3>
-                        <p class="boutique-type">
-                            {{ getTypeBoutiqueName(boutique.typeBoutique) }}
-                        </p>
+           <a *ngFor="let boutique of boutiques()" 
+            [routerLink]="['/home/produitByBoutique', boutique._id]"
+            class="custom-boutique" style="display: block;">
+            
+            <div class="boutique-content">
+                <img class="custom-image img-fluid"
+                    [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
+                    alt="">
 
+                <div class="boutique-info">
+                <div class="nom-et-note">
+                    <h3 class="boutique-nom" [title]="boutique.nom">{{ boutique.nom }}</h3>
+
+                    <div class="note-stars">
+                    <!-- 5 étoiles -->
+                    <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                        <i class="bi" 
+                        [ngClass]="i < roundNote(boutique.moyenneNote) ? 'bi-star-fill text-warning' : 'bi-star text-secondary'">
+                        </i>
+                    </ng-container>
+                    <span class="nb-avis">{{ formatNbAvis(boutique.totalAvis) }} avis</span>
                     </div>
-                    <span class="etat-wrapper">
-                        <span [ngClass]=" boutique.isOuverte ? 'ouvert' : 'ferme'">
-                            {{ boutique.isOuverte ? 'Ouverte' : 'Fermée' }}
-                        </span>
-                    </span>
                 </div>
+
+                <p class="boutique-type">
+                    {{ getTypeBoutiqueName(boutique.typeBoutique) }}
+                </p>
+                </div>
+
+                <span class="etat-wrapper">
+                <span [ngClass]=" boutique.isOuverte ? 'ouvert' : 'ferme'">
+                    {{ boutique.isOuverte ? 'Ouverte' : 'Fermée' }}
+                </span>
+                </span>
+
+            </div>
             </a>
 
         </div>
@@ -216,85 +233,3 @@
     chart.render();
 </script>
 
-
-<!-- <small>Your Balance</small>
-
-                                <h2 class="mt-2 mb-3">$254,800</h2>
-
-                                <div class="custom-block-numbers d-flex align-items-center">
-                                    <span>****</span>
-                                    <span>****</span>
-                                    <span>****</span>
-                                    <p>2560</p>
-                                </div>
-
-                                <div class="d-flex">
-                                    <div>
-                                        <small>Valid Date</small>
-                                        <p>12/2028</p>
-                                    </div>
-
-                                    <div class="ms-auto">
-                                        <small>Card Holder</small>
-                                        <p>Thomas</p>
-                                    </div>
-                                </div> -->
-
-
-<!-- 
-                                  <div class="custom-block custom-block-bottom d-flex flex-wrap">
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-wallet"></i>
-
-                                        <small>Top up</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-upc-scan"></i>
-
-                                        <small>Scan & Pay</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-send"></i>
-
-                                        <small>Send</small>
-                                    </a>
-                                </div>
-
-                                <div class="custom-block-bottom-item">
-                                    <a href="#" class="d-flex flex-column">
-                                        <i class="custom-block-icon bi-arrow-down"></i>
-
-                                        <small>Request</small>
-                                    </a>
-                                </div>
-                            </div> -->
-
-
-<!-- <div class="custom-block primary-bg">
-                                <h5 class="text-white mb-4">Send Money</h5>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/young-woman-with-round-glasses-yellow-sweater.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/young-beautiful-woman-pink-warm-sweater.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <a href="#">
-                                    <img src="assets/images/profile/senior-man-white-sweater-eyeglasses.jpg" class="profile-image img-fluid" alt="">
-                                </a>
-
-                                <div class="profile-rounded">
-                                    <a href="#">
-                                        <i class="profile-rounded-icon bi-plus"></i>
-                                    </a>
-                                </div>
-                            </div> -->

@@ -19,6 +19,7 @@ exports.createBoutique = async (req, res) => {
 exports.getAllBoutiques = async (req, res) => {
   try {
     const { typeBoutique, nbJoursOuverture, nom, order, page = 1, limit = 10, startDate, endDate } = req.query;
+
     const filter = {};
 
     if (typeBoutique) {
@@ -45,19 +46,76 @@ exports.getAllBoutiques = async (req, res) => {
 
     const sortOrder = order === "desc" ? -1 : 1;
 
-    const result = await paginate(
-      Boutique,
-      filter,
-      Number(page),
-      Number(limit),
-      "typeBoutique",
-      { nom: sortOrder }
-    );
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const result = await Boutique.aggregate([
+
+      { $match: filter },
+
+      {
+        $lookup: {
+          from: "avis_notes",
+          localField: "_id",
+          foreignField: "boutique",
+          as: "notes"
+        }
+      },
+      {
+        $lookup : {
+          from: "type_boutiques",
+          localField: "typeBoutique",
+          foreignField: "_id",
+          as: "typeBoutique"
+        }
+      },
+      { $unwind: { path: "$typeBoutique", preserveNullAndEmptyArrays: true } },
+
+      {
+        $addFields: {
+          moyenneNote: {
+            $cond: [
+              { $gt: [{ $size: "$notes" }, 0] },
+              { $avg: "$notes.note" },
+              0
+            ]
+          },
+          totalAvis: { $size: "$notes" }
+        }
+      },
+
+      { $project: { notes: 0 } },
+
+      {
+        $facet: {
+          data: [
+            { $sort: { nom: sortOrder } },
+            { $skip: skip },
+            { $limit: Number(limit) }
+          ],
+          totalCount: [
+            { $count: "count" }
+          ]
+        }
+      }
+
+    ]);
+
+    const data = result[0].data;
+    const total = result[0].totalCount[0]?.count || 0;
+
+    res.status(200).json({
+      data,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit))
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 // trouver un produit par ID
 exports.getBoutiqueById = async (req, res) => {

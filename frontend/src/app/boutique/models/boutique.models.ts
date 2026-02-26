@@ -16,6 +16,8 @@ export interface Boutique {
     isOuverte?: boolean;
     createdAt?: string;
     updatedAt?: string;
+    moyenneNote?: number;
+    totalAvis?: number;
 }
 
 export interface BoutiqueDashboardStats {
