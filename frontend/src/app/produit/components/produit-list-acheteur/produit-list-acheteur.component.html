@@ -100,10 +100,13 @@
 
 
         <div class="custom-block liste-produit">
-            <div *ngFor="let produit of produits()" (click)="selectProduit(produit)" class="custom-produit">
+            <div class="produits-grid">
+                <div *ngFor="let produit of produits()" 
+                    (click)="selectProduit(produit)" 
+                    class="custom-produit">
 
-                <div class="produit-content">
-                    <img class="custom-image img-fluid"
+                    <div class="produit-content">
+                    <img class="custom-image"
                         [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
                         alt="">
 
@@ -112,13 +115,13 @@
                         <p class="produit-type">{{ produit.sousTypeProduit }}</p>
                     </div>
 
-                    <!-- Prix en bas à droite -->
                     <div class="produit-prix">
                         {{ produit.prixUnitaire | currency:'MGA ':'symbol':'1.0-0' }}
                     </div>
-                </div>
+                    </div>
 
-            </div>
+                </div>
+                </div>
 
             <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
                 Aucun produit disponible
