@@ -1,9 +1,34 @@
 <div class="container mt-4">
-  <h2 class="mb-4">📄 Liste des commandes</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📄 Liste des commandes</h2>
+    <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+      <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+    </button>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">Date de début</label>
+          <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().startDate">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">Date de fin</label>
+          <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().endDate">
+        </div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+          <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+            <i class="bi bi-funnel me-1"></i> Filtrer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="facture-list">
-    <div class="facture-card" *ngFor="let commande of commandes()"
-         (click)="ouvrirDetails(commande)">
+    <div class="facture-card" *ngFor="let commande of commandes()" (click)="ouvrirDetails(commande)">
       <div class="facture-left">
         <h5 class="facture-date">
           {{ commande.client }}
@@ -25,50 +50,51 @@
     <div *ngIf="commandes().length === 0" class="no-facture">
       Aucune Commande en cours.
     </div>
+
+    <div class="mt-4" *ngIf="commandes().length > 0">
+      <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
   </div>
 
 
-                            <!-- OVERLAY -->
-            <div class="overlay" *ngIf="commandeSelectionnee().length > 0" (click)="fermerDetails()"></div>
+  <!-- OVERLAY -->
+  <div class="overlay" *ngIf="commandeSelectionnee().length > 0" (click)="fermerDetails()"></div>
 
-            <!-- BOX DETAIL CENTRÉE -->
-            <div class="produit-detail-modal" *ngIf="commandeSelectionnee().length > 0">
-              <button class="btn-close" (click)="fermerDetails()">✕</button>
+  <!-- BOX DETAIL CENTRÉE -->
+  <div class="produit-detail-modal" *ngIf="commandeSelectionnee().length > 0">
+    <button class="btn-close" (click)="fermerDetails()">✕</button>
 
-              <h3>Produits de la commande</h3>
+    <h3>Produits de la commande</h3>
 
-              <div class="liste-produit">
-                <div *ngFor="let commande of commandeSelectionnee()" class="custom-produit" (click)="toggleSelection(commande)">
-                  <div class="produit-content">
-                    <input type="checkbox"
-                          class="form-check-input me-3"
-                          [checked]="estSelectionne(commande)"
-                          (click)="$event.stopPropagation()"
-                          (change)="toggleSelection(commande)">
-                    <img class="custom-image img-fluid"
-                        [src]="commande.panier.produit.photo ? 'http://localhost:3000/' + commande.panier.produit.photo : 'assets/placeholder.png'">
-                    <div class="produit-info">
-                      <h3 class="produit-nom">{{ commande.panier.produit.nom }}</h3>
-                      <p class="produit-type">{{ commande.panier.produit.sousTypeProduit.nom }}</p>
-                    </div>
-                  </div>
-                  <div class="produit-prix-quantite">
-                      <div class="produit-quantite">Qté : {{ commande.quantite }}</div>
-                      <div class="produit-prix">{{ commande.prix | currency:'MGA ':'symbol':'1.0-0' }}</div>
-                    </div>
-                </div>
-                <div *ngIf="commandeSelectionnee().length === 0" class="text-center py-4 text-muted">
-                  Aucun produit dans cette commande
-                </div>
-              </div>
+    <div class="liste-produit">
+      <div *ngFor="let commande of commandeSelectionnee()" class="custom-produit" (click)="toggleSelection(commande)">
+        <div class="produit-content">
+          <input type="checkbox" class="form-check-input me-3" [checked]="estSelectionne(commande)"
+            (click)="$event.stopPropagation()" (change)="toggleSelection(commande)">
+          <img class="custom-image img-fluid"
+            [src]="commande.panier.produit.photo ? 'http://localhost:3000/' + commande.panier.produit.photo : 'assets/placeholder.png'">
+          <div class="produit-info">
+            <h3 class="produit-nom">{{ commande.panier.produit.nom }}</h3>
+            <p class="produit-type">{{ commande.panier.produit.sousTypeProduit.nom }}</p>
+          </div>
+        </div>
+        <div class="produit-prix-quantite">
+          <div class="produit-quantite">Qté : {{ commande.quantite }}</div>
+          <div class="produit-prix">{{ commande.prix | currency:'MGA ':'symbol':'1.0-0' }}</div>
+        </div>
+      </div>
+      <div *ngIf="commandeSelectionnee().length === 0" class="text-center py-4 text-muted">
+        Aucun produit dans cette commande
+      </div>
+    </div>
 
-              <!-- BOUTON VALIDER -->
-              <div class="modal-footer-fixed">
-                <button class="btn btn-success w-100"
-                        [disabled]="!isValid()"
-                        (click)="validerProduits()">
-                  Valider ({{ produitsSelectionnes.length }})
-                </button>
-              </div>
-            </div>
+    <!-- BOUTON VALIDER -->
+    <div class="modal-footer-fixed">
+      <button class="btn btn-success w-100" [disabled]="!isValid()" (click)="validerProduits()">
+        Valider ({{ produitsSelectionnes.length }})
+      </button>
+    </div>
+  </div>
 </div>

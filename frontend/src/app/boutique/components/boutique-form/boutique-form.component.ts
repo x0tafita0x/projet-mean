@@ -25,7 +25,7 @@ export class BoutiqueFormComponent implements OnInit {
   loading = signal(false);
   selectedFile: File | null = null;
   imagePreview: string | null = null;
-  user : User | null = null;
+  user: User | null = null;
 
   ngOnInit() {
     this.user = this.authService.currentUser();
@@ -54,8 +54,8 @@ export class BoutiqueFormComponent implements OnInit {
   }
 
   loadMetadata() {
-    this.boutiqueService.getTypeBoutiques().subscribe({
-      next: (data) => this.typeBoutiques.set(data),
+    this.boutiqueService.getTypeBoutiques({ limit: 1000 }).subscribe({
+      next: (response) => this.typeBoutiques.set(response.data),
       error: (err) => console.error('Error loading type boutiques', err)
     });
   }
@@ -84,7 +84,7 @@ export class BoutiqueFormComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('photo', this.selectedFile);
     }
-    
+
     const obs = this.isEdit()
       ? this.boutiqueService.updateBoutique(this.boutique()._id!, formData)
       : this.boutiqueService.createBoutique(formData);
@@ -94,9 +94,9 @@ export class BoutiqueFormComponent implements OnInit {
         this.loading.set(false);
         if (this.user?.role === 'admin') {
           this.router.navigate(['/home/boutique']);
-        } else {  
-        // this.router.navigate(['/home/boutique',this.user?.boutique]);
-        alert('Boutique modifiée avec succès !');
+        } else {
+          // this.router.navigate(['/home/boutique',this.user?.boutique]);
+          alert('Boutique modifiée avec succès !');
         }
       },
       error: (err) => {

@@ -1,5 +1,7 @@
 const User = require("../models/utilisateur.model");
 const jwt = require("jsonwebtoken");
+const Achat = require("../models/achat.model");
+const AchatInfo = require("../models/achatInfo.model");
 
 // Inscription d'un nouvel utilisateur
 exports.register = async (req, res) => {
@@ -49,28 +51,28 @@ const loginWithRole = async (req, res, requiredRole) => {
             process.env.JWT_SECRET || "fallback_secret",
             { expiresIn: "1d" }
         );
-        if ( user.role === "boutique" ) {
-        res.json({
-            token,
-            user: {
-                id: user._id,
-                nom: user.nom,
-                email: user.email,
-                role: user.role,
-                boutique: user.boutique, 
-            },
-        });
-    } else {
-        res.json({
-            token,
-            user: {
-                id: user._id,
-                nom: user.nom,
-                email: user.email,
-                role: user.role,
-            },
-        });
-    }
+        if (user.role === "boutique") {
+            res.json({
+                token,
+                user: {
+                    id: user._id,
+                    nom: user.nom,
+                    email: user.email,
+                    role: user.role,
+                    boutique: user.boutique,
+                },
+            });
+        } else {
+            res.json({
+                token,
+                user: {
+                    id: user._id,
+                    nom: user.nom,
+                    email: user.email,
+                    role: user.role,
+                },
+            });
+        }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -89,6 +91,63 @@ exports.getMe = async (req, res) => {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
         res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// --- Admin Methods ---
+
+exports.getAllAcheteurs = async (req, res) => {
+    try {
+        const users = await User.find({ role: "acheteur", isDeleted: false }).select("-motDePasse");
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.toggleUserActive = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+        user.isActive = !user.isActive;
+        await user.save();
+        res.json({ message: `Compte ${user.isActive ? "activé" : "désactivé"}`, isActive: user.isActive });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { isDeleted: true, isActive: false },
+            { new: true }
+        );
+        if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+        res.json({ message: "Utilisateur supprimé (soft delete)" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getUserOrderHistory = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select("-motDePasse");
+        if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+
+        const achats = await Achat.find({ client: req.params.id }).sort({ createdAt: -1 });
+
+        const achatsWithDetails = await Promise.all(
+            achats.map(async (achat) => {
+                const lignes = await AchatInfo.find({ achat: achat._id }).populate("produit");
+                return { ...achat.toObject(), lignes };
+            })
+        );
+
+        res.json({ user, achats: achatsWithDetails });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

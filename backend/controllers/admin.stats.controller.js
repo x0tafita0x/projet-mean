@@ -13,7 +13,11 @@ exports.getStats = async (req, res) => {
         if (startDate || endDate) {
             matchStage.createdAt = {};
             if (startDate) matchStage.createdAt.$gte = new Date(startDate);
-            if (endDate) matchStage.createdAt.$lte = new Date(endDate);
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+                matchStage.createdAt.$lte = end;
+            }
         }
         if (boutiqueId) {
             matchStage.boutique = new mongoose.Types.ObjectId(boutiqueId);

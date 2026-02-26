@@ -40,8 +40,8 @@ export class SousTypeProduitFormComponent implements OnInit {
   }
 
   loadTypes() {
-    this.produitService.getTypeProduits().subscribe({
-      next: (data) => this.typeProduits.set(data),
+    this.produitService.getTypeProduits({ limit: 1000 }).subscribe({
+      next: (response) => this.typeProduits.set(response.data),
       error: (err) => console.error('Error loading types', err)
     });
   }

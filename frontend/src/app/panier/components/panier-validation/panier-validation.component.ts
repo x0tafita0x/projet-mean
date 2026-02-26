@@ -21,13 +21,13 @@ import autoTable from 'jspdf-autotable';
 })
 export class PanierValidationComponent implements OnInit {
   private panierService = inject(PanierService);
-     private authService = inject(AuthService);
-     private achatService = inject(AchatService);
-     private stockService = inject(StockService);
-     private router = inject(Router);
+  private authService = inject(AuthService);
+  private achatService = inject(AchatService);
+  private stockService = inject(StockService);
+  private router = inject(Router);
 
   canValidate = signal(false);
-    paniers = signal<PanierList[]>([]);
+  paniers = signal<PanierList[]>([]);
   PaniertoValidate = signal<Panier[]>([]);
   RefBoutique = signal<Panier[]>([]);
   total = signal(0);
@@ -50,31 +50,18 @@ export class PanierValidationComponent implements OnInit {
           this.router.navigate(['/home/panier']);
         }
       }
-    }
-  });
-  this.purify();
-  this.user = this.authService.currentUser();
-}
+      this.purify();
+    });
+    this.user = this.authService.currentUser();
+  }
 
-createRefBoutiqueStock(){
-   for (const panier of this.paniers()) {
-      const panierIntermediaire: Panier = {
-        _id: panier._id,
-        utilisateur: panier.utilisateur,
-        produit: panier.produit._id,
-        prix: panier.prixActuel,
-        quantite: panier.quantite,
-        etat: 'validé',
-        typeCommande: panier.typeCommande,
-        boutique: panier.produit.boutique.nom
-      };
-this.total.update(total => total + (panier.prixActuel * panier.quantite));
-      this.RefBoutique.update(list => [...list, panierIntermediaire]);
-    }
-}
+  purify() {
+    this.total.set(0);
+    this.PaniertoValidate.set([]);
+    this.RefBoutique.set([]);
 
-  purify(){
-     for (const panier of this.paniers()) {
+    for (const panier of this.paniers()) {
+      // For general validation
       const panierIntermediaire: Panier = {
         _id: panier._id,
         utilisateur: panier.utilisateur,
@@ -84,12 +71,16 @@ this.total.update(total => total + (panier.prixActuel * panier.quantite));
         etat: 'validé',
         typeCommande: panier.typeCommande
       };
-<<<<<<< admin
-      this.total.update(total => total + (panier.prix * panier.quantite));
-=======
-this.total.update(total => total + (panier.prixActuel * panier.quantite));
->>>>>>> develop
+
+      // For stock movement (with boutique)
+      const panierBoutique: Panier = {
+        ...panierIntermediaire,
+        boutique: panier.produit.boutique.nom
+      };
+
+      this.total.update(total => total + (panier.prixActuel * panier.quantite));
       this.PaniertoValidate.update(list => [...list, panierIntermediaire]);
+      this.RefBoutique.update(list => [...list, panierBoutique]);
     }
   }
 
@@ -98,6 +89,27 @@ this.total.update(total => total + (panier.prixActuel * panier.quantite));
     doc.text("Facture N°000123", 14, 20);
     autoTable(doc, { html: '.facture-table', startY: 30 });
     doc.save('facture.pdf');
+  }
+
+  createMouvementStock() {
+    const mouvementsStock = [];
+    for (const panier of this.RefBoutique()) {
+      const mouvementStockIntermediaire = {
+        produit: panier.produit,
+        in: '0',
+        out: panier.quantite.toString(),
+        boutique: panier.boutique || ''
+      };
+      mouvementsStock.push(mouvementStockIntermediaire);
+    }
+    this.stockService.createStocks(mouvementsStock).subscribe({
+      next: (response) => {
+        console.log('Mouvements de stock créés avec succès :', response);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la création des mouvements de stock :', error);
+      }
+    });
   }
 
   confirmerFacture() {
@@ -110,37 +122,11 @@ this.total.update(total => total + (panier.prixActuel * panier.quantite));
       return;
     }
 
-  doc.save('facture.pdf');
-}
-
-createMouvementStock() {
-  const mouvementsStock = [];
-  for (const panier of this.RefBoutique()) {
-    const mouvementStockIntermediaire = {
-      produit: panier.produit,
-      in: '0',
-      out: panier.quantite.toString(),
-      boutique : panier.boutique || ''
-    };
-    mouvementsStock.push(mouvementStockIntermediaire);
+    console.log('Facture confirmée', this.PaniertoValidate());
+    this.achatService.createAchat(this.PaniertoValidate());
+    this.createMouvementStock();
+    this.router.navigate(['/home/achat']);
   }
-  this.stockService.createStocks(mouvementsStock).subscribe({
-    next: (response) => {
-      console.log('Mouvements de stock créés avec succès :', response);
-    },
-    error: (error) => {
-      console.error('Erreur lors de la création des mouvements de stock :', error);
-    }
-  });
-}
-confirmerFacture() {
-  // Action à effectuer quand on confirme la facture
-  console.log('Facture confirmée', this.PaniertoValidate());
-  this.achatService.createAchat(this.PaniertoValidate());
-  this.createMouvementStock();
-  this.router.navigate(['/home/achat']);
-  // Ici tu peux déclencher l'export PDF, l'enregistrement, etc.
-}
 
   annulerFacture() {
     this.router.navigate(['/home/panier']);

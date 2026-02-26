@@ -1,61 +1,90 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { Router, RouterModule,ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProduitService } from '../../services/produit.services';
-import { Produit ,ProduitDetail, SousTypeProduit } from '../../../produit/models/produit.models';
+import { Produit, ProduitDetail, SousTypeProduit } from '../../../produit/models/produit.models';
 import { StockResponse } from '../../../stock/models/stock.models';
 import { StockService } from '../../../stock/services/stock.services';
 import { PanierService } from '../../../panier/services/panier.services';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { FavoriService } from '../../../favori/services/favori.services';
+import { FilterCriteria } from '../../../shared/models/pagination.models';
 
 @Component({
   selector: 'produit-list-acheteur',
-  standalone:true,
-  imports: [CommonModule,FormsModule,RouterModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './produit-list-acheteur.component.html',
   styleUrl: './produit-list-acheteur.component.css'
 })
 export class ProduitListAcheteurComponent {
 
-    private produitService = inject(ProduitService);  
-    private stockService = inject(StockService);
-    private panierService = inject(PanierService);
-    private route = inject(ActivatedRoute);
-    private authService = inject(AuthService);
-    private favoriService = inject(FavoriService);
+  private produitService = inject(ProduitService);
+  private stockService = inject(StockService);
+  private panierService = inject(PanierService);
+  private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
+  private favoriService = inject(FavoriService);
 
-    user : User | null = null;
-    produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
-    panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
-    showDetails = signal(false);
-    produits = signal<StockResponse[]>([]);
-    sousTypeProduits = signal<SousTypeProduit[]>([]);
-    prixProduit = signal<string>('0');
-    max_stock = signal<number>(0);
-    favori = signal<boolean>(false);
+  user: User | null = null;
+  filters = signal<FilterCriteria>({
+    nom: '',
+    sousTypeProduit: '',
+    order: 'asc'
+  });
+  produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
+  panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
+  showDetails = signal(false);
+  produits = signal<StockResponse[]>([]);
+  sousTypeProduits = signal<SousTypeProduit[]>([]);
+  prixProduit = signal<string>('0');
+  max_stock = signal<number>(0);
+  favori = signal<boolean>(false);
 
-    typeBoutique : string = '';
-    order : string = 'asc';
+  typeBoutique: string = '';
+  order: string = 'asc';
 
-ngOnInit() {
-  this.user = this.authService.currentUser();
+  ngOnInit() {
+    this.user = this.authService.currentUser();
     const id = this.route.snapshot.paramMap.get('id');
-this.loadProduits(id);
-this.loadSousTypeProduits();
+    this.loadProduits(id);
+    this.loadSousTypeProduits();
   }
 
- loadProduits(id: string | null) {
-    this.stockService.getProduits('',id || '','','','').subscribe({
-      next: (data) => this.produits.set(data),
+  applyFilters() {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.loadProduits(id);
+  }
+
+  resetFilters() {
+    this.filters.set({
+      nom: '',
+      sousTypeProduit: '',
+      order: 'asc'
+    });
+    this.applyFilters();
+  }
+
+  updateFilters(key: string, value: any) {
+    this.filters.update(prev => ({ ...prev, [key]: value }));
+  }
+
+  loadProduits(id: string | null) {
+    const criteria: FilterCriteria = {
+      ...this.filters(),
+      boutiqueId: id || '',
+      limit: 100
+    };
+    this.stockService.getProduits(criteria).subscribe({
+      next: (response) => this.produits.set(response.data),
       error: (err) => console.error('Error loading produits', err)
     });
   }
-  loadSousTypeProduits(){
-    this.produitService.getSousTypeProduits().subscribe({
-      next: (data) => this.sousTypeProduits.set(data),
+  loadSousTypeProduits() {
+    this.produitService.getSousTypeProduits({ limit: 1000 }).subscribe({
+      next: (response) => this.sousTypeProduits.set(response.data),
       error: (err) => console.error('Error loading sous type produits', err)
     });
   }
@@ -87,9 +116,9 @@ this.loadSousTypeProduits();
     this.produitSelectionne.set({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
   }
 
-  putData(produit : StockResponse , prix : string){
+  putData(produit: StockResponse, prix: string) {
     this.panierItem.set({
-      utilisateur: this.user?.id || '', 
+      utilisateur: this.user?.id || '',
       produit: produit._id || '',
       prix: parseFloat(prix),
       quantite: this.panierItem().quantite,
@@ -102,7 +131,7 @@ this.loadSousTypeProduits();
     if (this.panierItem().quantite > this.max_stock()) {
       alert(`Quantité demandée dépasse le stock disponible (${this.max_stock()}).`);
       return;
-    }else if (this.panierItem().quantite < 1) {
+    } else if (this.panierItem().quantite < 1) {
       alert(`Quantité doit être au moins 1.`);
       return;
     }
@@ -120,44 +149,44 @@ this.loadSousTypeProduits();
       },
       error: (err) => console.error('Error loading stock', err)
     });
- 
+
   }
 
   toggleFavori(produit: ProduitDetail, event: Event) {
-  event.stopPropagation(); // évite le clic sur la carte
-  if (this.favori()) {
-    this.favoriService.deleteFavori(produit._id).subscribe({
-      next: () => {
-        this.favori.set(false);
-        alert('Produit retiré des favoris');
+    event.stopPropagation(); // évite le clic sur la carte
+    if (this.favori()) {
+      this.favoriService.deleteFavori(produit._id).subscribe({
+        next: () => {
+          this.favori.set(false);
+          alert('Produit retiré des favoris');
+        },
+        error: (err) => {
+          console.error('Error removing favori', err);
+          alert('Erreur lors de la suppression du favori');
+        }
+      });
+    } else {
+      this.favoriService.createFavori({
+        utilisateur: this.user?.id || '',
+        produit: produit._id || ''
+      }).subscribe({
+        next: () => {
+          this.favori.set(true);
+          alert('Produit ajouté aux favoris');
+        },
+        error: (err) => {
+          console.error('Error adding favori', err);
+          alert('Erreur lors de l\'ajout du favori');
+        }
+      });
+    }
+  }
+  isFavori(produitId: string): void {
+    this.favoriService.isFavoriExist(produitId, this.user?.id || '').subscribe({
+      next: (data) => {
+        this.favori.set(data.length > 0);
       },
-      error: (err) => {
-        console.error('Error removing favori', err);
-        alert('Erreur lors de la suppression du favori');
-      }
-    });
-  } else {
-    this.favoriService.createFavori({
-      utilisateur: this.user?.id || '',
-      produit: produit._id || ''
-    }).subscribe({
-      next: () => {
-        this.favori.set(true);
-        alert('Produit ajouté aux favoris');
-      },
-      error: (err) => {
-        console.error('Error adding favori', err);
-        alert('Erreur lors de l\'ajout du favori');
-      }
+      error: (err) => console.error('Error checking favori', err)
     });
   }
-  }
-isFavori(produitId: string): void {
-  this.favoriService.isFavoriExist(produitId, this.user?.id || '').subscribe({
-    next: (data) => {
-      this.favori.set(data.length > 0);
-    },
-    error: (err) => console.error('Error checking favori', err)
-  });
-}
 }

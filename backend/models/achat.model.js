@@ -8,13 +8,9 @@ const AchatSchema = new mongoose.Schema(
     client: { type: mongoose.Schema.Types.ObjectId, ref: "utilisateur", required: true },
     boutique: { type: mongoose.Schema.Types.ObjectId, ref: "boutique", default: null },
     total: { type: Number, required: true },
-<<<<<<< admin
     commission: { type: Number, default: 0 },
-  },
-=======
     nombreItems: { type: Number, required: true }
- },
->>>>>>> develop
+  },
   { timestamps: true }
 );
 

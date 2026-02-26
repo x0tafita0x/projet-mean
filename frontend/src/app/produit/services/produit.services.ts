@@ -3,6 +3,7 @@ import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
 import { Produit, TypeProduit, SousTypeProduit, ProduitDetail } from '../models/produit.models';
 import { Boutique, TypeBoutique } from '../../boutique/models/boutique.models';
+import { PaginatedResponse, FilterCriteria } from '../../shared/models/pagination.models';
 
 @Injectable({
     providedIn: 'root'
@@ -15,25 +16,29 @@ export class ProduitService {
         return this.apiService.getList<Boutique[]>('boutique');
     }
 
-     getProduits(nom : string ,boutique : string,typeProduit : string,sousTypeProduit : string,order : string): Observable<Produit[]> {
+    getProduits(filters: FilterCriteria = {}): Observable<PaginatedResponse<Produit>> {
         const params: string[] = [];
 
-        if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
-        if (boutique) params.push(`boutique=${encodeURIComponent(boutique)}`);
-        if (typeProduit) params.push(`typeProduit=${encodeURIComponent(typeProduit)}`);
-        if (sousTypeProduit) params.push(`sousTypeProduit=${encodeURIComponent(sousTypeProduit)}`);
-        if (order) params.push(`order=${encodeURIComponent(order)}`);
-         
+        if (filters.page) params.push(`page=${filters.page}`);
+        if (filters.limit) params.push(`limit=${filters.limit}`);
+        if (filters.nom) params.push(`nom=${encodeURIComponent(filters.nom)}`);
+        if (filters.boutique) params.push(`boutique=${encodeURIComponent(filters.boutique)}`);
+        if (filters.typeProduit) params.push(`typeProduit=${encodeURIComponent(filters.typeProduit)}`);
+        if (filters.sousTypeProduit) params.push(`sousTypeProduit=${encodeURIComponent(filters.sousTypeProduit)}`);
+        if (filters.startDate) params.push(`startDate=${filters.startDate}`);
+        if (filters.endDate) params.push(`endDate=${filters.endDate}`);
+        if (filters.order) params.push(`order=${encodeURIComponent(filters.order)}`);
+
         // Coller tous les paramètres avec '&'
         const queryString = params.length ? '?' + params.join('&') : '';
 
-         return this.apiService.getList<Produit[]>(`produits${queryString}`);
-     }
-
-    getProduitsByBoutiqueId(id: string | null): Observable<Produit[]> {
-    return this.getProduits('', id || '', '', '', 'asc');
+        return this.apiService.getList<PaginatedResponse<Produit>>(`produits${queryString}`);
     }
-    
+
+    getProduitsByBoutiqueId(id: string | null): Observable<PaginatedResponse<Produit>> {
+        return this.getProduits({ boutique: id || '', order: 'asc' });
+    }
+
     getProduitById(id: string | null): Observable<ProduitDetail> {
         return this.apiService.getById<ProduitDetail>('produits', id || '');
     }
@@ -51,8 +56,12 @@ export class ProduitService {
     }
 
     // TypeProduits
-    getTypeProduits(): Observable<TypeProduit[]> {
-        return this.apiService.getList<TypeProduit[]>('type-sous-type/type-produit');
+    getTypeProduits(filters: FilterCriteria = {}): Observable<PaginatedResponse<TypeProduit>> {
+        const params: string[] = [];
+        if (filters.page) params.push(`page=${filters.page}`);
+        if (filters.limit) params.push(`limit=${filters.limit}`);
+        const queryString = params.length ? '?' + params.join('&') : '';
+        return this.apiService.getList<PaginatedResponse<TypeProduit>>(`type-sous-type/type-produit${queryString}`);
     }
 
     getTypeProduitById(id: string): Observable<TypeProduit> {
@@ -72,8 +81,12 @@ export class ProduitService {
     }
 
     // SousTypeProduits
-    getSousTypeProduits(): Observable<SousTypeProduit[]> {
-        return this.apiService.getList<SousTypeProduit[]>('type-sous-type/sous-type-produit');
+    getSousTypeProduits(filters: FilterCriteria = {}): Observable<PaginatedResponse<SousTypeProduit>> {
+        const params: string[] = [];
+        if (filters.page) params.push(`page=${filters.page}`);
+        if (filters.limit) params.push(`limit=${filters.limit}`);
+        const queryString = params.length ? '?' + params.join('&') : '';
+        return this.apiService.getList<PaginatedResponse<SousTypeProduit>>(`type-sous-type/sous-type-produit${queryString}`);
     }
 
     getSousTypeProduitById(id: string): Observable<SousTypeProduit> {

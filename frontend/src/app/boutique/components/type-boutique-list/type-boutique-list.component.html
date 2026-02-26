@@ -36,5 +36,10 @@
                 </tbody>
             </table>
         </div>
+        <div class="card-footer bg-white border-top-0 pt-0 pb-3" *ngIf="typeBoutiques().length > 0">
+            <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
+        </div>
     </div>
 </div>

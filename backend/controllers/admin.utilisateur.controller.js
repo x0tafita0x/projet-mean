@@ -1,12 +1,37 @@
 const User = require("../models/utilisateur.model");
 const Achat = require("../models/achat.model");
 const AchatInfo = require("../models/achatInfo.model");
+const { paginate } = require("../utils/pagination");
 
-// Voir tous les acheteurs (non supprimés)
+// Voir tous les acheteurs (non supprimés) avec pagination et filtre
 exports.getAllAcheteurs = async (req, res) => {
     try {
-        const users = await User.find({ role: "acheteur", isDeleted: false }).select("-motDePasse");
-        res.json(users);
+        const { page = 1, limit = 10, search = '' } = req.query;
+        const filter = { role: "acheteur", isDeleted: false };
+
+        if (search) {
+            filter.$or = [
+                { nom: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } }
+            ];
+        }
+
+        const result = await paginate(
+            User,
+            filter,
+            Number(page),
+            Number(limit),
+            "",
+            { nom: 1 }
+        );
+        // Remove passwords from results
+        result.data = result.data.map(u => {
+            const user = u.toObject();
+            delete user.motDePasse;
+            return user;
+        });
+
+        res.json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
