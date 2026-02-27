@@ -11,7 +11,10 @@ import { BoutiqueService } from '../../../boutique/services/boutique.services';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { FavoriService } from '../../../favori/services/favori.services';
+import { AvisNoteService } from '../../../avis-note/services/avis-note.services';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { AvisNote,AvisNoteList } from '../../../avis-note/models/avis-note.models';
+import { sign } from 'chart.js/helpers';
 
 @Component({
   selector: 'produit-list-acheteur',
@@ -29,6 +32,7 @@ export class ProduitListAcheteurComponent {
   private authService = inject(AuthService);
   private favoriService = inject(FavoriService);
   private boutiqueService = inject(BoutiqueService);
+  private avisNoteService = inject(AvisNoteService);
 
   user: User | null = null;
   filters = signal<FilterCriteria>({
@@ -51,6 +55,19 @@ export class ProduitListAcheteurComponent {
 
   typeBoutique: string = '';
   order: string = 'asc';
+  avisNoteInsert = signal<AvisNote>({ utilisateur: '', boutique: '', note: 0, avis: '' });
+
+showRatingModal = signal(false);
+rating = signal<number>(0);
+comment = signal<string>('');
+monAvisNote = signal<AvisNote>({
+  utilisateur: '',
+  boutique: '',
+  note: 0,
+  avis: ''
+});
+monAvisNoteExist = signal(false);
+editMode = signal(false);
 
   ngOnInit() {
     this.user = this.authService.currentUser();
@@ -59,6 +76,7 @@ export class ProduitListAcheteurComponent {
     this.loadBoutiqueDetails(id || '');
     this.loadSousTypeProduits();
     this.isFavori(id || '');
+    this.loadMonAvisNote(id || '');
   }
 
   applyFilters() {
@@ -207,4 +225,69 @@ export class ProduitListAcheteurComponent {
       error: (err) => console.error('Error checking favori', err)
     });
   }
+
+
+openRatingModal() {
+  this.showRatingModal.set(true);
+}
+
+closeRatingModal() {
+  console.log('Closing rating modal');
+  this.showRatingModal.set(false);
+  this.rating.set(0);
+  this.comment.set('');
+}
+
+setRating(value: number) {
+  this.rating.set(value);
+}
+
+doNothing() {}
+
+modifyRating() {
+  this.monAvisNoteExist.set(false);
+  this.editMode.set(true);
+}
+
+submitRating() {
+  if (this.rating() === 0) {
+    alert('Veuillez sélectionner un nombre d’étoiles');
+    return;
+  }
+
+  this.avisNoteInsert.set({
+    note: this.rating(),
+    avis: this.comment(),
+    utilisateur: this.user?.id || '', // ou autre id
+    boutique: this.boutique._id // id de la boutique concernée
+  });
+
+  const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
+    : this.avisNoteService.createAvisNote(this.avisNoteInsert());
+ obs.subscribe({
+    next: () => {
+      this.closeRatingModal();
+      this.loadMonAvisNote(this.boutique._id);
+      alert('Merci pour votre avis !');
+    },
+    error: (err) => console.error('Erreur', err)
+  });
+}
+loadMonAvisNote(boutiqueId: string) {
+  this.avisNoteService.getAvisNoteByUserAndBoutique(this.user?.id || '', boutiqueId).subscribe({
+    next: (data) => {
+      this.monAvisNote.set(data);
+      this.rating.set(data.note);
+      this.comment.set(data.avis || '');
+      this.monAvisNoteExist.set(true);
+    },
+    error: (err) => {
+      if (err.status === 404) {
+        this.monAvisNoteExist.set(false);
+      } else {  
+      console.error('Erreur', err);
+    }
+    }
+  });
+}
 }

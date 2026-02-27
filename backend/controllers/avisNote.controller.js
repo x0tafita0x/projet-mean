@@ -1,4 +1,4 @@
-
+const avisNote = require('../models/avisNote.model');
 // créer un avis note
 exports.createAvisNote = async (req, res) => {
   try {
@@ -26,9 +26,9 @@ exports.getAllAvisNotes = async (req, res) => {
 // trouver un avis note par ID
 exports.getAvisNoteById = async (req, res) => {
   try {
-    const avisNote = await avisNote.findById(req.params.id).populate("utilisateur", "nom").populate("boutique", "nom");
-    if (!avisNote) return res.status(404).json({ error: "Avis note non trouvé" });
-    res.json(avisNote);
+    const avisNoteInter = await avisNote.findById(req.params.id).populate("utilisateur", "nom").populate("boutique", "nom");
+    if (!avisNoteInter) return res.status(404).json({ error: "Avis note non trouvé" });
+    res.json(avisNoteInter);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -37,9 +37,9 @@ exports.getAvisNoteById = async (req, res) => {
 // mettre à jour un avis note
 exports.updateAvisNote = async (req, res) => {
   try {
-    const avisNote = await avisNote.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!avisNote) return res.status(404).json({ error: "Avis note non trouvé" });
-    res.json(avisNote);
+    const avisNoteInter = await avisNote.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!avisNoteInter) return res.status(404).json({ error: "Avis note non trouvé" });
+    res.json(avisNoteInter);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -48,10 +48,23 @@ exports.updateAvisNote = async (req, res) => {
 // supprimer un avis note
 exports.deleteAvisNote = async (req, res) => {
   try {
-    const avisNote = await avisNote.findByIdAndDelete(req.params.id);
-    if (!avisNote) return res.status(404).json({ error: "Avis note non trouvé" });
+    const avisNoteInter = await avisNote.findByIdAndDelete(req.params.id);
+    if (!avisNoteInter) return res.status(404).json({ error: "Avis note non trouvé" });
     res.json({ message: "Avis note supprimé" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getAvisNoteByUtilisateurAndBoutique = async (req, res) => {
+  try {
+    const { utilisateur, boutique } = req.query;
+    if (!utilisateur || !boutique) {
+      return res.status(400).json({ error: "utilisateur et boutique sont requis" });
+    }
+    const avisNoteInter = await avisNote.findOne({ utilisateur, boutique });
+    if (!avisNoteInter) return res.status(404).json({ error: "Avis note non trouvé" });
+    res.json(avisNoteInter);
+} catch (err) {    res.status(500).json({ error: err.message });
   }
 };

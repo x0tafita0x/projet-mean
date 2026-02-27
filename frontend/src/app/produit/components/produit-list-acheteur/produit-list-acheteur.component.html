@@ -8,9 +8,10 @@
     <div class="col-lg-12 col-12">
         <div class="custom-block">
             <a routerLink="/home"> <i class="bi bi-caret-left-fill"></i> Retour</a>
-            <h3> {{ boutique.nom }} <i class="bi favori-icon" [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
+            <div class="text-center"> <h3> {{ boutique.nom }} <i class="bi favori-icon" [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
                     (click)="toggleFavori(boutique._id, $event)">
-                </i></h3>
+                </i></h3></div>
+           
             <div class="card shadow-sm border-0 mb-4 bg-light">
                 <div class="card-body">
                     <div class="row g-3 align-items-end">
@@ -46,6 +47,43 @@
             </div>
 
         </div>
+        <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-warning btn-rate" (click)="openRatingModal()">
+                    <i class="bi bi-star-fill me-1"></i>{{monAvisNoteExist() ? 'Voir mon avis' : 'Noter / Avis'}}
+                </button>
+            </div>
+            <!-- Overlay sombre -->
+            <div class="overlayRating" *ngIf="showRatingModal()" (click)="closeRatingModal()"></div>
+
+            <!-- Modal -->
+            <div class="rating-modal" *ngIf="showRatingModal()">
+            <h4>{{monAvisNoteExist() ? 'Mon avis' : 'Donnez votre avis'}}</h4>
+
+            <!-- Étoiles -->
+            <div class="stars mb-3">
+                <i *ngFor="let star of [1,2,3,4,5]; let i = index"
+                class="bi"
+                [ngClass]="i < rating() ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
+                (click)="monAvisNoteExist()? doNothing() : setRating(i + 1)"             
+                >
+                </i>
+            </div>
+
+            <!-- Commentaire -->
+            <textarea 
+            [ngModel]="comment()" 
+            [readonly]="monAvisNoteExist()"
+            (ngModelChange)="comment.set($event)" 
+            placeholder="Votre commentaire..." 
+            rows="3">
+            </textarea>
+
+            <!-- Boutons -->
+            <div class="modal-actions mt-3" >
+                <button class="btn btn-secondary me-2" (click)="closeRatingModal()">Annuler</button>
+                <button class="btn btn-warning" (click)="!monAvisNoteExist()? submitRating(): modifyRating()">{{monAvisNoteExist() ? 'Modifier' : 'Envoyer'}}</button>
+            </div>
+            </div>
 
 
         <!-- OVERLAY -->

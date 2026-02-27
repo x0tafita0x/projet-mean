@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable,BehaviorSubject } from 'rxjs';
-import { avisNote,avisNoteList } from '../models/avis-note.models';
+import { AvisNote,AvisNoteList } from '../models/avis-note.models';
 
 
 
@@ -14,22 +14,25 @@ export class AvisNoteService {
 
     
    // Avis Note
-       getAvisNotes(): Observable<avisNoteList[]> {
-           return this.apiService.getList<avisNoteList[]>('avis-note');
+       getAvisNotes(): Observable<AvisNoteList[]> {
+           return this.apiService.getList<AvisNoteList[]>('avis-note');
        }
    
-       getAvisNoteById(id: string): Observable<avisNoteList> {
-           return this.apiService.getById<avisNoteList>('avis-note', id);
+       getAvisNoteById(id: string): Observable<AvisNoteList> {
+           return this.apiService.getById<AvisNoteList>('avis-note', id);
        }
    
-       createAvisNote(avisNote: avisNote): Observable<avisNote> {
-           return this.apiService.create<avisNote>('avis-note', avisNote);
+       createAvisNote(avisNote: AvisNote): Observable<AvisNote> {
+           return this.apiService.create<AvisNote>('avis-note', avisNote);
        }    
          
+       getAvisNoteByUserAndBoutique(userId: string, boutiqueId: string): Observable<AvisNote> {
+           return this.apiService.getSingle<AvisNote>(`avis-note/individu?utilisateur=${userId}&boutique=${boutiqueId}`);
+       }
    
-   
-       updateAvisNote(id: string, avisNote: avisNote): Observable<avisNote> {
-           return this.apiService.update<avisNote>(`avis-note/${id}`, avisNote);
+       updateAvisNote(id: string, avisNote: AvisNote): Observable<AvisNote> {
+        console.log(`Updating avis-note ${id} with data`, avisNote);
+           return this.apiService.update<AvisNote>(`avis-note/${id}`, avisNote);
        }
    
        deleteAvisNote(id: string): Observable<void> {

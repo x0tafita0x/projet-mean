@@ -1,4 +1,4 @@
-export interface avisNote {
+export interface AvisNote {
     _id?: string;
     utilisateur: string;
     boutique: string;
@@ -6,7 +6,7 @@ export interface avisNote {
     avis?: string;
 }
 
-export interface avisNoteList {
+export interface AvisNoteList {
     _id: string;
     utilisateur: {
         _id: string;
@@ -20,7 +20,7 @@ export interface avisNoteList {
     avis?: string;
 }
 
-export interface avisNoteStats {
+export interface AvisNoteStats {
     averageNote: number;
     totalAvis: number;
 }
