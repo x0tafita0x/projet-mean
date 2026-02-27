@@ -26,10 +26,14 @@ export class AchatDetailsComponent implements OnInit {
     total = signal(0);
     dateRecuperation = signal('');
     user : User | null = null;
+    today = new Date();
+    annuler = signal(false);
+    idAchat = signal('');
 
 
 ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    this.idAchat.set(id || '');
     this.loadAchatDetails(id);
     this.loadAchat(id);
     this.user = this.authService.currentUser();
@@ -44,7 +48,8 @@ loadAchatDetails(achatId: string | null) {
         this.achatsDetails.set(data);
         console.log('Achat details loaded', data);
         this.total.set(data.reduce((sum, item) => sum + item.prix * item.quantite, 0));
-        this.dateRecuperation.set(new Date(this.achatsDetails()[0].panier.dateHeureRecuperation || '').toLocaleDateString('fr-FR'));
+        this.dateRecuperation.set(new Date(this.achatsDetails()[0].panier.dateHeureRecuperation || '').toString());
+        this.peutAnnuler();
       }
         ,
         error: (err) => console.error('Error loading achat details', err)
@@ -62,7 +67,22 @@ loadAchat(achatId: string | null) {
         error: (err) => console.error('Error loading achat', err)
     });
 }
+peutAnnuler() {
+  const dateRecup = new Date(this.dateRecuperation());
+  this.annuler.set(dateRecup >= this.today);
+}
+ annulerCommande(achatInfoId: string | '') {
+  if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+     this.achatService.annulerAchat(achatInfoId).subscribe({
+    next: () => {
+      alert('Commande annulée avec succès !');
+      this.loadAchatDetails(this.idAchat());
+    },
+    error: (err) => console.error('Error annuling commande', err)
+  });
+  }
 
+ }
   exportPDF() {
   const doc = new jsPDF();
 const achat = this.achat();

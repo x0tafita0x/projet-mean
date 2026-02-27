@@ -48,5 +48,8 @@ export class AchatService {
   getAchatRecent(id : string | ''): Observable<Achat[]> {
     return this.apiService.getList<Achat[]>(`achat/recent?client=${id}`);
   }
+  annulerAchat(achatInfoId: string): Observable<void> {
+    return this.apiService.getById('achat/to-annule', achatInfoId);
+  }
 
 }

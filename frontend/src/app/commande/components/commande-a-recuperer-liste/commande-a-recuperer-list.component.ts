@@ -105,7 +105,7 @@ export class CommandeARecupererListComponent implements OnInit {
   validerProduits() {
     const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
 
-    this.commandeService.updateCommandeToPayeEtRecupere(achatId).subscribe({
+    this.commandeService.updateCommandeToPayeEtRecupere(achatId,this.user?.boutique || "").subscribe({
       next: () => {
         alert('Commande mise à jour avec succès !');
 

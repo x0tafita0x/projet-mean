@@ -223,6 +223,7 @@ exports.commandeDetails = async (req, res) => {
         const achatDetails = await achatInfo.find(filter).populate({
             path: 'panier',
             select: 'utilisateur',
+            match: { etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f") } },
             populate: {
                 path: 'produit',
                 select: 'nom photo',
@@ -247,10 +248,10 @@ exports.commandeDetails = async (req, res) => {
 
 exports.ChangeToCommandeARecuperer = async (req, res) => {
     try {
-        const { achatId } = req.params;
+        const { achatId,boutiqueId } = req.params;
         const etat = new mongoose.Types.ObjectId("6997d981319cef48fa23a815"); // ID de l'état "Commande à récupérer"
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId) },
+            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId),  etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f")  } },
             { $set: { etat: etat } }
         );
         res.status(200).json(result);
@@ -260,10 +261,10 @@ exports.ChangeToCommandeARecuperer = async (req, res) => {
 };
 exports.ChangeToCommandePayeEtRecupere = async (req, res) => {
     try {
-        const { achatId } = req.params;
+        const { achatId,boutiqueId } = req.params;
         const etat = new mongoose.Types.ObjectId("6997d98f319cef48fa23a818"); // ID de l'état "Commande payée et récupérée"
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId) },
+            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId), etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f")  } },
             { $set: { etat: etat } }
         );
         res.status(200).json(result);
@@ -271,6 +272,20 @@ exports.ChangeToCommandePayeEtRecupere = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+exports.ChangeToCommandeAnnule = async (req, res) => {
+    try {
+        const { achatInfoId } = req.params;
+        const etat = new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f"); // ID de l'état "Commande annulée"
+        const result = await achatInfo.updateMany(
+            { _id: new mongoose.Types.ObjectId(achatInfoId) },
+            { $set: { etat: etat } }
+        );
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
 
 // --- Admin Methods ---
 
