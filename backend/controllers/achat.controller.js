@@ -86,8 +86,11 @@ exports.getAchatDetails = async (req, res) => {
 };
 
 exports.achatRecent = async (req, res) => {
+    const { client } = req.query;
+    const filter = {};
+    if (client) filter.client = client;
     try {
-        const recentAchats = await achat.find().sort({ createdAt: -1 }).limit(3).populate('etat');
+        const recentAchats = await achat.find(filter).sort({ createdAt: -1 }).limit(3);
         res.status(200).json(recentAchats);
     } catch (err) {
         res.status(400).json({ error: err.message });

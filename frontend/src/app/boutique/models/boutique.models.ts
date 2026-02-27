@@ -20,6 +20,21 @@ export interface Boutique {
     totalAvis?: number;
 }
 
+export interface BoutiqueNote {
+    _id?: string;
+    nom: string;
+    typeBoutique: string | TypeBoutique;
+    heureOuverture: string;
+    heureFermeture: string;
+    nbJoursOuverture: string;
+    photo?: string;
+    isOuverte?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    moyenneNote: number;
+    totalAvis: number;
+}
+
 export interface BoutiqueDashboardStats {
     kpis: {
         produits: {

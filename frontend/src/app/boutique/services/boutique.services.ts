@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../../shared/service/api.service';
 import { Observable } from 'rxjs';
-import { Boutique, TypeBoutique, BoutiqueDashboardStats } from '../models/boutique.models';
+import { Boutique, TypeBoutique, BoutiqueDashboardStats, BoutiqueNote } from '../models/boutique.models';
 import { PaginatedResponse, FilterCriteria } from '../../shared/models/pagination.models';
 
 @Injectable({
@@ -36,6 +36,23 @@ export class BoutiqueService {
     }
 
     // Boutiques
+    getBoutiquesNote(filters: FilterCriteria = {}): Observable<PaginatedResponse<BoutiqueNote>> {
+        const params: string[] = [];
+
+        if (filters.page) params.push(`page=${filters.page}`);
+        if (filters.limit) params.push(`limit=${filters.limit}`);
+        if (filters.nom) params.push(`nom=${encodeURIComponent(filters.nom)}`);
+        if (filters.typeBoutique) params.push(`typeBoutique=${encodeURIComponent(filters.typeBoutique)}`);
+        if (filters.nbJoursOuverture) params.push(`nbJoursOuverture=${encodeURIComponent(filters.nbJoursOuverture)}`);
+        if (filters.startDate) params.push(`startDate=${filters.startDate}`);
+        if (filters.endDate) params.push(`endDate=${filters.endDate}`);
+        if (filters.order) params.push(`order=${encodeURIComponent(filters.order)}`);
+
+        // Coller tous les paramètres avec '&'
+        const queryString = params.length ? '?' + params.join('&') : '';
+
+        return this.apiService.getList<PaginatedResponse<BoutiqueNote>>(`boutique${queryString}`);
+    }
     getBoutiques(filters: FilterCriteria = {}): Observable<PaginatedResponse<Boutique>> {
         const params: string[] = [];
 

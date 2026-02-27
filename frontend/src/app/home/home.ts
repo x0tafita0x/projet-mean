@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/services/auth.service';
 import { BoutiqueService } from '../boutique/services/boutique.services';
 import { User } from '../auth/models/auth.models';
-import { Boutique, TypeBoutique } from '../boutique/models/boutique.models';
+import { Boutique, BoutiqueNote, TypeBoutique } from '../boutique/models/boutique.models';
 import { Achat } from '../achat/models/achat.models';
 import { AchatService } from '../achat/services/achat.services';
 import { FilterCriteria } from '../shared/models/pagination.models';
@@ -24,7 +24,7 @@ export class Home {
   private achatService = inject(AchatService);
 
   user: User | null = null;
-  boutiques = signal<Boutique[]>([]);
+  boutiques = signal<BoutiqueNote[]>([]);
   typeBoutiques = signal<TypeBoutique[]>([]);
   recentAchats = signal<Achat[]>([]);
   filters = signal<FilterCriteria>({
@@ -38,7 +38,7 @@ export class Home {
     this.user = this.authService.currentUser();
     this.filterBoutiques();
     this.loadTypeBoutique();
-    // this.getRecentAchats();
+    this.getRecentAchats();
     this.minuteTimer = setInterval(() => {
       this.calculerEtat();
     }, 30000);
@@ -75,7 +75,7 @@ export class Home {
   }
 
   filterBoutiques() {
-    this.boutiqueService.getBoutiques({
+    this.boutiqueService.getBoutiquesNote({
       ...this.filters(),
       limit: 100
     }).subscribe({
@@ -86,16 +86,16 @@ export class Home {
       error: (err) => console.error('Error loading boutiques', err)
     });
   }
-  // getRecentAchats(): void {
-  //   this.achatService.getAchatRecent().subscribe({
-  //     next: (data) => {
-  //       this.recentAchats.set(data);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error fetching recent achats:', err);
-  //     }
-  //   });
-  // }
+  getRecentAchats(): void {
+    this.achatService.getAchatRecent(this.user?.id || '').subscribe({
+      next: (data) => {
+        this.recentAchats.set(data);
+      },
+      error: (err) => {
+        console.error('Error fetching recent achats:', err);
+      }
+    });
+  }
   calculerEtat() {
     const now = new Date();
     this.boutiques.set(this.boutiques().map(b => ({

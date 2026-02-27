@@ -1,6 +1,6 @@
 import { Component, OnInit, Signal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AchatService } from '../../../achat/services/achat.services';
 import { Achat, AchatDetails } from '../../../achat/models/achat.models';
@@ -12,7 +12,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 @Component({
   selector: 'app-achat-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './achat-details.component.html',
   styleUrls: ['./achat-details.component.css']
 })
