@@ -15,6 +15,7 @@ exports.createMouvementProduit = async (req, res) => {
 // créer plusieurs mouvements de produit
 exports.createMouvementsProduits = async (req, res) => {
   try {
+    console.log("Received data for multiple movements:", req.body);
     const mouvementProduits = await MouvementProduit.insertMany(req.body);
     res.status(201).json(mouvementProduits);
   } catch (err) {

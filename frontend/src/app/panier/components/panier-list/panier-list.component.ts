@@ -36,7 +36,10 @@ export class PanierListComponent implements OnInit {
 
   loadPanier() {
     this.panierService.getPaniersByUtilisateur(this.user?.id || null).subscribe({
-      next: (data) => this.paniers.set(data),
+      next: (data) => {
+        console.log('Loaded panier items:', data);
+        this.paniers.set(data);
+      },
       error: (err) => console.error('Error loading panier items', err)
     });
   }

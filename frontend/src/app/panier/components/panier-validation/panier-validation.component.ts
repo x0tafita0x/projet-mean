@@ -75,9 +75,9 @@ export class PanierValidationComponent implements OnInit {
       // For stock movement (with boutique)
       const panierBoutique: Panier = {
         ...panierIntermediaire,
-        boutique: panier.produit.boutique.nom
+        boutique: panier.boutique._id || ''
       };
-
+      console.log('Panier à valider:', panier.boutique._id);
       this.total.update(total => total + (panier.prixActuel * panier.quantite));
       this.PaniertoValidate.update(list => [...list, panierIntermediaire]);
       this.RefBoutique.update(list => [...list, panierBoutique]);

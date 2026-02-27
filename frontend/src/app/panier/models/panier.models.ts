@@ -19,11 +19,13 @@ export interface PanierList {
         _id: string;
         nom: string;
         photo?: string;
-        boutique : {
-            nom: string;
-        }
+        
     };
     etat: {
+        _id: string;
+        nom: string;
+    };
+    boutique: {
         _id: string;
         nom: string;
     };
