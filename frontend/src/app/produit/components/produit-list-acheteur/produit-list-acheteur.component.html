@@ -80,7 +80,8 @@
 
             <!-- Boutons -->
             <div class="modal-actions mt-3" >
-                <button class="btn btn-secondary me-2" (click)="closeRatingModal()">Annuler</button>
+                <button class="btn btn-secondary me-2" (click)="closeRatingModal()" *ngIf="!monAvisNoteExist()">Annuler</button>
+                <button class="btn btn-danger me-2" (click)="deleteRating()" *ngIf="monAvisNoteExist()">Supprimer</button>
                 <button class="btn btn-warning" (click)="!monAvisNoteExist()? submitRating(): modifyRating()">{{monAvisNoteExist() ? 'Modifier' : 'Envoyer'}}</button>
             </div>
             </div>

@@ -234,8 +234,10 @@ openRatingModal() {
 closeRatingModal() {
   console.log('Closing rating modal');
   this.showRatingModal.set(false);
+  if (!this.monAvisNoteExist()) {
   this.rating.set(0);
   this.comment.set('');
+  }
 }
 
 setRating(value: number) {
@@ -289,5 +291,18 @@ loadMonAvisNote(boutiqueId: string) {
     }
     }
   });
+}
+
+deleteRating() {
+  if (confirm('Êtes-vous sûr de vouloir supprimer votre avis ?')) {
+    this.avisNoteService.deleteAvisNote(this.monAvisNote()._id || '').subscribe({
+      next: () => {
+        this.monAvisNoteExist.set(false);
+        this.closeRatingModal();
+        alert('Votre avis a été supprimé');
+      },
+      error: (err) => console.error('Erreur', err)
+    });
+  }
 }
 }
