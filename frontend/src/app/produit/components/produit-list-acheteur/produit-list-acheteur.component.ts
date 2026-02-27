@@ -263,6 +263,13 @@ submitRating() {
     utilisateur: this.user?.id || '', // ou autre id
     boutique: this.boutique._id // id de la boutique concernée
   });
+  if (this.rating() < 0) {
+    alert('La note ne peut pas être négative');
+    return;
+  }else if (this.rating() > 5) {
+    alert('La note ne peut pas être supérieure à 5');
+    return;
+  }
 
   const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
     : this.avisNoteService.createAvisNote(this.avisNoteInsert());

@@ -4,8 +4,8 @@
   <div class="ticket-header">
     <h2 class="shop-name">{{ data.boutique }}</h2>
     <p>Antananarivo</p>
-    <p>Tél : 034 00 000 00</p>
-    <p class="separator">-----------------------------</p>
+    <p>Tél : {{ data.numeroTelephone }}</p>
+    <p class="separator">-------------------------</p>
   </div>
 
   <!-- INFOS COMMANDE -->
@@ -14,7 +14,7 @@
     <p>Date Paiement: {{ datePaiement }}</p>
     <p>Commande : #CMD-{{ data.idFFacture }}</p>
     <p>Client : {{ data.client }}</p>
-    <p class="separator">-----------------------------</p>
+    <p class="separator">-------------------------</p>
   </div>
 
   <!-- LISTE PRODUITS -->
@@ -32,7 +32,7 @@
 
   </div>
 
-  <p class="separator">-----------------------------</p>
+  <p class="separator">-------------------------</p>
 
   <!-- TOTAUX -->
   <div class="ticket-total">
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <p class="separator">-----------------------------</p>
+  <p class="separator">-------------------------</p>
 
   <!-- PIED -->
   <div class="ticket-footer">

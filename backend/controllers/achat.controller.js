@@ -74,7 +74,7 @@ exports.getAchatDetails = async (req, res) => {
                 select: 'nom',
                 populate: {
                     path: 'boutique',
-                    select: 'nom'
+                    select: 'nom numeroTelephone',
                 }
             }
         });
@@ -226,8 +226,8 @@ exports.commandeDetails = async (req, res) => {
                 populate: [
                     {
                         path: 'boutique',
-                        select: 'nom',
-                        match: { _id: boutiqueId } // ton filtre
+                        select: 'nom numeroTelephone',
+                        match: { _id: boutiqueId } 
                     },
                     {
                         path: 'sousTypeProduit',
