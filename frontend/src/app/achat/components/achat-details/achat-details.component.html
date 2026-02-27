@@ -10,7 +10,8 @@
   <!-- Infos client -->
   <div class="client-info">
     <p><strong>Client :</strong> {{ user?.nom }}</p>
-    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'dd/MM/yyyy' }}</p>
+    <p><strong>Date de récupération :</strong> {{ dateRecuperation() }}</p>
   </div>
 
   <!-- Tableau produits -->
@@ -22,6 +23,7 @@
         <th>Quantité</th>
         <th>Prix unitaire (MGA)</th>
         <th>Total (MGA)</th>
+        <th>Etat</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +33,7 @@
         <td>{{ achatDetails.quantite }}</td>
         <td>{{ achatDetails.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ achatDetails.etat.nom }}</td>
       </tr>
     </tbody>
     <tfoot>

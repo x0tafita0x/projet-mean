@@ -67,8 +67,9 @@ exports.getAchatsByUser = async (req, res) => {
 exports.getAchatDetails = async (req, res) => {
     try {
         const achatId = req.params.achatId;
-        const achatDetails = await achatInfo.find({ achat: achatId }).populate({
+        const achatDetails = await achatInfo.find({ achat: achatId }).populate([{
             path: 'panier',
+            select: 'dateHeureRecuperation',
             populate: {
                 path: 'produit',
                 select: 'nom',
@@ -77,7 +78,7 @@ exports.getAchatDetails = async (req, res) => {
                     select: 'nom numeroTelephone',
                 }
             }
-        });
+        },{ path: 'etat', select: 'nom' }]);
 
         res.status(200).json(achatDetails);
     } catch (err) {
@@ -109,12 +110,12 @@ exports.listCommmandes = async (req, res) => {
         const matchStage = { "produitDetails.boutique": boutiqueId, "etat": etatId };
 
         if (startDate || endDate) {
-            matchStage["achatDetails.createdAt"] = {};
-            if (startDate) matchStage["achatDetails.createdAt"].$gte = new Date(startDate);
+            matchStage["panierDetails.dateHeureRecuperation"] = {};
+            if (startDate) matchStage["panierDetails.dateHeureRecuperation"].$gte = new Date(startDate);
             if (endDate) {
                 const end = new Date(endDate);
                 end.setHours(23, 59, 59, 999);
-                matchStage["achatDetails.createdAt"].$lte = end;
+                matchStage["panierDetails.dateHeureRecuperation"].$lte = end;
             }
         }
 
@@ -165,6 +166,7 @@ exports.listCommmandes = async (req, res) => {
                     _id: '$achat',
                     totalPrix: { $sum: { $multiply: ["$quantite", "$prix"] } },
                     totalQuantite: { $sum: "$quantite" },
+                    dateRecuperation: { $first: "$panierDetails.dateHeureRecuperation" },
                     createdAt: { $first: "$achatDetails.createdAt" },
                     client: { $first: "$clientDetails.nom" },
                     etat: { $first: "$etat" }
@@ -175,7 +177,7 @@ exports.listCommmandes = async (req, res) => {
         const [commandes, totalCount] = await Promise.all([
             achatInfo.aggregate([
                 ...pipeline,
-                { $sort: { createdAt: 1 } },
+                { $sort: { dateRecuperation: -1 } },
                 { $skip: skip },
                 { $limit: Number(limit) },
                 {
@@ -183,6 +185,7 @@ exports.listCommmandes = async (req, res) => {
                         _id: 1,
                         totalPrix: 1,
                         totalQuantite: 1,
+                        dateRecuperation: 1,
                         createdAt: 1,
                         client: 1,
                         etat: 1

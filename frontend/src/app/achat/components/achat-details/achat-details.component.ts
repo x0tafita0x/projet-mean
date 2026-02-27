@@ -24,6 +24,7 @@ export class AchatDetailsComponent implements OnInit {
     achatsDetails = signal<AchatDetails[]>([]);
     achat = signal<Achat | null>(null);
     total = signal(0);
+    dateRecuperation = signal('');
     user : User | null = null;
 
 
@@ -41,7 +42,9 @@ loadAchatDetails(achatId: string | null) {
     this.achatService.getAchatDetails(achatId).subscribe({
       next: (data) => {
         this.achatsDetails.set(data);
+        console.log('Achat details loaded', data);
         this.total.set(data.reduce((sum, item) => sum + item.prix * item.quantite, 0));
+        this.dateRecuperation.set(new Date(this.achatsDetails()[0].panier.dateHeureRecuperation || '').toLocaleDateString('fr-FR'));
       }
         ,
         error: (err) => console.error('Error loading achat details', err)

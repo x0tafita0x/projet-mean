@@ -23,7 +23,7 @@ export class PanierListComponent implements OnInit {
      private stockService = inject(StockService);
   canValidate = signal(false);
   paniers = signal<PanierList[]>([]);
-  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
+  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours'});
   PaniertoValidate = signal<Panier[]>([]);
     user : User | null = null;
     max_stock = signal<number>(0);
@@ -83,8 +83,7 @@ export class PanierListComponent implements OnInit {
         produit: panier.produit._id,
         prix: panier.prixActuel,
         quantite: this.panierUpdated().quantite,
-        etat: 'validé',
-        typeCommande: panier.typeCommande
+        etat: 'validé'
       });
       this.panierService.updatePanier(panier._id!, this.panierUpdated()).subscribe({
         next: () => this.loadPanier(),

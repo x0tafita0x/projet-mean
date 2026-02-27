@@ -72,7 +72,7 @@ export class PanierValidationComponent implements OnInit {
         prix: panier.prixActuel,
         quantite: panier.quantite,
         etat: 'validé',
-        typeCommande: panier.typeCommande
+        dateHeureRecuperation: panier.dateHeureRecuperation
       };
 
       // For stock movement (with boutique)

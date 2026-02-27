@@ -6,7 +6,6 @@ export interface Panier {
     quantite: number;
     promotion?: string;
     etat: string;
-    typeCommande: string;
     boutique?: string;
     dateHeureRecuperation?: string;
 }
@@ -32,7 +31,6 @@ export interface PanierList {
     prixActuel: number;
     quantite: number;
     promotion?: string;
-    typeCommande: string;
     dateHeureRecuperation?: string;
     createdAt: string;
     updatedAt: string;

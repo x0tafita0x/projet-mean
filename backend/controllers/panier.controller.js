@@ -18,10 +18,11 @@ exports.validerPaniers = async (req, res) => {
     const paniers = req.body; // tableau
 
     const ids = paniers.map(p => p._id);
+    const dateHeureRecuperation = paniers.map(p => p.dateHeureRecuperation);
 
     const result = await Panier.updateMany(
       { _id: { $in: ids } },
-      { $set: { etat: '6997d956319cef48fa23a812' } }
+      { $set: { etat: '6997d956319cef48fa23a812', dateHeureRecuperation: dateHeureRecuperation[0] } }
     );
 
     res.json({result});

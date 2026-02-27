@@ -12,6 +12,7 @@ export interface AchatDetails {
     _id?: string;
     panier: {
         _id: string;
+        dateHeureRecuperation: string;
          produit: {
         _id: string;
         nom: string;
@@ -24,4 +25,8 @@ export interface AchatDetails {
    ,
     prix: number;
     quantite: number;
+    etat:{
+        _id: string;
+        nom: string;
+    };
 }

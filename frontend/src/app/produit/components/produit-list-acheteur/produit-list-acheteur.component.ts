@@ -41,7 +41,7 @@ export class ProduitListAcheteurComponent {
     order: 'asc'
   });
   produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
-  panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
+  panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', dateHeureRecuperation: '' });
   showDetails = signal(false);
   produits = signal<StockResponse[]>([]);
   sousTypeProduits = signal<SousTypeProduit[]>([]);
@@ -158,7 +158,7 @@ editMode = signal(false);
       prix: parseFloat(prix),
       quantite: this.panierItem().quantite,
       etat: '6997d94d319cef48fa23a80f',
-      typeCommande: 'normal'
+      dateHeureRecuperation:  '',
     });
   }
 
