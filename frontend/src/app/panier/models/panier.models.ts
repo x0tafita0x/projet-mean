@@ -8,7 +8,7 @@ export interface Panier {
     etat: string;
     typeCommande: string;
     boutique?: string;
-    dateHeureRecuperation?: Date;
+    dateHeureRecuperation?: string;
 }
 
 
@@ -33,7 +33,7 @@ export interface PanierList {
     quantite: number;
     promotion?: string;
     typeCommande: string;
-    dateHeureRecuperation?: Date;
+    dateHeureRecuperation?: string;
     createdAt: string;
     updatedAt: string;
     edit: boolean;

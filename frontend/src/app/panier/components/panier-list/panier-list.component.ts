@@ -7,6 +7,7 @@ import { Panier, PanierList } from '../../models/panier.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { StockService } from '../../../stock/services/stock.services';
+import { sign } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-panier-list',
@@ -26,6 +27,9 @@ export class PanierListComponent implements OnInit {
   PaniertoValidate = signal<Panier[]>([]);
     user : User | null = null;
     max_stock = signal<number>(0);
+  dateRecuperation = new Date().toISOString().split('T')[0]; 
+  dateMin = new Date().toISOString().split('T')[0];
+  showDateModal = signal(false);
 
 
 
@@ -109,13 +113,26 @@ export class PanierListComponent implements OnInit {
       this.canValidate.set(anySelected);  
   }
 
+  addDateRecuperation(panier: PanierList[]) {
+    const dateRecuperation = new Date(this.dateRecuperation);
+    if (dateRecuperation < new Date()) {
+      alert('La date de récupération doit être dans le futur.');
+      return;
+    }
+    console.log('Date de récupération sélectionnée :', this.dateRecuperation);
+    panier.forEach(p => {
+      p.dateHeureRecuperation = this.dateRecuperation.split('T')[0];
+    }
+    );
+  }
+
   validerPanier() {
     const paniersToValidateIntermedaire = this.paniers().filter(p => p.selected);
     if (paniersToValidateIntermedaire.length === 0) {
       alert('Veuillez sélectionner au moins un panier à valider.');
       return;
     }
-   
+   this.addDateRecuperation(paniersToValidateIntermedaire);
     this.panierService.sendData(paniersToValidateIntermedaire);
     console.log('Paniers à valider :', paniersToValidateIntermedaire);
      sessionStorage.setItem('produitSelected', JSON.stringify(paniersToValidateIntermedaire));
@@ -141,5 +158,14 @@ export class PanierListComponent implements OnInit {
     if (confirm('Êtes-vous sûr de vouloir supprimer les paniers sélectionnés ?')) {
       paniersToDelete.forEach(p => this.deletePanier(p._id!));
     }
+  }
+
+
+  openDateModal() {
+    this.showDateModal.set(true);
+    console.log('Ouverture du popup de date de récupération', this.showDateModal());
+  }
+  closeDateModal() {
+    this.showDateModal.set(false);
   }
   }

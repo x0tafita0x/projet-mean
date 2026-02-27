@@ -11,6 +11,7 @@ import { User } from '../../../auth/models/auth.models';
 import { ApiService } from '../../../shared/service/api.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { sign } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-panier-validation',
@@ -32,7 +33,8 @@ export class PanierValidationComponent implements OnInit {
   RefBoutique = signal<Panier[]>([]);
   total = signal(0);
   date = new Date();
-  dateString = this.date.toLocaleDateString('fr-FR');
+  dateCommande = this.date.toLocaleDateString('fr-FR');
+  dateRecuperation = signal('');
   user: User | null = null;
   confirming = false;
   confirmed = false;
@@ -53,6 +55,7 @@ export class PanierValidationComponent implements OnInit {
       this.purify();
     });
     this.user = this.authService.currentUser();
+    this.getDateRecuperation();
   }
 
   purify() {
@@ -83,6 +86,10 @@ export class PanierValidationComponent implements OnInit {
       this.RefBoutique.update(list => [...list, panierBoutique]);
     }
   }
+
+getDateRecuperation() {
+  this.dateRecuperation.set(new Date(this.paniers()[0].dateHeureRecuperation || '').toLocaleDateString('fr-FR'));
+}
 
   exportPDF() {
     const doc = new jsPDF();
