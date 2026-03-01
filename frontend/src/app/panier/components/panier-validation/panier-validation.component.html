@@ -28,16 +28,16 @@
     <tbody>
       <tr *ngFor="let panier of paniers()">
         <td>{{ panier.produit.nom }}</td>
-        <td>{{ panier.produit.boutique.nom }}</td>
+        <td>{{ panier.boutique.nom }}</td>
         <td>{{ panier.quantite }}</td>
-        <td>{{ panier.prixActuel | currency:'MGA ':'symbol':'1.0-0' }}</td>
-        <td> {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ panier.prixActuel | number:'1.0-0' }} MGA</td>
+        <td> {{ (+panier.prixActuel) * (+panier.quantite) | number:'1.0-0' }} MGA</td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <th colspan="4" class="text-end">Total :</th>
-        <th>{{ this.total() | currency:'MGA ':'symbol':'1.0-0' }}</th>
+        <th>{{ this.total() | number:'1.0-0' }} MGA</th>
       </tr>
     </tfoot>
   </table>
@@ -63,8 +63,8 @@
   @if (confirmed && achatResult) {
   <div class="alert alert-success mt-4">
     <h5 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Achat validé !</h5>
-    <p class="mb-1">Total : <strong>{{ achatResult.total | currency:'MGA ':'symbol':'1.0-0' }}</strong></p>
-    <p class="mb-1">Commission centre : <strong>{{ achatResult.commission | currency:'MGA ':'symbol':'1.0-0' }}</strong>
+    <p class="mb-1">Total : <strong>{{ achatResult.total | number:'1.0-0' }} MGA</strong></p>
+    <p class="mb-1">Commission centre : <strong>{{ achatResult.commission | number:'1.0-0' }} MGA</strong>
     </p>
     <hr>
     <div class="d-flex gap-2">

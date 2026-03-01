@@ -1,0 +1,35 @@
+<div class="card shadow-sm border-0 mb-4 annonce-form-card">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Créer une publication</h5>
+        <form (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <textarea class="form-control" [(ngModel)]="contenu" name="contenu"
+                    placeholder="Quoi de neuf dans votre boutique ?" rows="3" required></textarea>
+            </div>
+
+            <div class="photo-previews d-flex flex-wrap gap-2 mb-3" *ngIf="previews().length > 0">
+                <div *ngFor="let preview of previews(); let i = index" class="preview-item position-relative">
+                    <img [src]="preview" class="img-thumbnail rounded"
+                        style="width: 80px; height: 80px; object-fit: cover;">
+                    <button type="button" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0"
+                        (click)="removePhoto(i)" style="transform: translate(40%, -40%); padding: 0 4px;">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="upload-btn-wrapper">
+                    <button type="button" class="btn btn-light btn-sm text-primary">
+                        <i class="bi bi-image me-1"></i> Photos (max 5)
+                    </button>
+                    <input type="file" name="photos" (change)="onFileSelected($event)" multiple accept="image/*" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm px-4" [disabled]="!contenu() || isSubmitting()">
+                    <span *ngIf="isSubmitting()" class="spinner-border spinner-border-sm me-1"></span>
+                    Publier
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

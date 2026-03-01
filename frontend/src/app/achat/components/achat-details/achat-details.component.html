@@ -1,7 +1,8 @@
 <div class="facture-container">
   <!-- Bouton Export PDF -->
   <div class="facture-header">
-    <a class="bouton-retour" style="color: red;" routerLink="/home/achat"> <i  class="bi bi-caret-left-fill"></i> Retour</a>
+    <a class="bouton-retour" style="color: red;" routerLink="/home/achat"> <i class="bi bi-caret-left-fill"></i>
+      Retour</a>
     <button class="btn btn-success" (click)="exportPDF()">
       <i class="bi bi-file-earmark-pdf"></i> Export PDF
     </button>
@@ -10,13 +11,13 @@
   <!-- Infos client -->
   <div class="client-info">
     <p><strong>Client :</strong> {{ user?.nom }}</p>
-    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'d MMMM yyyy à HH:mm' }}</p>
   </div>
 
   <!-- Tableau produits -->
   <table class="table table-striped table-bordered facture-table">
     <thead>
-      <tr >
+      <tr>
         <th>Produit</th>
         <th>Boutique</th>
         <th>Quantité</th>
@@ -29,14 +30,14 @@
         <td>{{ achatDetails.panier.produit.nom }}</td>
         <td>{{ achatDetails.panier.produit.boutique.nom }}</td>
         <td>{{ achatDetails.quantite }}</td>
-        <td>{{ achatDetails.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
-        <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ achatDetails.prix | number:'1.0-0' }} MGA</td>
+        <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | number:'1.0-0' }} MGA</td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <th colspan="4" class="text-end">Total :</th>
-        <th>{{ this.total() | currency:'MGA ':'symbol':'1.0-0' }}</th>
+        <th>{{ this.total() | number:'1.0-0' }} MGA</th>
       </tr>
     </tfoot>
   </table>

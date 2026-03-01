@@ -43,12 +43,12 @@
             <!-- SECTION KPI (Global Totals Cards) -->
             <!-- Use col-xl for 5-column layout on wide screens, otherwise wrap safely -->
             <div class="row g-4 mb-4">
-                <!-- Total Produits -->
+                <!-- Stock Produits -->
                 <div class="col-12 col-sm-6 col-md-4 col-xl">
                     <div class="card border-0 shadow-sm h-100 bg-primary text-white">
                         <div class="card-body px-3 py-3">
                             <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i class="bi-box-seam me-1"></i>
-                                Produits</h6>
+                                Stock Produits</h6>
                             <div class="h3 fw-bold mb-2 summary-value">{{s.kpis.produits.total}}</div>
                             <div class="small opacity-75">
                                 <div class="d-flex justify-content-between">
@@ -56,7 +56,7 @@
                                     <span class="fw-bold">{{s.kpis.produits.actifs}}</span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span>Rupture:</span>
+                                    <span class="text-warning fw-bold">⚠ Rupture:</span>
                                     <span class="fw-bold text-warning">{{s.kpis.produits.rupture}}</span>
                                 </div>
                             </div>
@@ -64,42 +64,35 @@
                     </div>
                 </div>
 
-                <!-- Commandes -->
-                <div class="col-12 col-sm-6 col-md-4 col-xl">
-                    <div class="card border-0 shadow-sm h-100 bg-info text-white">
+                <!-- Statut des Commandes -->
+                <div class="col-12 col-sm-12 col-md-6 col-xl">
+                    <div class="card border-0 shadow-sm h-100">
                         <div class="card-body px-3 py-3">
-                            <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i class="bi-cart me-1"></i>
-                                Commandes Actives</h6>
-                            <div class="h3 fw-bold mb-2 summary-value">
-                                {{s.kpis.commandes.enAttente + s.kpis.commandes.validees}}
-                            </div>
-                            <div class="small opacity-75">
-                                <div class="d-flex justify-content-between">
-                                    <span>En attente:</span>
-                                    <span class="fw-bold">{{s.kpis.commandes.enAttente}}</span>
+                            <h6 class="text-muted small text-uppercase fw-bold mb-3"><i
+                                    class="bi-clipboard-check me-1"></i>
+                                Statut des Commandes</h6>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-hourglass-split text-warning me-1"></i>En
+                                        attente</span>
+                                    <span
+                                        class="badge bg-warning text-dark rounded-pill px-2">{{s.kpis.commandes.enAttente}}</span>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Validées:</span>
-                                    <span class="fw-bold">{{s.kpis.commandes.validees}}</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-bag-check text-info me-1"></i>À récupérer</span>
+                                    <span
+                                        class="badge bg-info text-dark rounded-pill px-2">{{s.kpis.commandes.aRecuperer}}</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Aujourd'hui/Opérations -->
-                <div class="col-12 col-sm-6 col-md-4 col-xl">
-                    <div class="card border-0 shadow-sm h-100 bg-secondary text-white">
-                        <div class="card-body px-3 py-3">
-                            <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i
-                                    class="bi-calendar-event me-1"></i> Aujourd'hui</h6>
-                            <div class="h3 fw-bold mb-2 summary-value">{{s.kpis.commandes.recupererAujourdhui}}</div>
-                            <div class="small opacity-75">
-                                <div class="d-flex justify-content-between">
-                                    <span>Annulées:</span>
-                                    <span class="fw-bold text-warning">{{s.kpis.commandes.annulees}}</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-check-circle text-success me-1"></i>Payée &amp;
+                                        récupérée</span>
+                                    <span
+                                        class="badge bg-success rounded-pill px-2">{{s.kpis.commandes.payeeEtRecuperee}}</span>
                                 </div>
-                                <div class="invisible small">Spacer</div> <!-- Align heights -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-x-circle text-danger me-1"></i>Annulée</span>
+                                    <span class="badge bg-danger rounded-pill px-2">{{s.kpis.commandes.annulees}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -112,10 +105,12 @@
                             <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i
                                     class="bi-cash-stack me-1"></i>
                                 Chiffre d'affaires</h6>
-                            <div class="h3 fw-bold mb-2 summary-value">{{s.kpis.financier.caTotal | number}} Ar</div>
-                            <div class="small opacity-80">
+                            <div class="h3 fw-bold mb-2 summary-value">
+                                {{s.kpis.financier.caTotal | number:'1.0-0'}} MGA
+                            </div>
+                            <div class="small opacity-80 summary-value">
                                 <span class="text-white-50">Ce mois:</span> <span
-                                    class="fw-bold">{{s.kpis.financier.caMois | number}} Ar</span>
+                                    class="fw-bold">{{s.kpis.financier.caMois | number:'1.0-0'}} MGA</span>
                             </div>
                         </div>
                     </div>
@@ -127,11 +122,12 @@
                         <div class="card-body px-3 py-3">
                             <h6 class="text-dark-50 small text-uppercase fw-bold mb-2"><i class="bi-wallet2 me-1"></i>
                                 Revenus Nets</h6>
-                            <div class="h3 fw-bold mb-2 summary-value">{{s.kpis.financier.revenusNets | number}} Ar
+                            <div class="h3 fw-bold mb-2 summary-value">
+                                {{s.kpis.financier.revenusNets | number:'1.0-0'}} MGA
                             </div>
-                            <div class="small text-dark-50">
+                            <div class="small text-dark-50 summary-value">
                                 <span>Commission:</span> <span class="fw-bold text-dark">{{s.kpis.financier.commission |
-                                    number}} Ar</span>
+                                    number:'1.0-0'}} MGA</span>
                             </div>
                         </div>
                     </div>
@@ -144,8 +140,8 @@
                 <!-- Ventes sur 7 derniers jours -->
                 <div class="col-12 col-lg-8">
                     <div class="card shadow-sm border-0 h-100">
-                        <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Ventes (7
-                            derniers jours)</div>
+                        <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Ventes
+                            ({{ chartPeriodLabel }})</div>
                         <div class="card-body" style="min-height: 350px;">
                             <canvas #salesLast7DaysChart></canvas>
                         </div>
@@ -186,8 +182,9 @@
                                             <td><span
                                                     class="badge bg-info text-dark rounded-pill px-3">{{prod.quantiteVendue}}</span>
                                             </td>
-                                            <td class="pe-4 text-end fw-bold text-success">{{prod.totalGenere | number}}
-                                                Ar</td>
+                                            <td class="pe-4 text-end fw-bold text-success">{{prod.totalGenere |
+                                                number:'1.0-0'}}
+                                                MGA</td>
                                         </tr>
                                         <tr *ngIf="s.graphiques.topProduits.length === 0">
                                             <td colspan="3" class="text-center text-muted p-4">Aucune donnée disponible.

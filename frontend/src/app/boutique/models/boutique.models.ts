@@ -44,8 +44,8 @@ export interface BoutiqueDashboardStats {
         };
         commandes: {
             enAttente: number;
-            validees: number;
-            recupererAujourdhui: number;
+            aRecuperer: number;
+            payeeEtRecuperee: number;
             annulees: number;
         };
         financier: {

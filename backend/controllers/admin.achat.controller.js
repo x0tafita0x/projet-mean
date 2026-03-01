@@ -54,7 +54,10 @@ exports.getOrderDetails = async (req, res) => {
             .populate("client", "nom email")
             .populate("boutique", "nom");
         if (!order) return res.status(404).json({ error: "Commande non trouvée" });
-        const lignes = await AchatInfo.find({ achat: req.params.id }).populate("produit", "nom");
+        const lignes = await AchatInfo.find({ achat: req.params.id }).populate({
+            path: 'panier',
+            populate: { path: 'produit', select: 'nom' }
+        });
         res.json({ order, lignes });
     } catch (err) {
         res.status(500).json({ error: err.message });

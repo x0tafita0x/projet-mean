@@ -7,9 +7,11 @@ import { Commande, CommandeDetails } from '../../models/commande.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { map } from 'rxjs';
+import { EtatService } from '../../../shared/service/etat.service';
 
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { ETATS } from '../../../shared/constants/etat.constants';
 
 @Component({
   selector: 'app-commande-list',
@@ -22,6 +24,8 @@ export class CommandeListComponent implements OnInit {
   private commandeService = inject(CommandeService);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  private etatService = inject(EtatService);
 
   commandeSelectionnee = signal<CommandeDetails[]>([]);
   commandes = signal<Commande[]>([]);
@@ -44,13 +48,20 @@ export class CommandeListComponent implements OnInit {
     this.loadCommandes();
   }
 
-  loadCommandes() {
+  async loadCommandes() {
     const criteria: FilterCriteria = {
       ...this.filters(),
       page: this.currentPage(),
       limit: this.pageSize()
     };
-    this.commandeService.getCommandes(this.user?.boutique || "", "6997d956319cef48fa23a812", criteria).subscribe({
+
+    const etatId = await this.etatService.getEtatIdByNom(ETATS.EN_ATTENTE);
+    if (!etatId) {
+      console.error(`Etat "${ETATS.EN_ATTENTE}" non trouvé`);
+      return;
+    }
+
+    this.commandeService.getCommandes(this.user?.boutique || "", etatId, criteria).subscribe({
       next: (response) => {
         this.commandes.set(response.data);
         this.totalItems.set(response.total);

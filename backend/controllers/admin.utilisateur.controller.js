@@ -75,7 +75,10 @@ exports.getUserOrderHistory = async (req, res) => {
 
         const achatsWithDetails = await Promise.all(
             achats.map(async (achat) => {
-                const lignes = await AchatInfo.find({ achat: achat._id }).populate("produit");
+                const lignes = await AchatInfo.find({ achat: achat._id }).populate({
+                    path: 'panier',
+                    populate: { path: 'produit', select: 'nom' }
+                });
                 return { ...achat.toObject(), lignes };
             })
         );

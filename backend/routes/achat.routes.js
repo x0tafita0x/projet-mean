@@ -8,6 +8,7 @@ router.get("/commandes-details", achatController.commandeDetails);
 router.get("/to-paye-recup/:achatId", achatController.ChangeToCommandePayeEtRecupere);
 router.get("/recent/", achatController.achatRecent);
 router.get("/to-recup/:achatId", achatController.ChangeToCommandeARecuperer);
+router.get("/cancel/:achatId", achatController.CancelAchat);
 router.get("/achat/:achatId", achatController.getAchatById);
 router.get("/achat-details/:achatId", achatController.getAchatDetails);
 router.get("/commandes/:boutique/:etat", achatController.listCommmandes);

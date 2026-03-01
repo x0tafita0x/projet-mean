@@ -11,6 +11,8 @@ import { User } from '../../../auth/models/auth.models';
 import { ApiService } from '../../../shared/service/api.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { EtatService } from '../../../shared/service/etat.service';
+import { ETATS } from '../../../shared/constants/etat.constants';
 
 @Component({
   selector: 'app-panier-validation',
@@ -25,6 +27,7 @@ export class PanierValidationComponent implements OnInit {
   private achatService = inject(AchatService);
   private stockService = inject(StockService);
   private router = inject(Router);
+  private etatService = inject(EtatService);
 
   canValidate = signal(false);
   paniers = signal<PanierList[]>([]);
@@ -32,14 +35,14 @@ export class PanierValidationComponent implements OnInit {
   RefBoutique = signal<Panier[]>([]);
   total = signal(0);
   date = new Date();
-  dateString = this.date.toLocaleDateString('fr-FR');
+  dateString = this.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   user: User | null = null;
   confirming = false;
   confirmed = false;
   achatResult: any = null;
 
   ngOnInit() {
-    this.panierService.data$.subscribe(data => {
+    this.panierService.data$.subscribe(async data => {
       if (data && Object.keys(data).length > 0) {
         this.paniers.set(data);
       } else {
@@ -50,15 +53,17 @@ export class PanierValidationComponent implements OnInit {
           this.router.navigate(['/home/panier']);
         }
       }
-      this.purify();
+      await this.purify();
     });
     this.user = this.authService.currentUser();
   }
 
-  purify() {
+  async purify() {
     this.total.set(0);
     this.PaniertoValidate.set([]);
     this.RefBoutique.set([]);
+
+    const etatId = await this.etatService.getEtatIdByNom(ETATS.EN_ATTENTE);
 
     for (const panier of this.paniers()) {
       // For general validation
@@ -68,7 +73,7 @@ export class PanierValidationComponent implements OnInit {
         produit: panier.produit._id,
         prix: panier.prixActuel,
         quantite: panier.quantite,
-        etat: 'validé',
+        etat: etatId || '',
         typeCommande: panier.typeCommande
       };
 

@@ -39,5 +39,8 @@ export class CommandeService {
         return this.apiService.getList<any>('achat/to-paye-recup/' + achatId);
     }
 
-
+    cancelCommande(achatId: string): Observable<any> {
+        console.log('ID de l\'achat à annuler :', achatId);
+        return this.apiService.getList<any>('achat/cancel/' + achatId);
+    }
 }

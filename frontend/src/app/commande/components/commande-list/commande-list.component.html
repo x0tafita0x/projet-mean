@@ -39,7 +39,7 @@
       </div>
       <div class="facture-right">
         <span class="facture-total">
-          {{ commande.totalPrix | currency:'MGA ':'symbol':'1.0-0' }}
+          {{ commande.totalPrix | number:'1.0-0' }} MGA
         </span>
         <p class="facture-items" style="color: rgb(175, 172, 10);">
           Nombre d’articles : {{ commande.totalQuantite }}
@@ -82,7 +82,7 @@
         </div>
         <div class="produit-prix-quantite">
           <div class="produit-quantite">Qté : {{ commande.quantite }}</div>
-          <div class="produit-prix">{{ commande.prix | currency:'MGA ':'symbol':'1.0-0' }}</div>
+          <div class="produit-prix">{{ commande.prix | number:'1.0-0' }} MGA</div>
         </div>
       </div>
       <div *ngIf="commandeSelectionnee().length === 0" class="text-center py-4 text-muted">

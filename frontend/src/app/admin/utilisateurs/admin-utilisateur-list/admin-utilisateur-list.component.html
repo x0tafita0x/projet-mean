@@ -68,7 +68,7 @@
                             <button class="btn btn-sm me-1" [class.btn-outline-warning]="u.isActive"
                                 [class.btn-outline-success]="!u.isActive" (click)="toggleActive(u._id)"
                                 [title]="u.isActive ? 'Désactiver' : 'Activer'">
-                                <i [class]="u.isActive ? 'bi-person-slash' : 'bi-person-check'"></i>
+                                <i class="bi" [class]="u.isActive ? 'bi-person-x' : 'bi-check-circle'"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(u._id)" title="Supprimer">
                                 <i class="bi-trash"></i>
@@ -119,8 +119,8 @@
                     @for (a of historique().achats; track a._id) {
                     <tr>
                         <td>{{ a.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-                        <td>{{ a.total | currency:'MGA ':'symbol':'1.0-0' }}</td>
-                        <td>{{ a.commission | currency:'MGA ':'symbol':'1.0-0' }}</td>
+                        <td>{{ a.total | number:'1.0-0' }} MGA</td>
+                        <td>{{ a.commission | number:'1.0-0' }} MGA</td>
                         <td><span
                                 class="badge {{ a.status === 'Payé' ? 'bg-success' : a.status === 'Annulé' ? 'bg-danger' : 'bg-warning text-dark' }}">{{
                                 a.status }}</span></td>

@@ -1,0 +1,39 @@
+﻿<div class="annonce-feed">
+    <div *ngIf="annonces().length === 0" class="no-annonce">
+        <p>Aucune publication pour le moment.</p>
+    </div>
+
+    <div *ngFor="let annonce of annonces()" class="annonce-card shadow-sm">
+        <div class="annonce-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="avatar me-2">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0">{{ getBoutiqueName(annonce.boutique) }}</h6>
+                    <small class="text-muted">{{ annonce.createdAt | date:'d MMMM yyyy à HH:mm' }}</small>
+                </div>
+            </div>
+            <button *ngIf="user?.role === 'boutique' && user?.boutique === (annonce.boutique?._id || annonce.boutique)"
+                class="btn btn-link text-danger p-0" (click)="deleteAnnonce(annonce._id!)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+
+        <div class="annonce-body mt-3">
+            <p class="annonce-content">{{ annonce.contenu }}</p>
+
+            <div class="annonce-gallery mt-2" [class.multi-photos]="annonce.photos.length > 1">
+                <div *ngFor="let photo of annonce.photos" class="gallery-item">
+                    <img [src]="'http://localhost:3000/' + photo" alt="Photo annonce"
+                        class="img-fluid rounded shadow-sm">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+        (pageChange)="changePage($event)">
+    </app-pagination>
+</div>

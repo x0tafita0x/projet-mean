@@ -1,11 +1,9 @@
 <div class="title-group mb-3">
-    <h1 class="h2 mb-0">Overview</h1>
 
-    <small class="text-muted">Hello Thomas, welcome back!</small>
 </div>
 
 <div class="row my-4">
-    <div class="col-lg-7 col-12">
+    <div class="col-lg-7 col-12" *ngIf="user?.role === 'acheteur'">
         <div class="custom-block bg-light shadow-sm border-0 mb-3">
             <h3 class="mb-3">Liste des Boutiques</h3>
             <div class="row g-2 align-items-end">
@@ -39,42 +37,41 @@
         </div>
         <div class="custom-block liste-boutique">
 
-           <a *ngFor="let boutique of boutiques()" 
-            [routerLink]="['/home/produitByBoutique', boutique._id]"
-            class="custom-boutique" style="display: block;">
-            
-            <div class="boutique-content">
-                <img class="custom-image img-fluid"
-                    [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
-                    alt="">
+            <a *ngFor="let boutique of boutiques()" [routerLink]="['/home/produitByBoutique', boutique._id]"
+                class="custom-boutique" style="display: block;">
 
-                <div class="boutique-info">
-                <div class="nom-et-note">
-                    <h3 class="boutique-nom" [title]="boutique.nom">{{ boutique.nom }}</h3>
+                <div class="boutique-content">
+                    <img class="custom-image img-fluid"
+                        [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
+                        alt="">
 
-                    <div class="note-stars">
-                    <!-- 5 étoiles -->
-                    <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
-                        <i class="bi" 
-                        [ngClass]="i < roundNote(boutique.moyenneNote) ? 'bi-star-fill text-warning' : 'bi-star text-secondary'">
-                        </i>
-                    </ng-container>
-                    <span class="nb-avis">{{ formatNbAvis(boutique.totalAvis) }} avis</span>
+                    <div class="boutique-info">
+                        <div class="nom-et-note">
+                            <h3 class="boutique-nom" [title]="boutique.nom">{{ boutique.nom }}</h3>
+
+                            <div class="note-stars">
+                                <!-- 5 étoiles -->
+                                <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                                    <i class="bi"
+                                        [ngClass]="i < roundNote(boutique.moyenneNote) ? 'bi-star-fill text-warning' : 'bi-star text-secondary'">
+                                    </i>
+                                </ng-container>
+                                <span class="nb-avis">{{ formatNbAvis(boutique.totalAvis) }} avis</span>
+                            </div>
+                        </div>
+
+                        <p class="boutique-type">
+                            {{ getTypeBoutiqueName(boutique.typeBoutique) }}
+                        </p>
                     </div>
+
+                    <span class="etat-wrapper">
+                        <span [ngClass]=" boutique.isOuverte ? 'ouvert' : 'ferme'">
+                            {{ boutique.isOuverte ? 'Ouverte' : 'Fermée' }}
+                        </span>
+                    </span>
+
                 </div>
-
-                <p class="boutique-type">
-                    {{ getTypeBoutiqueName(boutique.typeBoutique) }}
-                </p>
-                </div>
-
-                <span class="etat-wrapper">
-                <span [ngClass]=" boutique.isOuverte ? 'ouvert' : 'ferme'">
-                    {{ boutique.isOuverte ? 'Ouverte' : 'Fermée' }}
-                </span>
-                </span>
-
-            </div>
             </a>
 
         </div>
@@ -115,7 +112,7 @@
 
 
 
-        <div class="custom-block custom-block-transations">
+        <div class="custom-block custom-block-transations" *ngIf="user?.role === 'acheteur'">
             <h5 class="mb-4">Achats recents</h5>
 
             <div class="d-flex flex-wrap align-items-center mb-4" *ngFor="let achat of recentAchats()">
@@ -124,7 +121,7 @@
                     <div>
                         <p>
                             <a [routerLink]="['/home/achat-details', achat._id]">Date : {{ achat.createdAt |
-                                date:'dd/MM/yyyy HH:mm' }}</a>
+                                date:'d MMMM yyyy' }}</a>
                         </p>
 
                         <small class="text-muted">{{ achat.nombreItems }} articles</small>
@@ -132,8 +129,7 @@
                 </div>
 
                 <div class="ms-auto">
-                    <strong class="d-block "><span class="me-1">-</span> {{ achat.total | currency:'MGA
-                        ':'symbol':'1.0-0' }}</strong>
+                    <strong class="d-block "><span class="me-1">-</span> {{ achat.total | number:'1.0-0' }} MGA</strong>
                 </div>
             </div>
             <div *ngIf="recentAchats().length === 0" class="no-achat">
@@ -232,4 +228,3 @@
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
 </script>
-

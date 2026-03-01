@@ -9,6 +9,8 @@ import { User } from '../../../auth/models/auth.models';
 import { FactureTicketComponent } from '../../../facture-ticket/facture-ticket.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { EtatService } from '../../../shared/service/etat.service';
+import { ETATS } from '../../../shared/constants/etat.constants';
 
 @Component({
   selector: 'app-commande-payee-recuperee-list',
@@ -21,6 +23,7 @@ export class CommandePayeeRecupereeListComponent implements OnInit {
   private commandeService = inject(CommandeService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private etatService = inject(EtatService);
 
   commandeSelectionnee = signal<CommandeDetails[]>([]);
   commandes = signal<Commande[]>([]);
@@ -47,13 +50,20 @@ export class CommandePayeeRecupereeListComponent implements OnInit {
     this.loadCommandes();
   }
 
-  loadCommandes() {
+  async loadCommandes() {
     const criteria: FilterCriteria = {
       ...this.filters(),
       page: this.currentPage(),
       limit: this.pageSize()
     };
-    this.commandeService.getCommandes(this.user?.boutique || "", "6997d98f319cef48fa23a818", criteria).subscribe({
+
+    const etatId = await this.etatService.getEtatIdByNom(ETATS.PAYEE_ET_RECUPEREE);
+    if (!etatId) {
+      console.error(`Etat "${ETATS.PAYEE_ET_RECUPEREE}" non trouvé`);
+      return;
+    }
+
+    this.commandeService.getCommandes(this.user?.boutique || "", etatId, criteria).subscribe({
       next: (response) => {
         this.commandes.set(response.data);
         this.totalItems.set(response.total);

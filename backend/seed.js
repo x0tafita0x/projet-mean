@@ -14,213 +14,249 @@ const TypeProduit = require("./models/typeProduit.model");
 const SousTypeProduit = require("./models/sousTypeProduit.model");
 const Etat = require("./models/etat.model");
 const MouvementProduit = require("./models/mouvementProduit.model");
+const MouvementPrixProduit = require("./models/mouvementPrixProduit.model");
 const Panier = require("./models/panier.model");
+const Annonce = require("./models/annonce.model");
+const AvisNote = require("./models/avisNote.model");
+const Favori = require("./models/favori.model");
+
+const ETATS = require("./utils/etat.constants");
 
 const seed = async () => {
     try {
         await connectDB();
 
-        console.log("Cleaning database...");
-        await Achat.deleteMany({});
-        await AchatInfo.deleteMany({});
-        await Panier.deleteMany({});
-        await MouvementProduit.deleteMany({});
-        await Etat.deleteMany({});
-        await Boutique.deleteMany({});
-        await Produit.deleteMany({});
-        await Utilisateur.deleteMany({});
-        await CommissionConfig.deleteMany({});
-        await TypeBoutique.deleteMany({});
-        await TypeProduit.deleteMany({});
-        await SousTypeProduit.deleteMany({});
+        console.log("Cleaning database completely (Drop Database)...");
+        await mongoose.connection.dropDatabase();
+        console.log("Database cleared. ✅");
 
         console.log("Creating Etats...");
-        const etatsData = [
-            { nom: "EN ATTENTE" },
-            { nom: "VALIDÉE" },
-            { nom: "PAYÉE" },
-            { nom: "À RÉCUPÉRER" },
-            { nom: "ANNULÉE" },
-            { nom: "RÉCUPÉRÉE" }
-        ];
+        const etatsData = Object.values(ETATS).map(nom => ({ nom }));
         const etats = await Etat.insertMany(etatsData);
-        // Helper to get an etat
         const getEtat = (nom) => etats.find(e => e.nom === nom);
 
-        console.log("Creating Types...");
-        const typeBoutique = await TypeBoutique.create({ nom: "Électronique" });
-        const typeProduit = await TypeProduit.create({ nom: "Smartphones" });
-        const sousType = await SousTypeProduit.create({ nom: "Android", typeProduit: typeProduit._id });
+        console.log("Creating Types & Categories...");
+        const tBoutiques = await TypeBoutique.insertMany([
+            { nom: "High-Tech" },
+            { nom: "Mode & Beauté" },
+            { nom: "Alimentation" }
+        ]);
+
+        const tProduits = await TypeProduit.insertMany([
+            { nom: "Informatique" },
+            { nom: "Vêtements" },
+            { nom: "Épicerie" }
+        ]);
+
+        const sTypes = await SousTypeProduit.insertMany([
+            { nom: "Laptops", typeProduit: tProduits[0]._id },
+            { nom: "Smartphones", typeProduit: tProduits[0]._id },
+            { nom: "T-shirts", typeProduit: tProduits[1]._id },
+            { nom: "Pantalons", typeProduit: tProduits[1]._id },
+            { nom: "Boissons", typeProduit: tProduits[2]._id }
+        ]);
 
         console.log("Creating Commission Config...");
         await CommissionConfig.create({ tauxGlobal: 5 });
 
-        console.log("Creating Admin User...");
+        console.log("Creating Admin User (Password will be hashed)...");
         await Utilisateur.create({
-            nom: "Admin",
-            email: "admin@mean.com",
-            motDePasse: "admin123",
+            nom: "Admin Système",
+            email: "admin@test.com",
+            motDePasse: "test",
             role: "admin"
         });
 
         console.log("Creating Boutiques...");
-        const boutiques = await Boutique.create([
+        const boutiques = await Boutique.insertMany([
             {
-                nom: "Tech Store",
-                typeBoutique: typeBoutique._id,
+                nom: "Matrix Tech",
+                typeBoutique: tBoutiques[0]._id,
                 heureOuverture: "08:00",
-                heureFermeture: "18:00",
+                heureFermeture: "19:00",
                 nbJoursOuverture: 6,
                 status: "active",
-                tauxCommission: 10
+                tauxCommission: 8,
+                photo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1"
             },
             {
-                nom: "Electro Dream",
-                typeBoutique: typeBoutique._id,
+                nom: "Vogue Fashion",
+                typeBoutique: tBoutiques[1]._id,
                 heureOuverture: "09:00",
-                heureFermeture: "19:00",
-                nbJoursOuverture: 5,
+                heureFermeture: "20:00",
+                nbJoursOuverture: 7,
                 status: "active",
-                tauxCommission: null
+                tauxCommission: 12,
+                photo: "https://images.unsplash.com/photo-1441986300917-64674bd600d8"
+            },
+            {
+                nom: "Fresh Market",
+                typeBoutique: tBoutiques[2]._id,
+                heureOuverture: "07:00",
+                heureFermeture: "21:00",
+                nbJoursOuverture: 7,
+                status: "active",
+                tauxCommission: null,
+                photo: "https://images.unsplash.com/photo-1542838132-92c53300491e"
             }
         ]);
 
-        console.log("Creating Boutique User...");
-        await Utilisateur.create({
-            nom: "Boutique Owner 1",
-            email: "boutique1@mean.com",
-            motDePasse: "b123",
-            role: "boutique",
-            boutique: boutiques[0]._id,
-            isActive: true
-        });
-
-        console.log("Creating Products...");
-        const p1 = await Produit.create({ nom: "Samsung S23", sousTypeProduit: sousType._id, boutique: boutiques[0]._id });
-        const p2 = await Produit.create({ nom: "iPhone 15", sousTypeProduit: sousType._id, boutique: boutiques[0]._id });
-        const p3 = await Produit.create({ nom: "Xiaomi 13", sousTypeProduit: sousType._id, boutique: boutiques[1]._id });
-        // un produit en rupture
-        const p4 = await Produit.create({ nom: "Test Rupture", sousTypeProduit: sousType._id, boutique: boutiques[0]._id });
-
-        console.log("Creating stock movements...");
-        await MouvementProduit.insertMany([
-            { produit: p1._id, in: 50, out: 10, boutique: boutiques[0]._id }, // actif, stock 40
-            { produit: p2._id, in: 20, out: 5, boutique: boutiques[0]._id }, // actif, stock 15
-            { produit: p3._id, in: 30, out: 20, boutique: boutiques[1]._id }, // actif, stock 10
-            { produit: p4._id, in: 10, out: 10, boutique: boutiques[0]._id }  // rupture, stock 0
-        ]);
-
-        console.log("Creating Buyer...");
-        const buyer = await Utilisateur.create({
-            nom: "Jean Dupont",
-            email: "jean@example.com",
-            motDePasse: "password123",
-            role: "acheteur",
-            isActive: true
-        });
-
-        console.log("Generating Orders history...");
-        const now = new Date();
-
-        // Simulate orders for today, yesterday, etc.
-        const ordersParams = [
-            // today: one payée/à récupérer, one en attente, one annulée
-            { daysAgo: 0, etat: "À RÉCUPÉRER", qte: 1, p: p1, b: boutiques[0] },
-            { daysAgo: 0, etat: "EN ATTENTE", qte: 2, p: p2, b: boutiques[0] },
-            { daysAgo: 0, etat: "ANNULÉE", qte: 1, p: p1, b: boutiques[0] },
-            // yesterday
-            { daysAgo: 1, etat: "VALIDÉE", qte: 1, p: p2, b: boutiques[0] },
-            { daysAgo: 1, etat: "RÉCUPÉRÉE", qte: 1, p: p3, b: boutiques[1] },
+        console.log("Creating Boutique Owners (Passwords will be hashed)...");
+        // Using create for users to ensure pre-save hook (hashing) runs
+        const ownersData = [
+            { nom: "Thomas Neo", email: "matrix@test.com", motDePasse: "test", role: "boutique", boutique: boutiques[0]._id, isActive: true },
+            { nom: "Sarah Vogue", email: "vogue@test.com", motDePasse: "test", role: "boutique", boutique: boutiques[1]._id, isActive: true },
+            { nom: "Marc Fresh", email: "fresh@test.com", motDePasse: "test", role: "boutique", boutique: boutiques[2]._id, isActive: true }
         ];
 
-        // 14 days history to feed the 7 last days charts + monthly logic
-        for (let i = 2; i <= 14; i++) {
-            ordersParams.push({
-                daysAgo: i,
-                etat: "RÉCUPÉRÉE",
-                qte: (Math.floor(Math.random() * 3) + 1), // 1 to 3
-                p: i % 2 === 0 ? p1 : p3,
-                b: boutiques[i % 2]
+        for (const owner of ownersData) {
+            await Utilisateur.create(owner);
+        }
+
+        console.log("Creating Products...");
+        const prodData = [
+            { nom: "MacBook Pro M3", info: "L'ordinateur le plus puissant pour pro.", photo: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8", sType: sTypes[0], b: boutiques[0], p: 12500000 },
+            { nom: "S24 Ultra", info: "Le summum d'Android.", photo: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c", sType: sTypes[1], b: boutiques[0], p: 6500000 },
+            { nom: "Chemise Lin", info: "Léger et élégant pour l'été.", photo: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c", sType: sTypes[2], b: boutiques[1], p: 150000 },
+            { nom: "Jean Slim", info: "Coupe moderne et robuste.", photo: "https://images.unsplash.com/photo-1542272604-787c3835535d", sType: sTypes[3], b: boutiques[1], p: 200000 },
+            { nom: "Café Arabica 1kg", info: "Grain torréfié artisanalement.", photo: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e", sType: sTypes[4], b: boutiques[2], p: 85000 },
+            { nom: "Thé Vert Bio", info: "Infusion relaxante de haute qualité.", photo: "https://images.unsplash.com/photo-1544787210-22bb840c5d6f", sType: sTypes[4], b: boutiques[2], p: 45000 }
+        ];
+
+        const products = [];
+        for (const pd of prodData) {
+            const prod = await Produit.create({
+                nom: pd.nom,
+                info: pd.info,
+                photo: pd.photo,
+                sousTypeProduit: pd.sType._id,
+                boutique: pd.b._id
+            });
+            products.push({ ...prod.toObject(), basePrice: pd.p });
+        }
+
+        console.log("Stock & Price movements...");
+        for (const p of products) {
+            await MouvementProduit.create({
+                produit: p._id,
+                in: 100,
+                out: 0,
+                boutique: p.boutique
+            });
+            await MouvementPrixProduit.create({
+                produit: p._id,
+                prix: p.basePrice
             });
         }
 
-        // Monthly data history (past 6 months)
-        for (let i = 1; i <= 6; i++) {
-            ordersParams.push({
-                daysAgo: i * 30,
-                etat: "RÉCUPÉRÉE",
-                qte: 5,
-                p: p2,
-                b: boutiques[0]
-            });
-            ordersParams.push({
-                daysAgo: i * 30 + 15,
-                etat: "RÉCUPÉRÉE",
-                qte: 10,
-                p: p1,
-                b: boutiques[0]
-            });
+        console.log("Creating Buyers (Passwords will be hashed)...");
+        const buyersData = [
+            { nom: "Alice Liddell", email: "alice@test.com", motDePasse: "test", role: "acheteur", isActive: true },
+            { nom: "Bob Marley", email: "bob@test.com", motDePasse: "test", role: "acheteur", isActive: true },
+            { nom: "Charlie Brown", email: "charlie@test.com", motDePasse: "test", role: "acheteur", isActive: true }
+        ];
+
+        const buyers = [];
+        for (const bData of buyersData) {
+            const b = await Utilisateur.create(bData);
+            buyers.push(b);
         }
 
-        for (const op of ordersParams) {
+        console.log("Announcements...");
+        await Annonce.insertMany([
+            { boutique: boutiques[0]._id, contenu: "Nouveauté : Le MacBook Pro M3 est maintenant disponible en boutique ! Rendez-vous chez Matrix Tech pour le découvrir en avant-première.", photos: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8"] },
+            { boutique: boutiques[0]._id, contenu: "Restockage en cours : nos Samsung S24 Ultra sont de retour en stock après rupture. Commandez dès maintenant !", photos: ["https://images.unsplash.com/photo-1610945415295-d9bbf067e59c"] },
+            { boutique: boutiques[1]._id, contenu: "La nouvelle collection printemps-été est arrivée ! Découvrez nos chemises en lin et jeans slim dans vos coloris préférés.", photos: ["https://images.unsplash.com/photo-1441986300917-64674bd600d8"] },
+            { boutique: boutiques[1]._id, contenu: "Horaires spéciaux ce weekend : Vogue Fashion sera ouvert de 10h à 18h. Au plaisir de vous accueillir !", photos: [] },
+            { boutique: boutiques[2]._id, contenu: "Nouveau produit en rayon : notre Café Arabica 1kg issu de producteurs locaux est désormais disponible à la commande.", photos: ["https://images.unsplash.com/photo-1559056199-641a0ac8b55e"] },
+            { boutique: boutiques[2]._id, contenu: "Restockage Thé Vert Bio effectué ! Nos stocks sont reconstitués, passez vite votre commande avant la prochaine rupture.", photos: ["https://images.unsplash.com/photo-1544787210-22bb840c5d6f"] }
+        ]);
+
+        console.log("Reviews...");
+        await AvisNote.insertMany([
+            { utilisateur: buyers[0]._id, boutique: boutiques[0]._id, note: 5, avis: "Excellent service et produits de pointe !" },
+            { utilisateur: buyers[1]._id, boutique: boutiques[0]._id, note: 4, avis: "Bon prix, mais attente un peu longue à la récupération." },
+            { utilisateur: buyers[2]._id, boutique: boutiques[1]._id, note: 5, avis: "Ma boutique de vêtements préférée ❤️" }
+        ]);
+
+        console.log("Favorites...");
+        await Favori.insertMany([
+            { utilisateur: buyers[0]._id, boutique: boutiques[0]._id },
+            { utilisateur: buyers[0]._id, boutique: boutiques[1]._id },
+            { utilisateur: buyers[1]._id, boutique: boutiques[1]._id }
+        ]);
+
+        console.log("Generating Orders history (30 days)...");
+        const now = new Date();
+        const etatArecup = getEtat(ETATS.A_RECUPERER);
+        const etatAttente = getEtat(ETATS.EN_ATTENTE);
+        const etatPayeRecup = getEtat(ETATS.PAYEE_ET_RECUPEREE);
+        const etatAnnule = getEtat(ETATS.ANNULEE);
+
+        for (let i = 0; i < 60; i++) { // 60 simulated orders
+            const daysAgo = Math.floor(Math.random() * 30);
             const date = new Date(now);
-            date.setDate(date.getDate() - op.daysAgo);
+            date.setDate(date.getDate() - daysAgo);
 
-            // create panier
-            const etatPanier = getEtat(op.etat);
-            const prixUnitaire = op.p._id === p1._id ? 4500000 : (op.p._id === p2._id ? 6000000 : 2500000);
+            const buyer = buyers[Math.floor(Math.random() * buyers.length)];
+            const prod = products[Math.floor(Math.random() * products.length)];
+            const boutique = boutiques.find(b => b._id.toString() === prod.boutique.toString());
+
+            const randomState = Math.random();
+            let state;
+            if (randomState < 0.6) state = etatPayeRecup;
+            else if (randomState < 0.8) state = etatArecup;
+            else if (randomState < 0.9) state = etatAttente;
+            else state = etatAnnule;
+
+            const qte = Math.floor(Math.random() * 3) + 1;
+            const total = prod.basePrice * qte;
+            const taux = boutique.tauxCommission || 5;
+            const commission = (total * taux) / 100;
 
             const panier = await Panier.create({
                 utilisateur: buyer._id,
-                etat: etatPanier._id,
-                produit: op.p._id,
-                prix: prixUnitaire,
-                quantite: op.qte,
+                etat: state._id,
+                produit: prod._id,
+                prix: prod.basePrice,
+                quantite: qte,
                 createdAt: date,
-                updatedAt: date,
-                dateHeureRecuperation: date // simplify today logic
+                updatedAt: date
             });
 
-            // create achat if it's considered valid/payée/récupérée
-            if (["VALIDÉE", "PAYÉE", "À RÉCUPÉRER", "RÉCUPÉRÉE"].includes(op.etat)) {
-                const total = prixUnitaire * op.qte;
-                const taux = op.b.tauxCommission || 5;
-                const commission = (total * taux) / 100;
+            const achat = await Achat.create({
+                client: buyer._id,
+                boutique: boutique._id,
+                total: total,
+                commission: commission,
+                nombreItems: qte,
+                createdAt: date,
+                updatedAt: date
+            });
 
-                const achat = await Achat.create({
-                    client: buyer._id,
-                    boutique: op.b._id,
-                    total: total,
-                    commission: commission,
-                    nombreItems: op.qte,
-                    createdAt: date,
-                    updatedAt: date
-                });
-
-                await AchatInfo.create({
-                    achat: achat._id,
-                    panier: panier._id,
-                    prix: total,
-                    quantite: op.qte,
-                    etat: etatPanier._id,
-                    createdAt: date
-                });
-            }
+            await AchatInfo.create({
+                achat: achat._id,
+                panier: panier._id,
+                prix: prod.basePrice,
+                quantite: qte,
+                etat: state._id,
+                createdAt: date
+            });
         }
 
         console.log("Seeding completed! ✅");
+        console.log("Users to test (All passwords hashed):");
+        console.log("- Admin: admin@mean.com / test");
+        console.log("- Boutique Matrix: matrix@mean.com / test");
+        console.log("- Buyer Alice: alice@example.com / test");
+
     } catch (error) {
         console.error("Seeding failed! ❌");
-        if (error.name === 'ValidationError') {
-            for (let field in error.errors) {
-                console.error(`- Field '${field}': ${error.errors[field].message}`);
-            }
-        } else {
-            console.error(error);
-        }
+        console.error(error);
     } finally {
         mongoose.connection.close();
     }
 };
+
 
 seed();

@@ -28,8 +28,8 @@ export class FavoriService {
     deleteFavori(id: string): Observable<void> {
         return this.apiService.delete('favori', id);
     }
-    isFavoriExist(boutique: string | '', utilisateur: string | ''): Observable<boolean> {
-        return this.apiService.getList<boolean>(`favori/isFavoriExist?utilisateur=${utilisateur}&boutique=${boutique}`);
+    isFavoriExist(boutique: string | '', utilisateur: string | ''): Observable<{ exists: boolean, _id?: string }> {
+        return this.apiService.getList<{ exists: boolean, _id?: string }>(`favori/isFavoriExist?utilisateur=${utilisateur}&boutique=${boutique}`);
     }
 
 

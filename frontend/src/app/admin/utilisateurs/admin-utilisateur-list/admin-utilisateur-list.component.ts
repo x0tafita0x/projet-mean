@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
@@ -9,7 +8,7 @@ import { FilterCriteria } from '../../../shared/models/pagination.models';
 @Component({
     selector: 'app-admin-utilisateur-list',
     standalone: true,
-    imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+    imports: [CommonModule, FormsModule, PaginationComponent],
     templateUrl: './admin-utilisateur-list.component.html',
 })
 export class AdminUtilisateurListComponent implements OnInit {
