@@ -17,8 +17,8 @@
                 <tbody>
                     <tr *ngFor="let favori of favoris()">
                         <td>
-                            <img [src]="favori.boutique.photo ? 'http://localhost:3000/' + favori.boutique.photo : 'assets/placeholder.png'"
-                                class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                            <img [src]="favori.boutique.photo | photoUrl" class="img-thumbnail"
+                                style="width: 50px; height: 50px; object-fit: cover;">
                         </td>
                         <td>
                             <strong>{{ favori.boutique.nom }}</strong><br>

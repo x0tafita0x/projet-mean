@@ -6,11 +6,12 @@ import { BoutiqueService } from '../../services/boutique.services';
 import { Boutique, TypeBoutique } from '../../models/boutique.models';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-boutique-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent, PhotoUrlPipe],
   templateUrl: './boutique-list.component.html'
 })
 export class BoutiqueListComponent implements OnInit {

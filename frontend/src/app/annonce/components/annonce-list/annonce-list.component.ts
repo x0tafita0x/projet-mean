@@ -4,11 +4,12 @@ import { AnnonceService } from '../../services/annonce.services';
 import { Annonce } from '../../models/annonce.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
     selector: 'app-annonce-list',
     standalone: true,
-    imports: [CommonModule, PaginationComponent],
+    imports: [CommonModule, PaginationComponent, PhotoUrlPipe],
     templateUrl: './annonce-list.component.html',
     styleUrl: './annonce-list.component.css'
 })

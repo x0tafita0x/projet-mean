@@ -25,8 +25,7 @@
 
             <div class="annonce-gallery mt-2" [class.multi-photos]="annonce.photos.length > 1">
                 <div *ngFor="let photo of annonce.photos" class="gallery-item">
-                    <img [src]="'http://localhost:3000/' + photo" alt="Photo annonce"
-                        class="img-fluid rounded shadow-sm">
+                    <img [src]="photo | photoUrl" alt="Photo annonce" class="img-fluid rounded shadow-sm">
                 </div>
             </div>
         </div>

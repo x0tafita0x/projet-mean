@@ -41,9 +41,7 @@
                 class="custom-boutique" style="display: block;">
 
                 <div class="boutique-content">
-                    <img class="custom-image img-fluid"
-                        [src]="boutique.photo ? 'http://localhost:3000/' + boutique.photo : 'assets/placeholder.png'"
-                        alt="">
+                    <img class="custom-image img-fluid" [src]="boutique.photo | photoUrl" alt="">
 
                     <div class="boutique-info">
                         <div class="nom-et-note">

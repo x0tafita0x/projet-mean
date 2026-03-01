@@ -8,6 +8,7 @@ import { Produit, SousTypeProduit } from '../../models/produit.models';
 import { MouvementPrixProduitInsert } from '../../../mouvement-prix-produit/models/mouvement-prix-produit.models';
 import { User } from '../../../auth/models/auth.models';
 import { AuthService } from '../../../auth/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-produit-form',
@@ -50,7 +51,7 @@ export class ProduitFormComponent implements OnInit {
           this.getPrixActuelle(data._id);
           this.produit.set(data);
           if (data.photo) {
-            this.imagePreview = `http://localhost:3000/${data.photo}`;
+            this.imagePreview = `${environment.serverUrl}/${data.photo}`;
           }
         },
         error: (err) => alert('Erreur lors du chargement du produit')

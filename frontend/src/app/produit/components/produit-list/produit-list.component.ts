@@ -9,12 +9,13 @@ import { User } from '../../../auth/models/auth.models';
 import { AuthService } from '../../../auth/services/auth.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent, PhotoUrlPipe],
   templateUrl: './produit-list.component.html'
 })
 export class ProduitListComponent implements OnInit {

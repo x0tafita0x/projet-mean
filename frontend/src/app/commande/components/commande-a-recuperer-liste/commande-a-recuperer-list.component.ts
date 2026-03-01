@@ -11,11 +11,12 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { FilterCriteria } from '../../../shared/models/pagination.models';
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-commande-a-recuperer-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, FactureTicketComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, RouterModule, FactureTicketComponent, PaginationComponent, PhotoUrlPipe],
   templateUrl: './commande-a-recuperer-list.component.html',
   styleUrl: './commande-a-recuperer-list.component.css'
 })
@@ -115,7 +116,7 @@ export class CommandeARecupererListComponent implements OnInit {
   validerProduits() {
     const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
 
-    this.commandeService.updateCommandeToPayeEtRecupere(achatId,this.user?.boutique || "").subscribe({
+    this.commandeService.updateCommandeToPayeEtRecupere(achatId, this.user?.boutique || "").subscribe({
       next: () => {
         alert('Commande mise à jour avec succès !');
 

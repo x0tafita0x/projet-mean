@@ -9,11 +9,12 @@ import { Boutique, BoutiqueNote, TypeBoutique } from '../boutique/models/boutiqu
 import { Achat } from '../achat/models/achat.models';
 import { AchatService } from '../achat/services/achat.services';
 import { FilterCriteria } from '../shared/models/pagination.models';
+import { PhotoUrlPipe } from '../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, PhotoUrlPipe],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -121,12 +122,12 @@ export class Home {
     return currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
   }
   formatNbAvis(nb: number | 0): string {
-  if (nb >= 1_000_000_000) return (nb / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'Md';
-  if (nb >= 1_000_000)     return (nb / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
-  if (nb >= 1_000)         return (nb / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
-  return nb.toString();
-}
-roundNote(note: number | 0) {
+    if (nb >= 1_000_000_000) return (nb / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'Md';
+    if (nb >= 1_000_000) return (nb / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (nb >= 1_000) return (nb / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return nb.toString();
+  }
+  roundNote(note: number | 0) {
     return Math.round(note);
   }
 }
