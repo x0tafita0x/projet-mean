@@ -21,10 +21,11 @@ exports.validerPaniers = async (req, res) => {
 
     const ids = paniers.map(p => p._id);
     const etatId = await etatService.getEtatIdByNom(ETATS.EN_ATTENTE);
+    const dateHeureRecuperation = paniers.map(p => p.dateHeureRecuperation);
 
     const result = await Panier.updateMany(
       { _id: { $in: ids } },
-      { $set: { etat: etatId } }
+      { $set: { etat: etatId, dateHeureRecuperation: dateHeureRecuperation[0] } }
     );
 
     res.json({ result });

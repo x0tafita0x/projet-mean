@@ -40,7 +40,8 @@ export class CommandeARecupererListComponent implements OnInit {
     dateFacture: '',
     idFFacture: '',
     client: '',
-    boutique: ''
+    boutique: '',
+    numeroTelephone: ''
   });
   @ViewChild('facture') factureComponent!: any;
 
@@ -98,7 +99,8 @@ export class CommandeARecupererListComponent implements OnInit {
           dateFacture: new Date(commande.createdAt).toLocaleString(),
           idFFacture: commande._id,
           client: commande.client,
-          boutique: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.nom : ''
+          boutique: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.nom : '',
+          numeroTelephone: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.numeroTelephone : ''
         });
       },
       error: (err) => console.error('Error loading commande details', err)
@@ -113,7 +115,7 @@ export class CommandeARecupererListComponent implements OnInit {
   validerProduits() {
     const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
 
-    this.commandeService.updateCommandeToPayeEtRecupere(achatId).subscribe({
+    this.commandeService.updateCommandeToPayeEtRecupere(achatId,this.user?.boutique || "").subscribe({
       next: () => {
         alert('Commande mise à jour avec succès !');
 

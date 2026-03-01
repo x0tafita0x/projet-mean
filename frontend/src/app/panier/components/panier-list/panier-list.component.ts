@@ -9,6 +9,7 @@ import { User } from '../../../auth/models/auth.models';
 import { StockService } from '../../../stock/services/stock.services';
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
+import { sign } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-panier-list',
@@ -26,10 +27,13 @@ export class PanierListComponent implements OnInit {
   private location = inject(Location);
   canValidate = signal(false);
   paniers = signal<PanierList[]>([]);
-  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: '', typeCommande: 'normal' });
+  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: ''});
   PaniertoValidate = signal<Panier[]>([]);
-  user: User | null = null;
-  max_stock = signal<number>(0);
+    user : User | null = null;
+    max_stock = signal<number>(0);
+  dateRecuperation = new Date().toISOString().split('T')[0]; 
+  dateMin = new Date().toISOString().split('T')[0];
+  showDateModal = signal(false);
 
 
 
@@ -84,8 +88,7 @@ export class PanierListComponent implements OnInit {
         produit: panier.produit._id,
         prix: panier.prixActuel,
         quantite: this.panierUpdated().quantite,
-        etat: etatId || '',
-        typeCommande: panier.typeCommande
+        etat: etatId || ''
       });
       this.panierService.updatePanier(panier._id!, this.panierUpdated()).subscribe({
         next: () => this.loadPanier(),
@@ -114,13 +117,26 @@ export class PanierListComponent implements OnInit {
     this.canValidate.set(anySelected);
   }
 
+  addDateRecuperation(panier: PanierList[]) {
+    const dateRecuperation = new Date(this.dateRecuperation);
+    if (dateRecuperation < new Date()) {
+      alert('La date de récupération doit être dans le futur.');
+      return;
+    }
+    console.log('Date de récupération sélectionnée :', this.dateRecuperation);
+    panier.forEach(p => {
+      p.dateHeureRecuperation = this.dateRecuperation.split('T')[0];
+    }
+    );
+  }
+
   validerPanier() {
     const paniersToValidateIntermedaire = this.paniers().filter(p => p.selected);
     if (paniersToValidateIntermedaire.length === 0) {
       alert('Veuillez sélectionner au moins un panier à valider.');
       return;
     }
-
+   this.addDateRecuperation(paniersToValidateIntermedaire);
     this.panierService.sendData(paniersToValidateIntermedaire);
     console.log('Paniers à valider :', paniersToValidateIntermedaire);
     sessionStorage.setItem('produitSelected', JSON.stringify(paniersToValidateIntermedaire));
@@ -150,5 +166,13 @@ export class PanierListComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  openDateModal() {
+    this.showDateModal.set(true);
+    console.log('Ouverture du popup de date de récupération', this.showDateModal());
+  }
+  closeDateModal() {
+    this.showDateModal.set(false);
   }
 }

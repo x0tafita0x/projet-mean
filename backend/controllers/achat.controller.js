@@ -69,17 +69,18 @@ exports.getAchatsByUser = async (req, res) => {
 exports.getAchatDetails = async (req, res) => {
     try {
         const achatId = req.params.achatId;
-        const achatDetails = await achatInfo.find({ achat: achatId }).populate({
+        const achatDetails = await achatInfo.find({ achat: achatId }).populate([{
             path: 'panier',
+            select: 'dateHeureRecuperation',
             populate: {
                 path: 'produit',
                 select: 'nom',
                 populate: {
                     path: 'boutique',
-                    select: 'nom'
+                    select: 'nom numeroTelephone',
                 }
             }
-        });
+        },{ path: 'etat', select: 'nom' }]);
 
         res.status(200).json(achatDetails);
     } catch (err) {
@@ -111,12 +112,12 @@ exports.listCommmandes = async (req, res) => {
         const matchStage = { "produitDetails.boutique": boutiqueId, "etat": etatId };
 
         if (startDate || endDate) {
-            matchStage["achatDetails.createdAt"] = {};
-            if (startDate) matchStage["achatDetails.createdAt"].$gte = new Date(startDate);
+            matchStage["panierDetails.dateHeureRecuperation"] = {};
+            if (startDate) matchStage["panierDetails.dateHeureRecuperation"].$gte = new Date(startDate);
             if (endDate) {
                 const end = new Date(endDate);
                 end.setHours(23, 59, 59, 999);
-                matchStage["achatDetails.createdAt"].$lte = end;
+                matchStage["panierDetails.dateHeureRecuperation"].$lte = end;
             }
         }
 
@@ -167,6 +168,7 @@ exports.listCommmandes = async (req, res) => {
                     _id: '$achat',
                     totalPrix: { $sum: { $multiply: ["$quantite", "$prix"] } },
                     totalQuantite: { $sum: "$quantite" },
+                    dateRecuperation: { $first: "$panierDetails.dateHeureRecuperation" },
                     createdAt: { $first: "$achatDetails.createdAt" },
                     client: { $first: "$clientDetails.nom" },
                     etat: { $first: "$etat" }
@@ -177,7 +179,7 @@ exports.listCommmandes = async (req, res) => {
         const [commandes, totalCount] = await Promise.all([
             achatInfo.aggregate([
                 ...pipeline,
-                { $sort: { createdAt: -1 } },
+                { $sort: { dateRecuperation: -1 } },
                 { $skip: skip },
                 { $limit: Number(limit) },
                 {
@@ -185,6 +187,7 @@ exports.listCommmandes = async (req, res) => {
                         _id: 1,
                         totalPrix: 1,
                         totalQuantite: 1,
+                        dateRecuperation: 1,
                         createdAt: 1,
                         client: 1,
                         etat: 1
@@ -222,14 +225,15 @@ exports.commandeDetails = async (req, res) => {
         const achatDetails = await achatInfo.find(filter).populate({
             path: 'panier',
             select: 'utilisateur',
+            match: { etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f") } },
             populate: {
                 path: 'produit',
                 select: 'nom photo',
                 populate: [
                     {
                         path: 'boutique',
-                        select: 'nom',
-                        match: { _id: boutiqueId } // ton filtre
+                        select: 'nom numeroTelephone',
+                        match: { _id: boutiqueId } 
                     },
                     {
                         path: 'sousTypeProduit',
@@ -246,11 +250,11 @@ exports.commandeDetails = async (req, res) => {
 
 exports.ChangeToCommandeARecuperer = async (req, res) => {
     try {
-        const { achatId } = req.params;
+        const { achatId,boutiqueId } = req.params;
         const etatId = await etatService.getEtatIdByNom(ETATS.A_RECUPERER);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId) },
-            { $set: { etat: etatId } }
+            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId),  etat: etatId  } },
+            { $set: { etat: etat } }
         );
         res.status(200).json(result);
     } catch (err) {
@@ -271,12 +275,12 @@ exports.ChangeToCommandePayeEtRecupere = async (req, res) => {
     }
 };
 
-exports.CancelAchat = async (req, res) => {
+exports.ChangeToCommandeAnnule = async (req, res) => {
     try {
-        const { achatId } = req.params;
+        const { achatInfoId } = req.params;
         const etatId = await etatService.getEtatIdByNom(ETATS.ANNULEE);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId) },
+            { _id: new mongoose.Types.ObjectId(achatInfoId) },
             { $set: { etat: etatId } }
         );
         res.status(200).json(result);
@@ -284,6 +288,7 @@ exports.CancelAchat = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
 
 // --- Admin Methods ---
 

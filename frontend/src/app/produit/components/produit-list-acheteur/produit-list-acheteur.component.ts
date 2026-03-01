@@ -45,7 +45,7 @@ export class ProduitListAcheteurComponent {
     order: 'asc'
   });
   produitSelectionne = signal<ProduitDetail>({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
-  panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', typeCommande: 'normal' });
+  panierItem = signal({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: 'en cours', dateHeureRecuperation: '' });
   showDetails = signal(false);
   produits = signal<StockResponse[]>([]);
   sousTypeProduits = signal<SousTypeProduit[]>([]);
@@ -164,7 +164,7 @@ export class ProduitListAcheteurComponent {
       prix: parseFloat(prix),
       quantite: this.panierItem().quantite,
       etat: etatId || '',
-      typeCommande: 'normal'
+      dateHeureRecuperation:  '',
     });
   }
 
@@ -262,9 +262,45 @@ export class ProduitListAcheteurComponent {
   }
 
   submitRating() {
-    if (this.rating() === 0) {
-      alert('Veuillez sélectionner un nombre d’étoiles');
+    this.avisNoteInsert.set({
+      note: this.rating(),
+      avis: this.comment(),
+      utilisateur: this.user?.id || '', // ou autre id
+      boutique: this.boutique._id // id de la boutique concernée
+    });
+    if (this.rating() < 0) {
+      alert('La note ne peut pas être négative');
       return;
+    }else if (this.rating() > 5) {
+      alert('La note ne peut pas être supérieure à 5');
+      return;
+    }
+
+    const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
+      : this.avisNoteService.createAvisNote(this.avisNoteInsert());
+   obs.subscribe({
+      next: () => {
+        this.closeRatingModal();
+        this.loadMonAvisNote(this.boutique._id);
+        alert('Merci pour votre avis !');
+      },
+      error: (err) => console.error('Erreur', err)
+    });
+  }
+loadMonAvisNote(boutiqueId: string) {
+  this.avisNoteService.getAvisNoteByUserAndBoutique(this.user?.id || '', boutiqueId).subscribe({
+    next: (data) => {
+      this.monAvisNote.set(data);
+      this.rating.set(data.note);
+      this.comment.set(data.avis || '');
+      this.monAvisNoteExist.set(true);
+    },
+    error: (err) => {
+      if (err.status === 404) {
+        this.monAvisNoteExist.set(false);
+      } else {  
+      console.error('Erreur', err);
+    }
     }
 
     this.avisNoteInsert.set({

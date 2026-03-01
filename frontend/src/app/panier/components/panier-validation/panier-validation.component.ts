@@ -13,6 +13,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
+import { sign } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-panier-validation',
@@ -36,6 +37,8 @@ export class PanierValidationComponent implements OnInit {
   total = signal(0);
   date = new Date();
   dateString = this.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  dateCommande = this.date.toLocaleDateString('fr-FR');
+  dateRecuperation = signal('');
   user: User | null = null;
   confirming = false;
   confirmed = false;
@@ -56,6 +59,7 @@ export class PanierValidationComponent implements OnInit {
       await this.purify();
     });
     this.user = this.authService.currentUser();
+    this.getDateRecuperation();
   }
 
   async purify() {
@@ -74,7 +78,7 @@ export class PanierValidationComponent implements OnInit {
         prix: panier.prixActuel,
         quantite: panier.quantite,
         etat: etatId || '',
-        typeCommande: panier.typeCommande
+        dateHeureRecuperation: panier.dateHeureRecuperation
       };
 
       // For stock movement (with boutique)
@@ -88,6 +92,10 @@ export class PanierValidationComponent implements OnInit {
       this.RefBoutique.update(list => [...list, panierBoutique]);
     }
   }
+
+getDateRecuperation() {
+  this.dateRecuperation.set(new Date(this.paniers()[0].dateHeureRecuperation || '').toLocaleDateString('fr-FR'));
+}
 
   exportPDF() {
     const doc = new jsPDF();

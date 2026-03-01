@@ -124,7 +124,7 @@ export class CommandeListComponent implements OnInit {
     const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
 
 
-    this.commandeService.updateCommandeToRecuperer(achatId).subscribe({
+    this.commandeService.updateCommandeToRecuperer(achatId,this.user?.boutique || "").subscribe({
       next: () => {
         alert('Commande mise à jour avec succès !');
         this.loadCommandes();

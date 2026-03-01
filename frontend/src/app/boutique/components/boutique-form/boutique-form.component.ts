@@ -19,7 +19,7 @@ export class BoutiqueFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
 
-  boutique = signal<Boutique>({ nom: '', typeBoutique: '', heureOuverture: '', heureFermeture: '', nbJoursOuverture: '' });
+  boutique = signal<Boutique>({ nom: '', typeBoutique: '', heureOuverture: '', heureFermeture: '', numeroTelephone: '' });
   typeBoutiques = signal<TypeBoutique[]>([]);
   isEdit = signal(false);
   loading = signal(false);
@@ -79,7 +79,7 @@ export class BoutiqueFormComponent implements OnInit {
     formData.append('typeBoutique', (this.boutique().typeBoutique as string) || '');
     formData.append('heureOuverture', this.boutique().heureOuverture);
     formData.append('heureFermeture', this.boutique().heureFermeture);
-    formData.append('nbJoursOuverture', this.boutique().nbJoursOuverture);
+    formData.append('numeroTelephone', this.boutique().numeroTelephone);
 
     if (this.selectedFile) {
       formData.append('photo', this.selectedFile);

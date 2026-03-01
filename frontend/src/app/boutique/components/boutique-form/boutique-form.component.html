@@ -1,5 +1,5 @@
 <div class="container mt-4 pb-5">
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" *ngIf="user?.role === 'admin'">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a routerLink="/home/boutique">Boutiques</a></li>
             <li class="breadcrumb-item active">{{ isEdit() ? 'Modifier' : 'Nouveau' }} Boutique</li>
@@ -44,9 +44,9 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label for="nbjourOuverture" class="form-label">Jour d'ouverture /7</label>
-                    <input type="number" id="nbjourOuverture" name="nbjourOuverture" class="form-control" [(ngModel)]="boutique().nbJoursOuverture" required
-                            #jourOuverture="ngModel">
+                    <label for="numeroTelephone" class="form-label">Numéro de téléphone</label>
+                    <input type="text" id="numeroTelephone" name="numeroTelephone" class="form-control" [(ngModel)]="boutique().numeroTelephone" required
+                            #numeroTelephone="ngModel">
                 </div>
 
                 
@@ -66,7 +66,7 @@
                 <div class="d-flex justify-content-end gap-2 mt-4">
                     <button type="button" class="btn btn-light" routerLink="/home/boutique" *ngIf="user?.role === 'admin'">Annuler</button>
                     <button type="submit" class="btn btn-primary"
-                        [disabled]="loading() || !boutique().nom || !boutique().typeBoutique || !boutique().heureOuverture || !boutique().heureFermeture || !boutique().nbJoursOuverture">
+                        [disabled]="loading() || !boutique().nom || !boutique().typeBoutique || !boutique().heureOuverture || !boutique().heureFermeture || !boutique().numeroTelephone">
                         {{ loading() ? 'Enregistrement...' : 'Enregistrer' }}
                     </button>
                 </div>

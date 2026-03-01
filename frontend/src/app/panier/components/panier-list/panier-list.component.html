@@ -1,107 +1,135 @@
-<div class="row my-4">
-    <div class="col-lg-12 col-12">
-        <div class="custom-block">
-            <a (click)="goBack()" style="cursor: pointer;">
-                <i class="bi bi-caret-left-fill"></i> Retour
-            </a>
+                    <div class="row my-4">
+                        <div class="col-lg-12 col-12">
+                            <div class="custom-block"> 
+                                <!-- <a routerLink="/home"> -->
+                                <a routerLink="/home/panier/validation" >
+                                    <i class="bi bi-caret-left-fill"></i> Retour
+                                </a>
 
-            <!-- Ligne titre + bouton -->
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <h3 class="mb-0">Mon Panier</h3>
-
-
-                <div class="d-flex align-items-right justify-content-between mb-3" style="gap: 42px; ">
-                    <button class="btn btn-outline-danger" (click)="deletePanierSelected()"
-                        [disabled]="paniers().length === 0 || !canValidate()">
-                        <i class="bi bi-trash"></i> Supprimer
-                    </button>
-                    <button class="btn btn-warning" (click)="validerPanier()"
-                        [disabled]="paniers().length === 0 || !canValidate()">
-                        Valider panier
-                    </button>
-                </div>
-            </div>
-
-            <!-- <form>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
-                                            <select id="typeBoutique" name="typeBoutique" class="form-select">
-                                                <option value="" disabled selected>Sélectionnez un type</option>
-                                            </select>
-                                        </div>
+                                <!-- Ligne titre + bouton -->
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h3 class="mb-0">Mon Panier</h3>
+                                    
+                                    
+                                    <div class="d-flex align-items-right justify-content-between mb-3" style="gap: 42px; ">
+                                        <button class="btn btn-outline-danger" (click)="deletePanierSelected()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </button>
+                                        <button class="btn btn-warning" (click)="openDateModal()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            Valider panier
+                                        </button>
                                     </div>
-                                </form> -->
-        </div>
+                                </div>
 
-        <div class="d-flex justify-content-end gap-2 mb-3">
-            <button class="btn btn-perso" (click)="selectAll()">
-                <i class="bi bi-check-square"></i> Sélectionner tout
-            </button>
+                               
+                            </div>
+                           
 
-            <button class="btn btn-perso" (click)="deSelectAll()">
-                <i class="bi bi-x-square"></i> Désélectionner tout
-            </button>
-        </div>
+                            <div class="d-flex justify-content-end gap-2 mb-3">
+                                <button class="btn btn-perso" (click)="selectAll()">
+                                    <i class="bi bi-check-square"></i> Sélectionner tout
+                                </button>
 
+                                <button class="btn btn-perso" (click)="deSelectAll()">
+                                    <i class="bi bi-x-square"></i> Désélectionner tout
+                                </button>
+                            </div>
 
-        <div class="custom-block liste-panier">
-            <div *ngFor="let panier of paniers()" class="custom-panier d-flex align-items-center">
+                            <!-- Overlay sombre -->
+                            <div class="overlayDate" *ngIf="showDateModal()" (click)="closeDateModal()"></div>
 
-                <!-- Checkbox à gauche -->
-                <div class="panier-check">
-                    <input type="checkbox" [checked]="panier.selected" (change)="check(panier)"
-                        class="form-check-input">
-                </div>
+                            <!-- Modal -->
+                            <div class="date-modal" *ngIf="showDateModal()">
+                            <h4>Choisir une date de récupération</h4>
 
-                <!-- Contenu du panier -->
-                <div class="panier-content">
-                    <img class="custom-image img-fluid"
-                        [src]="panier.produit.photo ? 'http://localhost:3000/' + panier.produit.photo : 'assets/placeholder.png'"
-                        alt="">
+                            <!-- Date -->
+                            <div class="mb-3">
+                                <label class="form-label">Date :</label>
+                                <input 
+                                type="date"
+                                class="form-control"
+                                [min]="dateMin"
+                                [ngModel]="dateRecuperation" 
+                                (ngModelChange)="dateRecuperation = $event"
+                                />
+                            </div>
+                            <!-- Boutons -->
+                            <div class="modal-actions mt-3">
+                                <button class="btn btn-secondary me-2" (click)="closeDateModal()">
+                                Annuler
+                                </button>
+                                <button class="btn btn-success" (click)="validerPanier()">
+                                Confirmer
+                                </button>
+                            </div>
+                            </div>
 
-                    <div class="panier-info">
-                        <h3 class="panier-nom">{{ panier.produit.nom }}</h3>
+                            
+                            <div class="custom-block liste-panier">
+                                <div *ngFor="let panier of paniers()"
+                                    class="custom-panier d-flex align-items-center">
 
-                        <p *ngIf="!panier.edit" class="panier-type">
-                            Prix unitaire:
-                            {{ panier.prixActuel | number:'1.0-0' }} MGA
-                            /
-                            Quantité :
-                            <button class="btn btn-link p-0 panier-qte-btn" (click)="editPanier(panier)">
-                                {{ panier.quantite }}
-                            </button>
-                        </p>
+                                    <!-- Checkbox à gauche -->
+                                    <div class="panier-check">
+                                        <input
+                                            type="checkbox"
+                                            [checked]="panier.selected"
+                                            (change)="check(panier)"
+                                            class="form-check-input"
+                                        >
+                                    </div>
 
-                        <p *ngIf="panier.edit" class="panier-type panier-edit">
-                            Prix unitaire:
-                            {{ panier.prixActuel | number:'1.0-0' }} MGA
-                            /
-                            Quantité <strong style="color: red;">(max : {{ max_stock() }})</strong> :
+                                    <!-- Contenu du panier -->
+                                    <div class="panier-content">
+                                        <img class="custom-image img-fluid"
+                                            [src]="panier.produit.photo ? 'http://localhost:3000/' + panier.produit.photo : 'assets/placeholder.png'"
+                                            alt="">
 
-                            <input type="number" min="1" max="{{ max_stock() }}" class="panier-qte-input"
-                                [(ngModel)]="panierUpdated().quantite">
+                                        <div class="panier-info">
+                                            <h3 class="panier-nom">{{ panier.produit.nom }}</h3>
 
-                            <button class="btn btn-success btn-icon" (click)="validerModifPanier(panier)">
-                                <i class="bi bi-check-lg"></i>
-                            </button>
+                                            <p *ngIf="!panier.edit" class="panier-type">
+                                                Prix unitaire:
+                                                {{ panier.prixActuel | currency:'MGA ':'symbol':'1.0-0' }}
+                                                /
+                                                Quantité :
+                                                <button class="btn btn-link p-0 panier-qte-btn"
+                                                        (click)="editPanier(panier)">
+                                                    {{ panier.quantite }}
+                                                </button>
+                                            </p>
 
-                            <button class="btn btn-danger btn-icon" (click)="editPanier(panier)">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        </p>
+                                            <p *ngIf="panier.edit" class="panier-type panier-edit">
+                                                Prix unitaire:
+                                                {{ panier.prixActuel | currency:'MGA ':'symbol':'1.0-0' }}
+                                                /
+                                                Quantité <strong style="color: red;">(max : {{ max_stock() }})</strong> :
 
-                        <p style="color: rgb(204, 185, 13);" class="panier-type">
-                            Boutique : {{ panier.boutique.nom }}
-                        </p>
-                    </div>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="{{ max_stock() }}"
+                                                    class="panier-qte-input"
+                                                    [(ngModel)]="panierUpdated().quantite"
+                                                >
 
-                    <div class="panier-prix">
-                        Total :
-                        {{ (+panier.prixActuel) * (+panier.quantite) | number:'1.0-0' }} MGA
-                    </div>
-                </div>
-            </div>
+                                                <button class="btn btn-success btn-icon"
+                                                        (click)="validerModifPanier(panier)">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+
+                                                <button class="btn btn-danger btn-icon"
+                                                        (click)="editPanier(panier)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </p>
+
+                                            <p style="color: rgb(204, 185, 13);" class="panier-type">
+                                                Boutique : {{ panier.boutique.nom }}
+                                            </p>
+                                        </div>
 
 
             <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">

@@ -41,7 +41,8 @@ export class CommandePayeeRecupereeListComponent implements OnInit {
     dateFacture: '',
     idFFacture: '',
     client: '',
-    boutique: ''
+    boutique: '',
+    numeroTelephone: ''
   });
   @ViewChild('facture') factureComponent!: any;
 
@@ -99,7 +100,8 @@ export class CommandePayeeRecupereeListComponent implements OnInit {
           dateFacture: new Date(commande.createdAt).toLocaleString(),
           idFFacture: commande._id,
           client: commande.client,
-          boutique: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.nom : ''
+          boutique: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.nom : '',
+          numeroTelephone: this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].panier.produit.boutique.numeroTelephone : ''
         });
         console.log('Data pour la facture:', this.data());
       },

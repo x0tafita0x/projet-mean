@@ -11,7 +11,8 @@
   <!-- Infos client -->
   <div class="client-info">
     <p><strong>Client :</strong> {{ user?.nom }}</p>
-    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'d MMMM yyyy à HH:mm' }}</p>
+    <p><strong>Date :</strong> {{ achat()?.createdAt | date:'dd/MM/yyyy' }}</p>
+    <p><strong>Date de récupération :</strong> {{ dateRecuperation() | date:'dd/MM/yyyy' }}</p>
   </div>
 
   <!-- Tableau produits -->
@@ -23,6 +24,8 @@
         <th>Quantité</th>
         <th>Prix unitaire (MGA)</th>
         <th>Total (MGA)</th>
+        <th>Etat</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -30,8 +33,12 @@
         <td>{{ achatDetails.panier.produit.nom }}</td>
         <td>{{ achatDetails.panier.produit.boutique.nom }}</td>
         <td>{{ achatDetails.quantite }}</td>
-        <td>{{ achatDetails.prix | number:'1.0-0' }} MGA</td>
-        <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | number:'1.0-0' }} MGA</td>
+        <td>{{ achatDetails.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ achatDetails.etat.nom }}</td>
+        <td><button *ngIf="achatDetails.etat.nom != 'Annule'" class="btn" style="color: red;" [hidden]="!annuler()" (click)="annulerCommande(achatDetails._id || '')"><i class="bi bi-trash"></i></button>
+          <small class="facture-notes" *ngIf="achatDetails.etat.nom == 'Annule'" >pas d'action</small>
+        </td>
       </tr>
     </tbody>
     <tfoot>
@@ -43,7 +50,4 @@
   </table>
 
   <!-- Notes -->
-  <div class="facture-notes">
-    <p><strong>Notes :</strong> Merci pour votre achat !</p>
-  </div>
 </div>
