@@ -131,21 +131,14 @@
                                             </p>
                                         </div>
 
-                                        <div class="panier-prix">
-                                            Total :
-                                            {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}
-                                        </div>
-                                    </div>
-                                </div>
+
+            <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">
+                Aucun panier disponible
+            </div>
+        </div>
 
 
-                                <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">
-                                    Aucun panier disponible
-                                </div>
-                            </div>
+    </div>
 
-                            
-                        </div>
-
-                    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

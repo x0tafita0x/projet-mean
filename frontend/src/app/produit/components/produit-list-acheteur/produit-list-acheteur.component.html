@@ -8,11 +8,30 @@
     <div class="col-lg-12 col-12">
         <div class="custom-block">
             <a routerLink="/home"> <i class="bi bi-caret-left-fill"></i> Retour</a>
-            <div class="text-center"> <h3> {{ boutique.nom }} <i class="bi favori-icon" [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
-                    (click)="toggleFavori(boutique._id, $event)">
-                </i></h3></div>
-           
-            <div class="card shadow-sm border-0 mb-4 bg-light">
+            <div class="text-center">
+                <h3> {{ boutique.nom }} <i class="bi favori-icon"
+                        [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                        (click)="toggleFavori(boutique._id, $event)">
+                    </i></h3>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs mt-4 border-0">
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="activeTab() === 'produits'"
+                        (click)="activeTab.set('produits')">
+                        <i class="bi bi-grid-3x3-gap me-1"></i> Produits
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="activeTab() === 'publications'"
+                        (click)="activeTab.set('publications')">
+                        <i class="bi bi-megaphone me-1"></i> Publications
+                    </button>
+                </li>
+            </ul>
+
+            <div class="card shadow-sm border-0 mb-4 bg-light" *ngIf="activeTab() === 'produits'">
                 <div class="card-body">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
@@ -48,43 +67,41 @@
 
         </div>
         <div class="d-flex justify-content-end mb-3">
-                <button class="btn btn-warning btn-rate" (click)="openRatingModal()">
-                    <i class="bi bi-star-fill me-1"></i>{{monAvisNoteExist() ? 'Voir mon avis' : 'Noter / Avis'}}
-                </button>
-            </div>
-            <!-- Overlay sombre -->
-            <div class="overlayRating" *ngIf="showRatingModal()" (click)="closeRatingModal()"></div>
+            <button class="btn btn-warning btn-rate" (click)="openRatingModal()">
+                <i class="bi bi-star-fill me-1"></i>{{monAvisNoteExist() ? 'Voir mon avis' : 'Noter / Avis'}}
+            </button>
+        </div>
+        <!-- Overlay sombre -->
+        <div class="overlayRating" *ngIf="showRatingModal()" (click)="closeRatingModal()"></div>
 
-            <!-- Modal -->
-            <div class="rating-modal" *ngIf="showRatingModal()">
+        <!-- Modal -->
+        <div class="rating-modal" *ngIf="showRatingModal()">
             <h4>{{monAvisNoteExist() ? 'Mon avis' : 'Donnez votre avis'}}</h4>
 
             <!-- Étoiles -->
             <div class="stars mb-3">
-                <i *ngFor="let star of [1,2,3,4,5]; let i = index"
-                class="bi"
-                [ngClass]="i < rating() ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
-                (click)="monAvisNoteExist()? doNothing() : setRating(i + 1)"             
-                >
+                <i *ngFor="let star of [1,2,3,4,5]; let i = index" class="bi"
+                    [ngClass]="i < rating() ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
+                    (click)="monAvisNoteExist()? doNothing() : setRating(i + 1)">
                 </i>
             </div>
 
             <!-- Commentaire -->
-            <textarea 
-            [ngModel]="comment()" 
-            [readonly]="monAvisNoteExist()"
-            (ngModelChange)="comment.set($event)" 
-            placeholder="Votre commentaire..." 
-            rows="3">
+            <textarea [ngModel]="comment()" [readonly]="monAvisNoteExist()" (ngModelChange)="comment.set($event)"
+                placeholder="Votre commentaire..." rows="3">
             </textarea>
 
             <!-- Boutons -->
-            <div class="modal-actions mt-3" >
-                <button class="btn btn-secondary me-2" (click)="closeRatingModal()" *ngIf="!monAvisNoteExist()">Annuler</button>
-                <button class="btn btn-danger me-2" (click)="deleteRating()" *ngIf="monAvisNoteExist()">Supprimer</button>
-                <button class="btn btn-warning" (click)="!monAvisNoteExist()? submitRating(): modifyRating()">{{monAvisNoteExist() ? 'Modifier' : 'Envoyer'}}</button>
+            <div class="modal-actions mt-3">
+                <button class="btn btn-secondary me-2" (click)="closeRatingModal()"
+                    *ngIf="!monAvisNoteExist()">Annuler</button>
+                <button class="btn btn-danger me-2" (click)="deleteRating()"
+                    *ngIf="monAvisNoteExist()">Supprimer</button>
+                <button class="btn btn-warning"
+                    (click)="!monAvisNoteExist()? submitRating(): modifyRating()">{{monAvisNoteExist() ? 'Modifier' :
+                    'Envoyer'}}</button>
             </div>
-            </div>
+        </div>
 
 
         <!-- OVERLAY -->
@@ -111,7 +128,7 @@
                 {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
                 {{ produitSelectionne().sousTypeProduit.nom }}
             </p>
-            <h6 style="color: rgb(180, 157, 27);"> {{ prixProduit() | currency:'MGA ':'symbol':'1.0-0' }}</h6>
+            <h6 style="color: rgb(180, 157, 27);"> {{ prixProduit() | number:'1.0-0' }} MGA</h6>
 
             <!-- Info produit -->
             <p>{{ produitSelectionne().info }}</p>
@@ -138,33 +155,36 @@
 
 
 
-        <div class="custom-block liste-produit">
+        <div class="custom-block liste-produit" *ngIf="activeTab() === 'produits'">
             <div class="produits-grid">
-                <div *ngFor="let produit of produits()" 
-                    (click)="selectProduit(produit)" 
-                    class="custom-produit">
+                <div *ngFor="let produit of produits()" (click)="selectProduit(produit)" class="custom-produit">
 
                     <div class="produit-content">
-                    <img class="custom-image"
-                        [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
-                        alt="">
+                        <img class="custom-image"
+                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
+                            alt="">
 
-                    <div class="produit-info">
-                        <h3 class="produit-nom">{{ produit.produit }}</h3>
-                        <p class="produit-type">{{ produit.sousTypeProduit }}</p>
-                    </div>
+                        <div class="produit-info">
+                            <h3 class="produit-nom">{{ produit.produit }}</h3>
+                            <p class="produit-type">{{ produit.sousTypeProduit }}</p>
+                        </div>
 
-                    <div class="produit-prix">
-                        {{ produit.prixUnitaire | currency:'MGA ':'symbol':'1.0-0' }}
-                    </div>
+                        <div class="produit-prix">
+                            {{ produit.prixUnitaire | number:'1.0-0' }} MGA
+                        </div>
                     </div>
 
                 </div>
-                </div>
+            </div>
 
             <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
                 Aucun produit disponible
             </div>
+        </div>
+
+        <!-- Section Annonces -->
+        <div class="custom-block" *ngIf="activeTab() === 'publications'">
+            <app-annonce-list [boutiqueId]="boutique._id"></app-annonce-list>
         </div>
 
 

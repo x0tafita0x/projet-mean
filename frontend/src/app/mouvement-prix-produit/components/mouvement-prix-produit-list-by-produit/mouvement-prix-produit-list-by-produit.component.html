@@ -15,15 +15,16 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let mouvement of mouvementsPrixProduits()">
-                        
+
                         <td>
                             <strong>{{ mouvement.nom }}</strong><br>
                         </td>
-                        <td>{{ mouvement.prix | currency:'MGA ':'symbol':'1.0-0' }}</td>
+                        <td>{{ mouvement.prix | number:'1.0-0' }} MGA</td>
                         <td>{{ mouvement.date | date:'dd/MM/yyyy HH:mm' }}</td>
                     </tr>
                     <tr *ngIf="mouvementsPrixProduits().length === 0">
-                        <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement de prix de produit trouvé</td>
+                        <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement de prix de produit trouvé
+                        </td>
                     </tr>
                 </tbody>
             </table>

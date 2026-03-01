@@ -3,6 +3,8 @@ const AchatInfo = require("../models/achatInfo.model");
 const Boutique = require("../models/boutique.model");
 const Produit = require("../models/produit.model");
 const mongoose = require("mongoose");
+const etatService = require("../services/etat.service");
+const ETATS = require("../utils/etat.constants");
 
 exports.getStats = async (req, res) => {
     try {
@@ -22,6 +24,12 @@ exports.getStats = async (req, res) => {
         if (boutiqueId) {
             matchStage.boutique = new mongoose.Types.ObjectId(boutiqueId);
         }
+
+        // --- FILTER ONLY PAID AND COLLECTED ORDERS ---
+        const etatId = await etatService.getEtatIdByNom(ETATS.PAYEE_ET_RECUPEREE);
+        const validAchatIds = await AchatInfo.distinct("achat", { etat: etatId });
+        matchStage._id = { $in: validAchatIds };
+        // ----------------------------------------------
 
         // 2. Global Totals
         // Total Boutiques (not affected by date filter if we want total existing, but maybe filtered if we want active ones)
@@ -107,9 +115,19 @@ exports.getStats = async (req, res) => {
         ]);
 
         // 6. Top 5 Produits (by Quantity/Revenue)
-        // This requires AchatInfo
         const topProducts = await AchatInfo.aggregate([
-            // Need to filter AchatInfo by Achat date/boutique
+            { $match: { etat: etatId } },
+            // Join with panier to get the product ID
+            {
+                $lookup: {
+                    from: "paniers",
+                    localField: "panier",
+                    foreignField: "_id",
+                    as: "panierInfo"
+                }
+            },
+            { $unwind: "$panierInfo" },
+            // Join with achat to apply filters (date, boutique)
             {
                 $lookup: {
                     from: "achats",
@@ -119,16 +137,18 @@ exports.getStats = async (req, res) => {
                 }
             },
             { $unwind: "$achatInfo" },
-            // Apply filters on the parent Achat
+            // Apply filters from matchStage
             {
                 $match: Object.keys(matchStage).reduce((acc, key) => {
-                    acc[`achatInfo.${key}`] = matchStage[key];
+                    if (key !== '_id') {
+                        acc[`achatInfo.${key}`] = matchStage[key];
+                    }
                     return acc;
                 }, {})
             },
             {
                 $group: {
-                    _id: "$produit",
+                    _id: "$panierInfo.produit",
                     totalQty: { $sum: "$quantite" },
                     revenue: { $sum: { $multiply: ["$prix", "$quantite"] } }
                 }

@@ -5,13 +5,15 @@ const achatService = require("../services/achat.service");
 const panierController = require("./panier.controller");
 const mongoose = require("mongoose");
 const { paginate } = require("../utils/pagination");
+const etatService = require("../services/etat.service");
+const ETATS = require("../utils/etat.constants");
 
 
 exports.createAchat = async (req, res) => {
     try {
         const paniers = req.body.map(data => new panier(data));
         const achatData = await achatService.extractAchat(paniers);
-        const achatInfos = achatService.extractAchatInfo(paniers);
+        const achatInfos = await achatService.extractAchatInfo(paniers);
         const newAchat = await achat.create(achatData);
         const newAchatInfos = await achatInfo.insertMany(achatInfos.map(info => ({ ...info, achat: newAchat._id })));
         const panierValidate = await panierController.validerPaniers(req, res);
@@ -249,9 +251,9 @@ exports.commandeDetails = async (req, res) => {
 exports.ChangeToCommandeARecuperer = async (req, res) => {
     try {
         const { achatId,boutiqueId } = req.params;
-        const etat = new mongoose.Types.ObjectId("6997d981319cef48fa23a815"); // ID de l'état "Commande à récupérer"
+        const etatId = await etatService.getEtatIdByNom(ETATS.A_RECUPERER);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId),  etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f")  } },
+            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId),  etat: etatId  } },
             { $set: { etat: etat } }
         );
         res.status(200).json(result);
@@ -261,24 +263,25 @@ exports.ChangeToCommandeARecuperer = async (req, res) => {
 };
 exports.ChangeToCommandePayeEtRecupere = async (req, res) => {
     try {
-        const { achatId,boutiqueId } = req.params;
-        const etat = new mongoose.Types.ObjectId("6997d98f319cef48fa23a818"); // ID de l'état "Commande payée et récupérée"
+        const { achatId } = req.params;
+        const etatId = await etatService.getEtatIdByNom(ETATS.PAYEE_ET_RECUPEREE);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId), etat: { $ne: new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f")  } },
-            { $set: { etat: etat } }
+            { achat: new mongoose.Types.ObjectId(achatId) },
+            { $set: { etat: etatId } }
         );
         res.status(200).json(result);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
+
 exports.ChangeToCommandeAnnule = async (req, res) => {
     try {
         const { achatInfoId } = req.params;
-        const etat = new mongoose.Types.ObjectId("69a16acd5cfdcd12fecbf82f"); // ID de l'état "Commande annulée"
+        const etatId = await etatService.getEtatIdByNom(ETATS.ANNULEE);
         const result = await achatInfo.updateMany(
             { _id: new mongoose.Types.ObjectId(achatInfoId) },
-            { $set: { etat: etat } }
+            { $set: { etat: etatId } }
         );
         res.status(200).json(result);
     } catch (err) {
@@ -335,7 +338,10 @@ exports.getOrderDetails = async (req, res) => {
             .populate("client", "nom email")
             .populate("boutique", "nom");
         if (!order) return res.status(404).json({ error: "Commande non trouvée" });
-        const lignes = await achatInfo.find({ achat: req.params.id }).populate("produit", "nom");
+        const lignes = await achatInfo.find({ achat: req.params.id }).populate({
+            path: 'panier',
+            populate: { path: 'produit', select: 'nom' }
+        });
         res.json({ order, lignes });
     } catch (err) {
         res.status(500).json({ error: err.message });

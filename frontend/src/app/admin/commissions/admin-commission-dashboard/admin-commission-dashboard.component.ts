@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, DecimalPipe, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
@@ -7,7 +7,7 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 @Component({
     selector: 'app-admin-commission-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, DecimalPipe, CurrencyPipe, PaginationComponent],
+    imports: [CommonModule, FormsModule, PaginationComponent],
     templateUrl: './admin-commission-dashboard.component.html',
     styleUrl: './admin-commission-dashboard.component.css'
 })

@@ -88,6 +88,24 @@ export class BoutiqueDashboard implements OnInit {
     this.loadStats();
   }
 
+  get chartPeriodLabel(): string {
+    const { startDate, endDate } = this.filters();
+    if (startDate && endDate) {
+      const fmt = (d: string) => {
+        const [y, m, day] = d.split('-');
+        return `${day}/${m}/${y}`;
+      };
+      return `${fmt(startDate)} – ${fmt(endDate)}`;
+    } else if (startDate) {
+      const [y, m, day] = startDate.split('-');
+      return `à partir du ${day}/${m}/${y}`;
+    } else if (endDate) {
+      const [y, m, day] = endDate.split('-');
+      return `jusqu'au ${day}/${m}/${y}`;
+    }
+    return '7 derniers jours';
+  }
+
   initCharts() {
     if (!this.stats()) return;
 

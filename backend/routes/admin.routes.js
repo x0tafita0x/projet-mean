@@ -3,7 +3,7 @@ const router = express.Router();
 const { authMiddleware, isAdmin } = require("../middlewares/auth.middleware");
 
 const boutique = require("../controllers/boutique.controller");
-const utilisateur = require("../controllers/utilisateur.controller");
+const utilisateur = require("../controllers/admin.utilisateur.controller");
 const achat = require("../controllers/achat.controller");
 const commissionAdmin = require("../controllers/admin.commission.controller");
 const statsAdmin = require("../controllers/admin.stats.controller");

@@ -9,6 +9,8 @@ import { User } from '../../../auth/models/auth.models';
 import { FactureTicketComponent } from '../../../facture-ticket/facture-ticket.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { EtatService } from '../../../shared/service/etat.service';
+import { ETATS } from '../../../shared/constants/etat.constants';
 
 @Component({
   selector: 'app-commande-a-recuperer-list',
@@ -20,6 +22,7 @@ import { FilterCriteria } from '../../../shared/models/pagination.models';
 export class CommandeARecupererListComponent implements OnInit {
   private commandeService = inject(CommandeService);
   private authService = inject(AuthService);
+  private etatService = inject(EtatService);
 
   commandeSelectionnee = signal<CommandeDetails[]>([]);
   commandes = signal<Commande[]>([]);
@@ -47,13 +50,20 @@ export class CommandeARecupererListComponent implements OnInit {
     this.loadCommandes();
   }
 
-  loadCommandes() {
+  async loadCommandes() {
     const criteria: FilterCriteria = {
       ...this.filters(),
       page: this.currentPage(),
       limit: this.pageSize()
     };
-    this.commandeService.getCommandes(this.user?.boutique || "", "6997d981319cef48fa23a815", criteria).subscribe({
+
+    const etatId = await this.etatService.getEtatIdByNom(ETATS.A_RECUPERER);
+    if (!etatId) {
+      console.error(`Etat "${ETATS.A_RECUPERER}" non trouvé`);
+      return;
+    }
+
+    this.commandeService.getCommandes(this.user?.boutique || "", etatId, criteria).subscribe({
       next: (response) => {
         this.commandes.set(response.data);
         this.totalItems.set(response.total);
@@ -121,6 +131,21 @@ export class CommandeARecupererListComponent implements OnInit {
         }, 50);
       },
       error: (err) => alert('Erreur lors de la mise à jour de la commande')
+    });
+  }
+
+  annulerCommande() {
+    if (!confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) return;
+
+    const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
+
+    this.commandeService.cancelCommande(achatId).subscribe({
+      next: () => {
+        alert('Commande annulée avec succès !');
+        this.fermerDetails();
+        this.loadCommandes();
+      },
+      error: (err) => alert('Erreur lors de l\'annulation de la commande')
     });
   }
 

@@ -60,14 +60,6 @@
             </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 shadow-sm h-100 bg-info text-white">
-                <div class="card-body">
-                    <h6 class="text-white-50 small text-uppercase fw-bold">Produits</h6>
-                    <div class="h3 fw-bold mb-0 summary-value">{{ stats().totals.totalProduits }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
             <div class="card border-0 shadow-sm h-100 bg-secondary text-white">
                 <div class="card-body">
                     <h6 class="text-white-50 small text-uppercase fw-bold">Commandes</h6>
@@ -75,7 +67,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-md-6 col-xl-3">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-4">
             <div class="card border-0 shadow-sm h-100 bg-success text-white">
                 <div class="card-body">
                     <h6 class="text-white-50 small text-uppercase fw-bold">Chiffre d'affaires</h6>
@@ -84,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-md-6 col-xl-3">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-4">
             <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
                 <div class="card-body">
                     <h6 class="text-dark-50 small text-uppercase fw-bold">Total Commissions</h6>
@@ -101,8 +93,8 @@
         <!-- Daily Orders Line Chart -->
         <div class="col-md-8">
             <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Achats par jour (7
-                    derniers jours)</div>
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Achats par jour
+                    ({{ chartPeriodLabel }})</div>
                 <div class="card-body" style="height: 350px;">
                     <canvas #dailyChart></canvas>
                 </div>

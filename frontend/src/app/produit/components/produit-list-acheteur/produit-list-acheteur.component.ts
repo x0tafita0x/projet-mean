@@ -13,13 +13,15 @@ import { User } from '../../../auth/models/auth.models';
 import { FavoriService } from '../../../favori/services/favori.services';
 import { AvisNoteService } from '../../../avis-note/services/avis-note.services';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
-import { AvisNote,AvisNoteList } from '../../../avis-note/models/avis-note.models';
-import { sign } from 'chart.js/helpers';
+import { AvisNote, AvisNoteList } from '../../../avis-note/models/avis-note.models';
+import { EtatService } from '../../../shared/service/etat.service';
+import { ETATS } from '../../../shared/constants/etat.constants';
+import { AnnonceListComponent } from '../../../annonce/components/annonce-list/annonce-list.component';
 
 @Component({
   selector: 'produit-list-acheteur',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, AnnonceListComponent],
   templateUrl: './produit-list-acheteur.component.html',
   styleUrl: './produit-list-acheteur.component.css'
 })
@@ -33,8 +35,10 @@ export class ProduitListAcheteurComponent {
   private favoriService = inject(FavoriService);
   private boutiqueService = inject(BoutiqueService);
   private avisNoteService = inject(AvisNoteService);
+  private etatService = inject(EtatService);
 
   user: User | null = null;
+  activeTab = signal<'produits' | 'publications'>('produits');
   filters = signal<FilterCriteria>({
     nom: '',
     sousTypeProduit: '',
@@ -48,7 +52,8 @@ export class ProduitListAcheteurComponent {
   prixProduit = signal<string>('0');
   max_stock = signal<number>(0);
   favori = signal<boolean>(false);
-  boutique : {
+  favoriId = signal<string | null>(null);
+  boutique: {
     _id: string;
     nom: string;
   } = { _id: '', nom: '' };
@@ -57,17 +62,17 @@ export class ProduitListAcheteurComponent {
   order: string = 'asc';
   avisNoteInsert = signal<AvisNote>({ utilisateur: '', boutique: '', note: 0, avis: '' });
 
-showRatingModal = signal(false);
-rating = signal<number>(0);
-comment = signal<string>('');
-monAvisNote = signal<AvisNote>({
-  utilisateur: '',
-  boutique: '',
-  note: 0,
-  avis: ''
-});
-monAvisNoteExist = signal(false);
-editMode = signal(false);
+  showRatingModal = signal(false);
+  rating = signal<number>(0);
+  comment = signal<string>('');
+  monAvisNote = signal<AvisNote>({
+    utilisateur: '',
+    boutique: '',
+    note: 0,
+    avis: ''
+  });
+  monAvisNoteExist = signal(false);
+  editMode = signal(false);
 
   ngOnInit() {
     this.user = this.authService.currentUser();
@@ -138,10 +143,10 @@ editMode = signal(false);
     });
   }
 
-  selectProduit(produit: StockResponse) {
+  async selectProduit(produit: StockResponse) {
     this.loadProduitsDetails(produit._id as string || null);
     this.prixProduit.set(produit.prixUnitaire || '0');
-    this.putData(produit, produit.prixUnitaire || '0');
+    await this.putData(produit, produit.prixUnitaire || '0');
     this.showDetails.set(true);
     this.getStockById(produit._id as string || '');
   }
@@ -151,13 +156,14 @@ editMode = signal(false);
     this.produitSelectionne.set({ _id: '', nom: '', sousTypeProduit: { _id: '', nom: '', typeProduit: { _id: '', nom: '' } }, boutique: { _id: '', nom: '' } });
   }
 
-  putData(produit: StockResponse, prix: string) {
+  async putData(produit: StockResponse, prix: string) {
+    const etatId = await this.etatService.getEtatIdByNom(ETATS.EN_BROUILLON);
     this.panierItem.set({
       utilisateur: this.user?.id || '',
       produit: produit._id || '',
       prix: parseFloat(prix),
       quantite: this.panierItem().quantite,
-      etat: '6997d94d319cef48fa23a80f',
+      etat: etatId || '',
       dateHeureRecuperation:  '',
     });
   }
@@ -189,11 +195,13 @@ editMode = signal(false);
 
   toggleFavori(boutique: string, event: Event) {
     event.stopPropagation(); // évite le clic sur la carte
-    if (this.favori()) {
-      this.favoriService.deleteFavori(boutique).subscribe({
+    const fId = this.favoriId();
+    if (this.favori() && fId) {
+      this.favoriService.deleteFavori(fId).subscribe({
         next: () => {
           this.favori.set(false);
-          alert('Produit retiré des favoris');
+          this.favoriId.set(null);
+          alert('Boutique retirée des favoris');
         },
         error: (err) => {
           console.error('Error removing favori', err);
@@ -205,9 +213,10 @@ editMode = signal(false);
         utilisateur: this.user?.id || '',
         boutique: boutique
       }).subscribe({
-        next: () => {
+        next: (data) => {
           this.favori.set(true);
-          alert('Produit ajouté aux favoris');
+          this.favoriId.set(data._id || null);
+          alert('Boutique ajoutée aux favoris');
         },
         error: (err) => {
           console.error('Error adding favori', err);
@@ -220,68 +229,64 @@ editMode = signal(false);
     console.log('Checking if boutique is favori for user', boutiqueId, this.user?.id);
     this.favoriService.isFavoriExist(boutiqueId, this.user?.id || '').subscribe({
       next: (data) => {
-        this.favori.set(data);
+        this.favori.set(data.exists);
+        this.favoriId.set(data._id || null);
       },
       error: (err) => console.error('Error checking favori', err)
     });
   }
 
 
-openRatingModal() {
-  this.showRatingModal.set(true);
-}
-
-closeRatingModal() {
-  console.log('Closing rating modal');
-  this.showRatingModal.set(false);
-  if (!this.monAvisNoteExist()) {
-  this.rating.set(0);
-  this.comment.set('');
-  }
-}
-
-setRating(value: number) {
-  this.rating.set(value);
-}
-
-doNothing() {}
-
-modifyRating() {
-  this.monAvisNoteExist.set(false);
-  this.editMode.set(true);
-}
-
-submitRating() {
-  if (this.rating() === 0) {
-    alert('Veuillez sélectionner un nombre d’étoiles');
-    return;
+  openRatingModal() {
+    this.showRatingModal.set(true);
   }
 
-  this.avisNoteInsert.set({
-    note: this.rating(),
-    avis: this.comment(),
-    utilisateur: this.user?.id || '', // ou autre id
-    boutique: this.boutique._id // id de la boutique concernée
-  });
-  if (this.rating() < 0) {
-    alert('La note ne peut pas être négative');
-    return;
-  }else if (this.rating() > 5) {
-    alert('La note ne peut pas être supérieure à 5');
-    return;
+  closeRatingModal() {
+    console.log('Closing rating modal');
+    this.showRatingModal.set(false);
+    if (!this.monAvisNoteExist()) {
+      this.rating.set(0);
+      this.comment.set('');
+    }
   }
 
-  const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
-    : this.avisNoteService.createAvisNote(this.avisNoteInsert());
- obs.subscribe({
-    next: () => {
-      this.closeRatingModal();
-      this.loadMonAvisNote(this.boutique._id);
-      alert('Merci pour votre avis !');
-    },
-    error: (err) => console.error('Erreur', err)
-  });
-}
+  setRating(value: number) {
+    this.rating.set(value);
+  }
+
+  doNothing() { }
+
+  modifyRating() {
+    this.monAvisNoteExist.set(false);
+    this.editMode.set(true);
+  }
+
+  submitRating() {
+    this.avisNoteInsert.set({
+      note: this.rating(),
+      avis: this.comment(),
+      utilisateur: this.user?.id || '', // ou autre id
+      boutique: this.boutique._id // id de la boutique concernée
+    });
+    if (this.rating() < 0) {
+      alert('La note ne peut pas être négative');
+      return;
+    }else if (this.rating() > 5) {
+      alert('La note ne peut pas être supérieure à 5');
+      return;
+    }
+
+    const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
+      : this.avisNoteService.createAvisNote(this.avisNoteInsert());
+   obs.subscribe({
+      next: () => {
+        this.closeRatingModal();
+        this.loadMonAvisNote(this.boutique._id);
+        alert('Merci pour votre avis !');
+      },
+      error: (err) => console.error('Erreur', err)
+    });
+  }
 loadMonAvisNote(boutiqueId: string) {
   this.avisNoteService.getAvisNoteByUserAndBoutique(this.user?.id || '', boutiqueId).subscribe({
     next: (data) => {
@@ -297,19 +302,53 @@ loadMonAvisNote(boutiqueId: string) {
       console.error('Erreur', err);
     }
     }
-  });
-}
 
-deleteRating() {
-  if (confirm('Êtes-vous sûr de vouloir supprimer votre avis ?')) {
-    this.avisNoteService.deleteAvisNote(this.monAvisNote()._id || '').subscribe({
+    this.avisNoteInsert.set({
+      note: this.rating(),
+      avis: this.comment(),
+      utilisateur: this.user?.id || '', // ou autre id
+      boutique: this.boutique._id // id de la boutique concernée
+    });
+
+    const obs = this.editMode() ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
+      : this.avisNoteService.createAvisNote(this.avisNoteInsert());
+    obs.subscribe({
       next: () => {
-        this.monAvisNoteExist.set(false);
         this.closeRatingModal();
-        alert('Votre avis a été supprimé');
+        this.loadMonAvisNote(this.boutique._id);
+        alert('Merci pour votre avis !');
       },
       error: (err) => console.error('Erreur', err)
     });
   }
-}
+  loadMonAvisNote(boutiqueId: string) {
+    this.avisNoteService.getAvisNoteByUserAndBoutique(this.user?.id || '', boutiqueId).subscribe({
+      next: (data) => {
+        this.monAvisNote.set(data);
+        this.rating.set(data.note);
+        this.comment.set(data.avis || '');
+        this.monAvisNoteExist.set(true);
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.monAvisNoteExist.set(false);
+        } else {
+          console.error('Erreur', err);
+        }
+      }
+    });
+  }
+
+  deleteRating() {
+    if (confirm('Êtes-vous sûr de vouloir supprimer votre avis ?')) {
+      this.avisNoteService.deleteAvisNote(this.monAvisNote()._id || '').subscribe({
+        next: () => {
+          this.monAvisNoteExist.set(false);
+          this.closeRatingModal();
+          alert('Votre avis a été supprimé');
+        },
+        error: (err) => console.error('Erreur', err)
+      });
+    }
+  }
 }

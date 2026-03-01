@@ -57,6 +57,9 @@ export const routes: Routes = [
       { path: 'commande-a-récupérer', loadComponent: () => import('./commande/components/commande-a-recuperer-liste/commande-a-recuperer-list.component').then(m => m.CommandeARecupererListComponent) },
       { path: 'commande-payée-récupérée', loadComponent: () => import('./commande/components/commande-payee-recuperee-list/commande-payee-recuperee-list.component').then(m => m.CommandePayeeRecupereeListComponent) },
 
+      // Annonce routes
+      { path: 'publications', loadComponent: () => import('./annonce/components/annonce-page/annonce-page.component').then(m => m.AnnoncePageComponent) },
+
       // facture
       { path: 'facture-template', loadComponent: () => import('./facture-ticket/facture-ticket.component').then(m => m.FactureTicketComponent) },
 

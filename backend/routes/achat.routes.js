@@ -7,6 +7,8 @@ router.post("/", achatController.createAchat);
 router.get("/commandes-details", achatController.commandeDetails);
 router.get("/to-paye-recup/:achatId/:boutiqueId", achatController.ChangeToCommandePayeEtRecupere);
 router.get("/recent/", achatController.achatRecent);
+router.get("/to-recup/:achatId", achatController.ChangeToCommandeARecuperer);
+router.get("/cancel/:achatId", achatController.ChangeToCommandeAnnule);
 router.get("/to-recup/:achatId/:boutiqueId", achatController.ChangeToCommandeARecuperer);
 router.get("/to-annule/:achatInfoId", achatController.ChangeToCommandeAnnule);
 router.get("/achat/:achatId", achatController.getAchatById);

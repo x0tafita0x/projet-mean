@@ -1,5 +1,7 @@
 const Panier = require("../models/panier.model");
 const mongoose = require("mongoose");
+const etatService = require("../services/etat.service");
+const ETATS = require("../utils/etat.constants");
 
 
 // créer un panier
@@ -18,14 +20,15 @@ exports.validerPaniers = async (req, res) => {
     const paniers = req.body; // tableau
 
     const ids = paniers.map(p => p._id);
+    const etatId = await etatService.getEtatIdByNom(ETATS.EN_ATTENTE);
     const dateHeureRecuperation = paniers.map(p => p.dateHeureRecuperation);
 
     const result = await Panier.updateMany(
       { _id: { $in: ids } },
-      { $set: { etat: '6997d956319cef48fa23a812', dateHeureRecuperation: dateHeureRecuperation[0] } }
+      { $set: { etat: etatId, dateHeureRecuperation: dateHeureRecuperation[0] } }
     );
 
-    res.json({result});
+    res.json({ result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -35,77 +38,76 @@ exports.validerPaniers = async (req, res) => {
 exports.getAllPanier = async (req, res) => {
   try {
     const { etat, utilisateur } = req.query;
-   const filter = {};
-if (etat) filter.etat = new mongoose.Types.ObjectId(etat);
-if (utilisateur) filter.utilisateur = new mongoose.Types.ObjectId(utilisateur);
+    const filter = {};
+    if (etat) filter.etat = new mongoose.Types.ObjectId(etat);
+    else filter.etat = await etatService.getEtatIdByNom(ETATS.EN_BROUILLON);
 
-// forcer l'état si besoin
-filter.etat = new mongoose.Types.ObjectId("6997d94d319cef48fa23a80f");
+    if (utilisateur) filter.utilisateur = new mongoose.Types.ObjectId(utilisateur);
 
-const paniers = await Panier.aggregate([
-  // 1️⃣ Filtrage des paniers
-  { $match: filter },
+    const paniers = await Panier.aggregate([
+      // 1️⃣ Filtrage des paniers
+      { $match: filter },
 
-  // 2️⃣ Lookup produit
-  {
-    $lookup: {
-      from: "produits",
-      localField: "produit",
-      foreignField: "_id",
-      as: "produit"
-    }
-  },
-  { $unwind: "$produit" },
+      // 2️⃣ Lookup produit
+      {
+        $lookup: {
+          from: "produits",
+          localField: "produit",
+          foreignField: "_id",
+          as: "produit"
+        }
+      },
+      { $unwind: "$produit" },
 
-  // 3️⃣ Lookup boutique
-  {
-    $lookup: {
-      from: "boutiques",
-      localField: "produit.boutique",
-      foreignField: "_id",
-      as: "boutique"
-    }
-  },
-  { $unwind: "$boutique" },
+      // 3️⃣ Lookup boutique
+      {
+        $lookup: {
+          from: "boutiques",
+          localField: "produit.boutique",
+          foreignField: "_id",
+          as: "boutique"
+        }
+      },
+      { $unwind: "$boutique" },
 
-  // 4️⃣ Lookup dernier prix du produit
-  {
-    $lookup: {
-      from: "mouvement_prix_produits",
-      let: { produitId: "$produit._id" },
-      pipeline: [
-        { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
-        { $sort: { createdAt: -1 } },
-        { $limit: 1 }
-      ],
-      as: "dernierPrix"
-    }
-  },
+      // 4️⃣ Lookup dernier prix du produit
+      {
+        $lookup: {
+          from: "mouvement_prix_produits",
+          let: { produitId: "$produit._id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$produit", "$$produitId"] } } },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 }
+          ],
+          as: "dernierPrix"
+        }
+      },
 
-  // 5️⃣ Extraire prix + date
-  {
-    $addFields: {
-      prixActuel: {
-        $cond: [
-          { $gt: [{ $size: "$dernierPrix" }, 0] },
-          { $arrayElemAt: ["$dernierPrix.prix", 0] },
-          0
-        ]
+      // 5️⃣ Extraire prix + date
+      {
+        $addFields: {
+          prixActuel: {
+            $cond: [
+              { $gt: [{ $size: "$dernierPrix" }, 0] },
+              { $arrayElemAt: ["$dernierPrix.prix", 0] },
+              0
+            ]
+          }
+        }
+      },
+
+      // 6️⃣ Nettoyage final
+      {
+        $project: {
+          dernierPrix: 0,
+          "produit.__v": 0,
+          "boutique.__v": 0
+        }
       }
-    }
-  },
+    ]);
 
-  // 6️⃣ Nettoyage final
-  {
-    $project: {
-      dernierPrix: 0,
-      "produit.__v": 0,
-      "boutique.__v": 0
-    }
-  }
-]);
-
-res.json(paniers);
+    res.json(paniers);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -153,7 +155,8 @@ exports.deletePanier = async (req, res) => {
 
 exports.isPanierVide = async (req, res) => {
   try {
-    const paniers = await Panier.find({ utilisateur: req.params.utilisateur, etat: "6997d94d319cef48fa23a80f" });
+    const etatBrouillonId = await etatService.getEtatIdByNom(ETATS.EN_BROUILLON);
+    const paniers = await Panier.find({ utilisateur: req.params.utilisateur, etat: etatBrouillonId });
     res.json({ isEmpty: paniers.length === 0 });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -5,6 +5,8 @@ const Achat = require("../models/achat.model");
 const AchatInfo = require("../models/achatInfo.model");
 const Panier = require("../models/panier.model");
 const Etat = require("../models/etat.model");
+const etatService = require("../services/etat.service");
+const ETATS = require("../utils/etat.constants");
 
 exports.getDashboardStats = async (req, res) => {
     try {
@@ -22,6 +24,8 @@ exports.getDashboardStats = async (req, res) => {
                 dateFilter.createdAt.$lte = end;
             }
         }
+
+        const etatIdPayeRecupere = await etatService.getEtatIdByNom(ETATS.PAYEE_ET_RECUPEREE);
 
         // 1. KPI: Produits (Total is generally reflecting current state, but we filter if needed)
         const totalProduits = await Produit.countDocuments({ boutique: boutiqueId });
@@ -74,9 +78,16 @@ exports.getDashboardStats = async (req, res) => {
             { $unwind: { path: "$etatDetails", preserveNullAndEmptyArrays: true } }
         ]);
 
+        const etatIdEnAttente = await etatService.getEtatIdByNom(ETATS.EN_ATTENTE);
+        const etatIdValidee = await etatService.getEtatIdByNom(ETATS.VALIDEE);
+        const etatIdARecuperer = await etatService.getEtatIdByNom(ETATS.A_RECUPERER);
+        const etatIdAnnulee = await etatService.getEtatIdByNom(ETATS.ANNULEE);
+
+        const toStr = (id) => id ? id.toString() : "";
+
         let cmdAttente = 0;
-        let cmdValidees = 0;
-        let cmdRecupererAujourdhui = 0;
+        let cmdARecuperer = 0;
+        let cmdPayeeRecuperee = 0;
         let cmdAnnulees = 0;
 
         const now = new Date();
@@ -84,36 +95,42 @@ exports.getDashboardStats = async (req, res) => {
         const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
         paniersBoutique.forEach(p => {
-            const nomEtat = p.etatDetails ? p.etatDetails.nom.toUpperCase() : "";
-            if (nomEtat.includes("ATTENTE")) cmdAttente++;
-            else if (nomEtat.includes("VALID") || nomEtat.includes("PAYE")) cmdValidees++;
-            else if (nomEtat.includes("ANNUL")) cmdAnnulees++;
-
-            if (nomEtat.includes("RECUPERER") || nomEtat.includes("VALID")) {
-                if (p.dateHeureRecuperation && p.dateHeureRecuperation >= startOfToday && p.dateHeureRecuperation <= endOfToday) {
-                    cmdRecupererAujourdhui++;
-                }
+            const etatId = toStr(p.etat);
+            if (etatId === toStr(etatIdEnAttente)) {
+                cmdAttente++;
+            } else if (etatId === toStr(etatIdValidee) || etatId === toStr(etatIdARecuperer)) {
+                cmdARecuperer++;
+            } else if (etatId === toStr(etatIdPayeRecupere)) {
+                cmdPayeeRecuperee++;
+            } else if (etatId === toStr(etatIdAnnulee)) {
+                cmdAnnulees++;
             }
         });
 
         // 3. KPI: Financier
-        let achatMatch = { boutique: boutiqueId, ...dateFilter };
-        const achats = await Achat.find(achatMatch);
+        // Filter ONLY paid and collected orders for revenue
+        const validAchatIds = await AchatInfo.distinct("achat", { etat: etatIdPayeRecupere });
+
+        let revenueMatch = {
+            boutique: boutiqueId,
+            _id: { $in: validAchatIds },
+            ...dateFilter
+        };
+
+        const achats = await Achat.find(revenueMatch);
         const cA_total = achats.reduce((acc, a) => acc + a.total, 0);
         const commission_total = achats.reduce((acc, a) => acc + (a.commission || 0), 0);
         const revenus_nets = cA_total - commission_total;
 
-        // For CA Mois, we check if it fits within the filtered range or overall
+        // For CA Mois
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const achatsMois = achats.filter(a => new Date(a.createdAt) >= startOfMonth);
         const cA_mois = achatsMois.reduce((acc, a) => acc + a.total, 0);
 
         // 4. Graphiques
-        // Ventes sur les 7 derniers jours (or full filtered range if broad)
-        let chart7DayMatch = { boutique: boutiqueId };
-        if (dateFilter.createdAt) {
-            chart7DayMatch.createdAt = dateFilter.createdAt;
-        } else {
+        // Ventes sur les 7 derniers jours (OR full filtered range)
+        let chart7DayMatch = { ...revenueMatch };
+        if (!dateFilter.createdAt) {
             const sevenDaysAgo = new Date();
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
             sevenDaysAgo.setHours(0, 0, 0, 0);
@@ -132,10 +149,8 @@ exports.getDashboardStats = async (req, res) => {
         ]);
 
         // Ventes par mois
-        let chartMonthMatch = { boutique: boutiqueId };
-        if (dateFilter.createdAt) {
-            chartMonthMatch.createdAt = dateFilter.createdAt;
-        } else {
+        let chartMonthMatch = { ...revenueMatch };
+        if (!dateFilter.createdAt) {
             const startOfYear = new Date(now.getFullYear(), 0, 1);
             chartMonthMatch.createdAt = { $gte: startOfYear };
         }
@@ -152,13 +167,16 @@ exports.getDashboardStats = async (req, res) => {
         ]);
 
         // Top 5 produits
-        // Filter by date as well
-        let topProdMatch = { "achatDetails.boutique": boutiqueId };
+        let topProdMatch = {
+            "achatDetails.boutique": boutiqueId,
+            "etat": etatIdPayeRecupere
+        };
         if (dateFilter.createdAt) {
             topProdMatch["achatDetails.createdAt"] = dateFilter.createdAt;
         }
 
         const topProduits = await AchatInfo.aggregate([
+            { $match: { etat: etatIdPayeRecupere } },
             {
                 $lookup: {
                     from: "achats",
@@ -215,8 +233,8 @@ exports.getDashboardStats = async (req, res) => {
                 },
                 commandes: {
                     enAttente: cmdAttente,
-                    validees: cmdValidees,
-                    recupererAujourdhui: cmdRecupererAujourdhui,
+                    aRecuperer: cmdARecuperer,
+                    payeeEtRecuperee: cmdPayeeRecuperee,
                     annulees: cmdAnnulees
                 },
                 financier: {

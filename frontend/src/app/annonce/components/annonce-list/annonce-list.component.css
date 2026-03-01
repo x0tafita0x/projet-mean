@@ -1,0 +1,56 @@
+.annonce-feed {
+    width: 100%;
+    padding: 20px 0;
+}
+
+.annonce-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.annonce-header .avatar {
+    width: 40px;
+    height: 40px;
+    background: #f0f2f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #385898;
+}
+
+.annonce-content {
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.annonce-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.annonce-gallery.multi-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 400px;
+}
+
+.no-annonce {
+    text-align: center;
+    padding: 40px;
+    color: #65676b;
+    background: white;
+    border-radius: 12px;
+}

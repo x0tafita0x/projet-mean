@@ -8,7 +8,7 @@ const PanierSchema = new mongoose.Schema(
     produit: { type: mongoose.Schema.Types.ObjectId, ref: "produit", required: true },
     prix: { type: Number, required: true },
     quantite: { type: Number, required: true }
- },
+  },
   { timestamps: true }
 );
 

@@ -19,13 +19,13 @@ export class AuthService {
     isAuthenticated = computed(() => !!this.userSignal());
 
     private getUserFromStorage(): User | null {
-        const user = localStorage.getItem(this.USER_KEY);
+        const user = sessionStorage.getItem(this.USER_KEY);
         return user ? JSON.parse(user) : null;
     }
 
     private setSession(authResponse: AuthResponse): void {
-        localStorage.setItem(this.TOKEN_KEY, authResponse.token);
-        localStorage.setItem(this.USER_KEY, JSON.stringify(authResponse.user));
+        sessionStorage.setItem(this.TOKEN_KEY, authResponse.token);
+        sessionStorage.setItem(this.USER_KEY, JSON.stringify(authResponse.user));
         this.userSignal.set(authResponse.user);
     }
 
@@ -49,13 +49,13 @@ export class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem(this.TOKEN_KEY);
-        localStorage.removeItem(this.USER_KEY);
+        sessionStorage.removeItem(this.TOKEN_KEY);
+        sessionStorage.removeItem(this.USER_KEY);
         this.userSignal.set(null);
     }
 
     getToken(): string | null {
-        return localStorage.getItem(this.TOKEN_KEY);
+        return sessionStorage.getItem(this.TOKEN_KEY);
     }
 
 }
