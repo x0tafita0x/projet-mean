@@ -80,7 +80,7 @@ exports.getAchatDetails = async (req, res) => {
                     select: 'nom numeroTelephone',
                 }
             }
-        },{ path: 'etat', select: 'nom' }]);
+        }, { path: 'etat', select: 'nom' }]);
 
         res.status(200).json(achatDetails);
     } catch (err) {
@@ -233,7 +233,7 @@ exports.commandeDetails = async (req, res) => {
                     {
                         path: 'boutique',
                         select: 'nom numeroTelephone',
-                        match: { _id: boutiqueId } 
+                        match: { _id: boutiqueId }
                     },
                     {
                         path: 'sousTypeProduit',
@@ -250,11 +250,11 @@ exports.commandeDetails = async (req, res) => {
 
 exports.ChangeToCommandeARecuperer = async (req, res) => {
     try {
-        const { achatId,boutiqueId } = req.params;
+        const { achatId, boutiqueId } = req.params;
         const etatId = await etatService.getEtatIdByNom(ETATS.A_RECUPERER);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId),  etat: etatId  } },
-            { $set: { etat: etat } }
+            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId), etat: etatId },
+            { $set: { etat: etatId } }
         );
         res.status(200).json(result);
     } catch (err) {

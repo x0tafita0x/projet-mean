@@ -164,7 +164,7 @@ export class ProduitListAcheteurComponent {
       prix: parseFloat(prix),
       quantite: this.panierItem().quantite,
       etat: etatId || '',
-      dateHeureRecuperation:  '',
+      dateHeureRecuperation: '',
     });
   }
 
@@ -271,44 +271,10 @@ export class ProduitListAcheteurComponent {
     if (this.rating() < 0) {
       alert('La note ne peut pas être négative');
       return;
-    }else if (this.rating() > 5) {
+    } else if (this.rating() > 5) {
       alert('La note ne peut pas être supérieure à 5');
       return;
     }
-
-    const obs = this.editMode()    ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
-      : this.avisNoteService.createAvisNote(this.avisNoteInsert());
-   obs.subscribe({
-      next: () => {
-        this.closeRatingModal();
-        this.loadMonAvisNote(this.boutique._id);
-        alert('Merci pour votre avis !');
-      },
-      error: (err) => console.error('Erreur', err)
-    });
-  }
-loadMonAvisNote(boutiqueId: string) {
-  this.avisNoteService.getAvisNoteByUserAndBoutique(this.user?.id || '', boutiqueId).subscribe({
-    next: (data) => {
-      this.monAvisNote.set(data);
-      this.rating.set(data.note);
-      this.comment.set(data.avis || '');
-      this.monAvisNoteExist.set(true);
-    },
-    error: (err) => {
-      if (err.status === 404) {
-        this.monAvisNoteExist.set(false);
-      } else {  
-      console.error('Erreur', err);
-    }
-    }
-
-    this.avisNoteInsert.set({
-      note: this.rating(),
-      avis: this.comment(),
-      utilisateur: this.user?.id || '', // ou autre id
-      boutique: this.boutique._id // id de la boutique concernée
-    });
 
     const obs = this.editMode() ? this.avisNoteService.updateAvisNote(this.monAvisNote()._id || '', this.avisNoteInsert())
       : this.avisNoteService.createAvisNote(this.avisNoteInsert());

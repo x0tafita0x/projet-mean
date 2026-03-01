@@ -11,6 +11,7 @@ export interface Boutique {
     typeBoutique: string | TypeBoutique;
     heureOuverture: string;
     heureFermeture: string;
+    nbJoursOuverture?: number;
     numeroTelephone: string;
     photo?: string;
     isOuverte?: boolean;
