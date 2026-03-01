@@ -9,24 +9,23 @@
                                 <!-- Ligne titre + bouton -->
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     <h3 class="mb-0">Mon Panier</h3>
-
-                                    <button class="btn btn-warning" (click)="validerPanier()"
-                                    [disabled]="paniers().length === 0 || !canValidate()">    
-                                         Valider panier
-                                    </button>
+                                    
+                                    
+                                    <div class="d-flex align-items-right justify-content-between mb-3" style="gap: 42px; ">
+                                        <button class="btn btn-outline-danger" (click)="deletePanierSelected()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </button>
+                                        <button class="btn btn-warning" (click)="openDateModal()"
+                                        [disabled]="paniers().length === 0 || !canValidate()">    
+                                            Valider panier
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <!-- <form>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
-                                            <select id="typeBoutique" name="typeBoutique" class="form-select">
-                                                <option value="" disabled selected>Sélectionnez un type</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form> -->
+                               
                             </div>
+                           
 
                             <div class="d-flex justify-content-end gap-2 mb-3">
                                 <button class="btn btn-perso" (click)="selectAll()">
@@ -36,6 +35,35 @@
                                 <button class="btn btn-perso" (click)="deSelectAll()">
                                     <i class="bi bi-x-square"></i> Désélectionner tout
                                 </button>
+                            </div>
+
+                            <!-- Overlay sombre -->
+                            <div class="overlayDate" *ngIf="showDateModal()" (click)="closeDateModal()"></div>
+
+                            <!-- Modal -->
+                            <div class="date-modal" *ngIf="showDateModal()">
+                            <h4>Choisir une date de récupération</h4>
+
+                            <!-- Date -->
+                            <div class="mb-3">
+                                <label class="form-label">Date :</label>
+                                <input 
+                                type="date"
+                                class="form-control"
+                                [min]="dateMin"
+                                [ngModel]="dateRecuperation" 
+                                (ngModelChange)="dateRecuperation = $event"
+                                />
+                            </div>
+                            <!-- Boutons -->
+                            <div class="modal-actions mt-3">
+                                <button class="btn btn-secondary me-2" (click)="closeDateModal()">
+                                Annuler
+                                </button>
+                                <button class="btn btn-success" (click)="validerPanier()">
+                                Confirmer
+                                </button>
+                            </div>
                             </div>
 
                             
@@ -99,25 +127,18 @@
                                             </p>
 
                                             <p style="color: rgb(204, 185, 13);" class="panier-type">
-                                                Boutique : {{ panier.produit.boutique.nom }}
+                                                Boutique : {{ panier.boutique.nom }}
                                             </p>
                                         </div>
 
-                                        <div class="panier-prix">
-                                            Total :
-                                            {{ (+panier.prixActuel) * (+panier.quantite) | currency:'MGA ':'symbol':'1.0-0' }}
-                                        </div>
-                                    </div>
-                                </div>
+
+            <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">
+                Aucun panier disponible
+            </div>
+        </div>
 
 
-                                <div *ngIf="paniers().length === 0" class="text-center py-4 text-muted">
-                                    Aucun panier disponible
-                                </div>
-                            </div>
+    </div>
 
-                            
-                        </div>
-
-                    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

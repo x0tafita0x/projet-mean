@@ -1,10 +1,29 @@
 const Boutique = require("../models/boutique.model");
+const { paginate } = require("../utils/pagination");
 
-// Voir toutes les boutiques (non supprimées)
+// Voir toutes les boutiques (non supprimées) avec pagination et filtre
 exports.getAllBoutiquesAdmin = async (req, res) => {
     try {
-        const boutiques = await Boutique.find({ isDeleted: false }).populate("typeBoutique");
-        res.json(boutiques);
+        const { page = 1, limit = 10, search = '', status = '' } = req.query;
+        const filter = { isDeleted: false };
+
+        if (search) {
+            filter.nom = { $regex: search, $options: "i" };
+        }
+
+        if (status) {
+            filter.status = status;
+        }
+
+        const result = await paginate(
+            Boutique,
+            filter,
+            Number(page),
+            Number(limit),
+            "typeBoutique",
+            { nom: 1 }
+        );
+        res.json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

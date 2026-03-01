@@ -1,33 +1,67 @@
 <div class="container mt-4">
 
-  <h2 class="mb-4">📄 Liste des factures</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📄 Liste des factures</h2>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+        <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">Date de début</label>
+          <input type="date" class="form-control form-control-sm" [ngModel]="filters().startDate"
+            (ngModelChange)="updateFilters('startDate', $event)">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">Date de fin</label>
+          <input type="date" class="form-control form-control-sm" [ngModel]="filters().endDate"
+            (ngModelChange)="updateFilters('endDate', $event)">
+        </div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+          <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+            <i class="bi bi-funnel me-1"></i> Filtrer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="facture-list">
 
-    <div class="facture-card"
-     *ngFor="let achat of achats()"
-     [routerLink]="['/home/achat-details', achat._id]">
+    <div class="facture-card" *ngFor="let achat of achats()" [routerLink]="['/home/achat-details', achat._id]">
 
-  <div class="facture-left">
-    <h5 class="facture-date">
-      Date : {{ achat.createdAt | date:'dd/MM/yyyy HH:mm' }}
-    </h5>
-    <p class="facture-items">
-      Nombre d’articles : {{ achat.nombreItems }}
-    </p>
-  </div>
+      <div class="facture-left">
+        <h5 class="facture-date">
+          Date : {{ achat.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </h5>
+        <p class="facture-items">
+          Nombre d’articles : {{ achat.nombreItems }}
+        </p>
+      </div>
 
-  <div class="facture-right">
-    <span class="facture-total">
-      {{ achat.total | currency:'MGA ':'symbol':'1.0-0' }}
-    </span>
-  </div>
+      <div class="facture-right">
+        <span class="facture-total">
+          {{ achat.total | number:'1.0-0' }} MGA
+        </span>
+      </div>
 
-</div>
+    </div>
 
     <div *ngIf="achats().length === 0" class="no-facture">
-    Aucune facture disponible
-  </div>
+      Aucune facture disponible
+    </div>
+
+    <div class="mt-4" *ngIf="achats().length > 0">
+      <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
 
   </div>
 </div>

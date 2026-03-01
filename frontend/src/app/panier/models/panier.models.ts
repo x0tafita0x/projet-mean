@@ -6,9 +6,8 @@ export interface Panier {
     quantite: number;
     promotion?: string;
     etat: string;
-    typeCommande: string;
     boutique?: string;
-    dateHeureRecuperation?: Date;
+    dateHeureRecuperation?: string;
 }
 
 
@@ -19,19 +18,20 @@ export interface PanierList {
         _id: string;
         nom: string;
         photo?: string;
-        boutique : {
-            nom: string;
-        }
+        
     };
     etat: {
+        _id: string;
+        nom: string;
+    };
+    boutique: {
         _id: string;
         nom: string;
     };
     prixActuel: number;
     quantite: number;
     promotion?: string;
-    typeCommande: string;
-    dateHeureRecuperation?: Date;
+    dateHeureRecuperation?: string;
     createdAt: string;
     updatedAt: string;
     edit: boolean;

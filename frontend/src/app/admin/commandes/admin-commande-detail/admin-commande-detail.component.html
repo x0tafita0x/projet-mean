@@ -63,9 +63,9 @@
                         <tbody>
                             @for (l of lignes(); track l._id) {
                             <tr>
-                                <td>{{ l.produit?.nom || '—' }}</td>
+                                <td>{{ l.panier?.produit?.nom || '—' }}</td>
                                 <td class="text-center">{{ l.quantite }}</td>
-                                <td class="text-end">{{ l.prix | number:'1.0-0' }}</td>
+                                <td class="text-end">{{ l.prix | number:'1.0-0' }} MGA</td>
                                 <td class="text-end fw-semibold">{{ l.prix * l.quantite | number:'1.0-0' }} MGA</td>
                             </tr>
                             } @empty {

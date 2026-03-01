@@ -3,31 +3,68 @@
         <h2>Mouvements de Prix de Produit</h2>
     </div>
 
-    <div class="card shadow-sm">
+    <!-- Filters Section -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Produit</th>
-                        <th>Prix</th>
-                        <th>Date de Modification</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let mouvement of mouvementsPrixProduits()">
-                        
-                        <td>
-                            <strong>{{ mouvement.produit.nom }}</strong><br>
-                            <small class="text-muted">{{ mouvement.produit.sousTypeProduit.nom }}</small>
-                        </td>
-                        <td>{{ mouvement.prix | currency:'MGA ':'symbol':'1.0-0' }}</td>
-                        <td>{{ mouvement.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-                    </tr>
-                    <tr *ngIf="mouvementsPrixProduits().length === 0">
-                        <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement de prix de produit trouvé</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted">Rechercher un produit</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="filters().search"
+                        placeholder="Nom du produit...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted">Depuis le</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().startDate">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted">Jusqu'au</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="filters().endDate">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+                        <i class="bi bi-funnel"></i> Filtrer
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Produit</th>
+                            <th>Prix</th>
+                            <th class="pe-4">Date de Modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mouvement of mouvementsPrixProduits()">
+                            <td class="ps-4">
+                                <strong>{{ mouvement.produit.nom }}</strong><br>
+                                <small class="text-muted">{{ mouvement.produit.sousTypeProduit.nom }}</small>
+                            </td>
+                            <td class="fw-bold">{{ mouvement.prix | number:'1.0-0' }} MGA</td>
+                            <td class="pe-4 text-muted">{{ mouvement.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                        </tr>
+                        <tr *ngIf="mouvementsPrixProduits().length === 0">
+                            <td colspan="3" class="text-center py-5 text-muted">Aucun mouvement de prix de produit
+                                trouvé</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
     </div>
 </div>

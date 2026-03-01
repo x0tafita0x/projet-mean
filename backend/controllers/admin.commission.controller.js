@@ -32,10 +32,37 @@ exports.setGlobalRate = async (req, res) => {
     }
 };
 
-// Commission totale par boutique
+// Global stats for commissions
+exports.getCommissionStats = async (req, res) => {
+    try {
+        const stats = await Achat.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalCommissions: { $sum: "$commission" },
+                    nbBoutiques: { $addToSet: "$boutique" }
+                }
+            },
+            {
+                $project: {
+                    totalCommissions: 1,
+                    nbBoutiques: { $size: "$nbBoutiques" }
+                }
+            }
+        ]);
+        res.json(stats[0] || { totalCommissions: 0, nbBoutiques: 0 });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Commission totale par boutique with pagination
 exports.getCommissionsByBoutique = async (req, res) => {
     try {
-        const result = await Achat.aggregate([
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const pipeline = [
             { $match: { boutique: { $ne: null } } },
             {
                 $group: {
@@ -53,19 +80,36 @@ exports.getCommissionsByBoutique = async (req, res) => {
                     as: "boutique",
                 },
             },
-            { $unwind: { path: "$boutique", preserveNullAndEmpty: true } },
-            { $sort: { totalCommissions: -1 } },
+            { $unwind: { path: "$boutique", preserveNullAndEmptyArrays: true } },
+            { $sort: { totalCommissions: -1 } }
+        ];
+
+        const [results, totalCount] = await Promise.all([
+            Achat.aggregate([...pipeline, { $skip: skip }, { $limit: Number(limit) }]),
+            Achat.aggregate([...pipeline, { $count: "total" }])
         ]);
-        res.json(result);
+
+        const total = totalCount[0]?.total || 0;
+
+        res.json({
+            data: results,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(total / Number(limit))
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-// Commission globale mensuelle
+// Commission globale mensuelle with pagination
 exports.getMonthlyCommissions = async (req, res) => {
     try {
-        const result = await Achat.aggregate([
+        const { page = 1, limit = 12 } = req.query; // 12 months default
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const pipeline = [
             { $match: {} },
             {
                 $group: {
@@ -78,9 +122,23 @@ exports.getMonthlyCommissions = async (req, res) => {
                     nbCommandes: { $sum: 1 },
                 },
             },
-            { $sort: { "_id.year": -1, "_id.month": -1 } },
+            { $sort: { "_id.year": -1, "_id.month": -1 } }
+        ];
+
+        const [results, totalCount] = await Promise.all([
+            Achat.aggregate([...pipeline, { $skip: skip }, { $limit: Number(limit) }]),
+            Achat.aggregate([...pipeline, { $count: "total" }])
         ]);
-        res.json(result);
+
+        const total = totalCount[0]?.total || 0;
+
+        res.json({
+            data: results,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(total / Number(limit))
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

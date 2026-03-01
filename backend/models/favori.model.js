@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const FavoriSchema = new mongoose.Schema(
   {
     utilisateur: { type: mongoose.Schema.Types.ObjectId, ref: "utilisateur", required: true },
-    produit: { type: mongoose.Schema.Types.ObjectId, ref: "produit", required: true }
+    boutique: { type: mongoose.Schema.Types.ObjectId, ref: "boutique", required: true }
  },
   { timestamps: true }
 );

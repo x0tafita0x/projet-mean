@@ -1,0 +1,41 @@
+.stats-number {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.summary-value {
+    white-space: nowrap !important;
+    line-height: 1.2;
+    /* Fluid scaling: starts at 1rem for mobile, up to 2.2rem for desktop */
+    font-size: clamp(1rem, 4vw, 2.2rem) !important;
+    display: block;
+}
+
+/* Specific scaling for table numbers */
+.table-nowrap .text-nowrap {
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+}
+
+
+.table-nowrap td,
+.table-nowrap th {
+    white-space: nowrap !important;
+}
+
+/* Specific cell text reduction if needed in table cells */
+.table-nowrap .text-nowrap {
+    font-size: 0.9rem;
+}
+
+/* Very aggressive scaling on extra small mobile screens */
+@media (max-width: 400px) {
+    .stats-number {
+        font-size: 1.1rem !important;
+    }
+
+    .display-5.stats-number {
+        font-size: 1.3rem !important;
+    }
+}

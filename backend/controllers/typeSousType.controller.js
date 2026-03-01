@@ -1,6 +1,7 @@
 const TypeBoutique = require("../models/typeBoutique.model");
 const TypeProduit = require("../models/typeProduit.model");
 const SousTypeProduit = require("../models/sousTypeProduit.model");
+const { paginate } = require("../utils/pagination");
 
 // créer un type de produit
 exports.createTypeProduit = async (req, res) => {
@@ -15,8 +16,9 @@ exports.createTypeProduit = async (req, res) => {
 // lister tous les types de produits
 exports.getAllTypeProduits = async (req, res) => {
   try {
-    const typeProduits = await TypeProduit.find();
-    res.json(typeProduits);
+    const { page, limit } = req.query;
+    const result = await paginate(TypeProduit, {}, page, limit, '', { nom: 1 });
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -68,8 +70,9 @@ exports.createSousTypeProduit = async (req, res) => {
 // lister tous les sous-types de produits
 exports.getAllSousTypeProduits = async (req, res) => {
   try {
-    const sousTypeProduits = await SousTypeProduit.find().populate("typeProduit");
-    res.json(sousTypeProduits);
+    const { page, limit } = req.query;
+    const result = await paginate(SousTypeProduit, {}, page, limit, "typeProduit", { nom: 1 });
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -121,8 +124,9 @@ exports.createTypeBoutique = async (req, res) => {
 // lister tous les types de boutiques
 exports.getAllTypeBoutiques = async (req, res) => {
   try {
-    const typeBoutiques = await TypeBoutique.find();
-    res.json(typeBoutiques);
+    const { page, limit } = req.query;
+    const result = await paginate(TypeBoutique, {}, page, limit, '', { nom: 1 });
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

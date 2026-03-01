@@ -1,126 +1,194 @@
-  <div class="title-group mb-3">
-                        <h1 class="h2 mb-0">Overview</h1>
+<div class="title-group mb-3">
+    <h1 class="h2 mb-0">Overview</h1>
 
-                        <small class="text-muted">Hello Thomas, welcome back!</small>
+    <small class="text-muted">Hello Thomas, welcome back!</small>
+</div>
+
+<div class="row my-4">
+    <div class="col-lg-12 col-12">
+        <div class="custom-block">
+            <a routerLink="/home"> <i class="bi bi-caret-left-fill"></i> Retour</a>
+            <div class="text-center">
+                <h3> {{ boutique.nom }} <i class="bi favori-icon"
+                        [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                        (click)="toggleFavori(boutique._id, $event)">
+                    </i></h3>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs mt-4 border-0">
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="activeTab() === 'produits'"
+                        (click)="activeTab.set('produits')">
+                        <i class="bi bi-grid-3x3-gap me-1"></i> Produits
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="activeTab() === 'publications'"
+                        (click)="activeTab.set('publications')">
+                        <i class="bi bi-megaphone me-1"></i> Publications
+                    </button>
+                </li>
+            </ul>
+
+            <div class="card shadow-sm border-0 mb-4 bg-light" *ngIf="activeTab() === 'produits'">
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">Nom du produit</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="Rechercher..."
+                                [(ngModel)]="filters().nom">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted">Sous-Type</label>
+                            <select class="form-select form-select-sm" [(ngModel)]="filters().sousTypeProduit">
+                                <option value="">Tous</option>
+                                <option *ngFor="let st of sousTypeProduits()" [value]="st._id">{{st.nom}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold text-muted">Tri (Nom)</label>
+                            <select class="form-select form-select-sm" [(ngModel)]="filters().order">
+                                <option value="asc">Croissant (A-Z)</option>
+                                <option value="desc">Décroissant (Z-A)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex gap-2 align-items-end">
+                            <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+                                <i class="bi bi-funnel"></i> Filtrer
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-warning btn-rate" (click)="openRatingModal()">
+                <i class="bi bi-star-fill me-1"></i>{{monAvisNoteExist() ? 'Voir mon avis' : 'Noter / Avis'}}
+            </button>
+        </div>
+        <!-- Overlay sombre -->
+        <div class="overlayRating" *ngIf="showRatingModal()" (click)="closeRatingModal()"></div>
+
+        <!-- Modal -->
+        <div class="rating-modal" *ngIf="showRatingModal()">
+            <h4>{{monAvisNoteExist() ? 'Mon avis' : 'Donnez votre avis'}}</h4>
+
+            <!-- Étoiles -->
+            <div class="stars mb-3">
+                <i *ngFor="let star of [1,2,3,4,5]; let i = index" class="bi"
+                    [ngClass]="i < rating() ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
+                    (click)="monAvisNoteExist()? doNothing() : setRating(i + 1)">
+                </i>
+            </div>
+
+            <!-- Commentaire -->
+            <textarea [ngModel]="comment()" [readonly]="monAvisNoteExist()" (ngModelChange)="comment.set($event)"
+                placeholder="Votre commentaire..." rows="3">
+            </textarea>
+
+            <!-- Boutons -->
+            <div class="modal-actions mt-3">
+                <button class="btn btn-secondary me-2" (click)="closeRatingModal()"
+                    *ngIf="!monAvisNoteExist()">Annuler</button>
+                <button class="btn btn-danger me-2" (click)="deleteRating()"
+                    *ngIf="monAvisNoteExist()">Supprimer</button>
+                <button class="btn btn-warning"
+                    (click)="!monAvisNoteExist()? submitRating(): modifyRating()">{{monAvisNoteExist() ? 'Modifier' :
+                    'Envoyer'}}</button>
+            </div>
+        </div>
+
+
+        <!-- OVERLAY -->
+        <div class="overlay" *ngIf="showDetails()" (click)="fermerDetails()"></div>
+
+        <!-- BOX DETAIL CENTRÉE -->
+        <div class="produit-detail-modal" *ngIf="showDetails()">
+
+            <!-- Bouton fermer -->
+            <button class="btn-close" (click)="fermerDetails()">✕</button>
+
+            <!-- Image produit -->
+            <img [src]="produitSelectionne().photo 
+                                    ? 'http://localhost:3000/' + produitSelectionne().photo 
+                                    : 'assets/placeholder.png'" class="img-fluid mb-3">
+
+            <!-- Nom produit -->
+            <h3>{{ produitSelectionne().nom }}
+            </h3>
+
+            <!-- Sous-type + type -->
+            <p class="text-muted" *ngIf="produitSelectionne().sousTypeProduit 
+                                        && typeof produitSelectionne().sousTypeProduit !== 'string'">
+                {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
+                {{ produitSelectionne().sousTypeProduit.nom }}
+            </p>
+            <h6 style="color: rgb(180, 157, 27);"> {{ prixProduit() | number:'1.0-0' }} MGA</h6>
+
+            <!-- Info produit -->
+            <p>{{ produitSelectionne().info }}</p>
+
+            <!-- Bouton collé en bas avec input quantité -->
+            <div class="modal-footer-fixed d-flex align-items-center ">
+                <form (ngSubmit)="addToPanier()" class="d-flex align-items-center w-100" style="gap: 42px; ">
+                    <!-- Input quantité -->
+                    <div class="qte-input">
+                        <label style="color: green;" for="qte" class="form-label mb-0">Qté <strong
+                                style="color: red;">(max : {{ max_stock() }})</strong></label>
+                        <input type="number" name="quantite" #nom="ngModel" [(ngModel)]="panierItem().quantite" id="qte"
+                            class="form-control" min="1" max="{{ max_stock() }}" value="1">
                     </div>
 
-                    <div class="row my-4">
-                        <div class="col-lg-12 col-12">
-                            <div class="custom-block"> 
-                                <a routerLink="/home"> <i  class="bi bi-caret-left-fill"></i> Retour</a>
-                                <h3> Liste des Produits</h3>
-                                <!-- <form >
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="typeBoutique" class="form-label">Type de Boutique</label>
-                                            <select id="typeBoutique" name="typeBoutique" [(ngModel)]="typeBoutique" class="form-select" required (change)="filterBoutiques()">
-                                                <option value="" disabled selected>Sélectionnez un type</option>
-                                                <option *ngFor="let t of typeBoutiques()" [value]="t._id">
-                                                    {{ t.nom }}
-                                                </option>
-                                            </select>
-                                        </div>
+                    <!-- Bouton ajouter panier -->
+                    <button type="submit" class="btn btn-success flex-grow-1">
+                        <i class="bi bi-cart-plus"></i> Ajouter au panier
+                    </button>
+                </form>
+            </div>
 
-                                        <div class="form-group">
-                                            <label class="form-label" for="ordre">Ordre</label>
-                                            <select class="form-select" name="ordre" [(ngModel)]="order" id="ordre" (change)="filterBoutiques()">
-                                                <option value="asc">Croissant</option>
-                                                <option value="desc">Décroissant</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form> -->
-                               
-                            </div>
-
-
-                           <!-- OVERLAY -->
-                            <div class="overlay" *ngIf="showDetails()" (click)="fermerDetails()"></div>
-
-                            <!-- BOX DETAIL CENTRÉE -->
-                            <div class="produit-detail-modal" *ngIf="showDetails()">
-
-                                <!-- Bouton fermer -->
-                                <button class="btn-close" (click)="fermerDetails()">✕</button>
-
-                                <!-- Image produit -->
-                                <img
-                                    [src]="produitSelectionne().photo 
-                                    ? 'http://localhost:3000/' + produitSelectionne().photo 
-                                    : 'assets/placeholder.png'"
-                                    class="img-fluid mb-3">
-
-                                <!-- Nom produit -->
-                                <h3>{{ produitSelectionne().nom }} 
-                                    <i
-                                    class="bi favori-icon"
-                                    [ngClass]="favori() ? 'bi-heart-fill text-danger' : 'bi-heart'"
-                                    (click)="toggleFavori(produitSelectionne(), $event)">
-                                    </i>
-                                </h3>
-
-                                <!-- Sous-type + type -->
-                                <p class="text-muted"
-                                    *ngIf="produitSelectionne().sousTypeProduit 
-                                        && typeof produitSelectionne().sousTypeProduit !== 'string'">
-                                    {{ produitSelectionne().sousTypeProduit.typeProduit.nom }} /
-                                    {{ produitSelectionne().sousTypeProduit.nom }}
-                                </p>
-                                <h6 style="color: rgb(180, 157, 27);"> {{  prixProduit() | currency:'MGA ':'symbol':'1.0-0' }}</h6>
-
-                                <!-- Info produit -->
-                                <p>{{ produitSelectionne().info }}</p>
-
-                                    <!-- Bouton collé en bas avec input quantité -->
-                                    <div class="modal-footer-fixed d-flex align-items-center ">
-                                        <form (ngSubmit)="addToPanier()" class="d-flex align-items-center w-100" style="gap: 42px; "> 
-                                        <!-- Input quantité -->
-                                        <div class="qte-input">
-                                                    <label style="color: green;" for="qte" class="form-label mb-0">Qté <strong style="color: red;">(max : {{ max_stock() }})</strong></label>
-                                                    <input type="number" name="quantite" #nom="ngModel" [(ngModel)]="panierItem().quantite" id="qte" class="form-control" min="1" max="{{ max_stock() }}" value="1">
-                                                </div>
-                                                
-                                                <!-- Bouton ajouter panier -->
-                                                <button type="submit" class="btn btn-success flex-grow-1">
-                                                    <i class="bi bi-cart-plus"></i> Ajouter au panier
-                                                </button>
-                                        </form>
-                                    </div>
-
-                            </div>
+        </div>
 
 
 
-                            <div class="custom-block liste-produit">
-                                <div *ngFor="let produit of produits()"
-                                    (click)="selectProduit(produit)"
-                                    class="custom-produit">
-                                    
-                                    <div class="produit-content">
-                                        <img class="custom-image img-fluid"
-                                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
-                                            alt="">
-                                        
-                                        <div class="produit-info">
-                                            <h3 class="produit-nom">{{ produit.produit }}</h3>
-                                            <p class="produit-type">{{ produit.sousTypeProduit }}</p>
-                                        </div>
+        <div class="custom-block liste-produit" *ngIf="activeTab() === 'produits'">
+            <div class="produits-grid">
+                <div *ngFor="let produit of produits()" (click)="selectProduit(produit)" class="custom-produit">
 
-                                        <!-- Prix en bas à droite -->
-                                        <div class="produit-prix">
-                                            {{  produit.prixUnitaire | currency:'MGA ':'symbol':'1.0-0' }}
-                                        </div>
-                                    </div>
+                    <div class="produit-content">
+                        <img class="custom-image"
+                            [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
+                            alt="">
 
-                                </div>
-
-                                <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
-                                    Aucun produit disponible
-                                </div>
-                            </div>
-
-                            
+                        <div class="produit-info">
+                            <h3 class="produit-nom">{{ produit.produit }}</h3>
+                            <p class="produit-type">{{ produit.sousTypeProduit }}</p>
                         </div>
 
+                        <div class="produit-prix">
+                            {{ produit.prixUnitaire | number:'1.0-0' }} MGA
+                        </div>
                     </div>
+
+                </div>
+            </div>
+
+            <div *ngIf="produits().length === 0" class="text-center py-4 text-muted">
+                Aucun produit disponible
+            </div>
+        </div>
+
+        <!-- Section Annonces -->
+        <div class="custom-block" *ngIf="activeTab() === 'publications'">
+            <app-annonce-list [boutiqueId]="boutique._id"></app-annonce-list>
+        </div>
+
+
+    </div>
+
+</div>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

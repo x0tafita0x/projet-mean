@@ -1,6 +1,15 @@
-<app-base-login [title]="'Connexion Acheteur'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)">
+<app-base-login [title]="'Connexion Acheteur'" [loading]="loading" [error]="error" (onLogin)="handleLogin($event)"
+    [defaultCredentials]="{ email: 'alice@test.com', motDePasse: 'test' }">
     <div class="text-center mt-3">
-        <p class="mb-0">Pas encore de compte ? <a routerLink="/auth/register/acheteur"
+        <p class="mb-2">Pas encore de compte ? <a routerLink="/auth/register/acheteur"
                 class="text-primary fw-bold">S'inscrire</a></p>
+        <hr class="my-2">
+        <p class="text-muted small mb-1">Se connecter en tant que :</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a routerLink="/auth/login/boutique" class="text-decoration-none small"><i
+                    class="bi bi-shop me-1"></i>Boutique</a>
+            <a routerLink="/auth/login/admin" class="text-decoration-none small"><i
+                    class="bi bi-shield-lock me-1"></i>Admin</a>
+        </div>
     </div>
 </app-base-login>

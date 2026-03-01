@@ -32,7 +32,10 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-2 d-flex justify-content-end">
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button class="btn btn-primary btn-sm w-100" (click)="loadStats()">
+                        <i class="bi-funnel me-1"></i> Filtrer
+                    </button>
                     @if (loading()) {
                     <div class="spinner-border spinner-border-sm text-primary"></div>
                     }
@@ -48,43 +51,38 @@
     <!-- Global Totals Cards -->
     @if (stats()) {
     <div class="row g-4 mb-4">
-        <div class="col-md-2">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
             <div class="card border-0 shadow-sm h-100 bg-primary text-white">
                 <div class="card-body">
                     <h6 class="text-white-50 small text-uppercase fw-bold">Boutiques</h6>
-                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalBoutiques }}</div>
+                    <div class="h3 fw-bold mb-0 summary-value">{{ stats().totals.totalBoutiques }}</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card border-0 shadow-sm h-100 bg-info text-white">
-                <div class="card-body">
-                    <h6 class="text-white-50 small text-uppercase fw-bold">Produits</h6>
-                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalProduits }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
             <div class="card border-0 shadow-sm h-100 bg-secondary text-white">
                 <div class="card-body">
                     <h6 class="text-white-50 small text-uppercase fw-bold">Commandes</h6>
-                    <div class="h3 fw-bold mb-0">{{ stats().totals.totalOrders }}</div>
+                    <div class="h3 fw-bold mb-0 summary-value">{{ stats().totals.totalOrders }}</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-4">
             <div class="card border-0 shadow-sm h-100 bg-success text-white">
                 <div class="card-body">
                     <h6 class="text-white-50 small text-uppercase fw-bold">Chiffre d'affaires</h6>
-                    <div class="h4 fw-bold mb-0">{{ stats().totals.totalRevenue | number:'1.0-0' }} MGA</div>
+                    <div class="h4 fw-bold mb-0 summary-value">{{ stats().totals.totalRevenue | number:'1.0-0' }} MGA
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-md-4 col-xl-4">
             <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
                 <div class="card-body">
                     <h6 class="text-dark-50 small text-uppercase fw-bold">Total Commissions</h6>
-                    <div class="h4 fw-bold mb-0">{{ stats().totals.totalCommissions | number:'1.0-0' }} MGA</div>
+                    <div class="h4 fw-bold mb-0 summary-value">{{ stats().totals.totalCommissions | number:'1.0-0' }}
+                        MGA
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,8 +93,8 @@
         <!-- Daily Orders Line Chart -->
         <div class="col-md-8">
             <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Achats par jour (7
-                    derniers jours)</div>
+                <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Achats par jour
+                    ({{ chartPeriodLabel }})</div>
                 <div class="card-body" style="height: 350px;">
                     <canvas #dailyChart></canvas>
                 </div>

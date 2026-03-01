@@ -17,6 +17,7 @@ export interface CommandeDetails {
             boutique: {
                 _id: string;
                 nom: string;
+                numeroTelephone: string;
             }
             sousTypeProduit: {
                 _id: string;

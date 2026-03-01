@@ -1,0 +1,202 @@
+<div class="container-fluid py-4">
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi-speedometer2 me-2"></i>Tableau de bord Boutique</h2>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                <i class="bi-arrow-counterclockwise"></i> Réinitialiser
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Date de début</label>
+                    <input type="date" class="form-control form-control-sm" [ngModel]="filters().startDate"
+                        (ngModelChange)="updateFilters('startDate', $event)">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Date de fin</label>
+                    <input type="date" class="form-control form-control-sm" [ngModel]="filters().endDate"
+                        (ngModelChange)="updateFilters('endDate', $event)">
+                </div>
+                <div class="col-md-4 d-flex align-items-end gap-2">
+                    <button class="btn btn-primary btn-sm w-100" (click)="loadStats()">
+                        <i class="bi-funnel me-1"></i> Filtrer
+                    </button>
+                    <div *ngIf="loading()" class="spinner-border spinner-border-sm text-primary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error()" class="alert alert-danger" role="alert">
+        {{ error() }}
+    </div>
+
+    <div *ngIf="stats() as s">
+        <div *ngIf="!loading() && !error()">
+            <!-- SECTION KPI (Global Totals Cards) -->
+            <!-- Use col-xl for 5-column layout on wide screens, otherwise wrap safely -->
+            <div class="row g-4 mb-4">
+                <!-- Stock Produits -->
+                <div class="col-12 col-sm-6 col-md-4 col-xl">
+                    <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+                        <div class="card-body px-3 py-3">
+                            <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i class="bi-box-seam me-1"></i>
+                                Stock Produits</h6>
+                            <div class="h3 fw-bold mb-2 summary-value">{{s.kpis.produits.total}}</div>
+                            <div class="small opacity-75">
+                                <div class="d-flex justify-content-between">
+                                    <span>Actifs:</span>
+                                    <span class="fw-bold">{{s.kpis.produits.actifs}}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-warning fw-bold">⚠ Rupture:</span>
+                                    <span class="fw-bold text-warning">{{s.kpis.produits.rupture}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statut des Commandes -->
+                <div class="col-12 col-sm-12 col-md-6 col-xl">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body px-3 py-3">
+                            <h6 class="text-muted small text-uppercase fw-bold mb-3"><i
+                                    class="bi-clipboard-check me-1"></i>
+                                Statut des Commandes</h6>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-hourglass-split text-warning me-1"></i>En
+                                        attente</span>
+                                    <span
+                                        class="badge bg-warning text-dark rounded-pill px-2">{{s.kpis.commandes.enAttente}}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-bag-check text-info me-1"></i>À récupérer</span>
+                                    <span
+                                        class="badge bg-info text-dark rounded-pill px-2">{{s.kpis.commandes.aRecuperer}}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-check-circle text-success me-1"></i>Payée &amp;
+                                        récupérée</span>
+                                    <span
+                                        class="badge bg-success rounded-pill px-2">{{s.kpis.commandes.payeeEtRecuperee}}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small"><i class="bi-x-circle text-danger me-1"></i>Annulée</span>
+                                    <span class="badge bg-danger rounded-pill px-2">{{s.kpis.commandes.annulees}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chiffre d'affaires -->
+                <div class="col-12 col-sm-6 col-md-6 col-xl">
+                    <div class="card border-0 shadow-sm h-100 bg-success text-white">
+                        <div class="card-body px-3 py-3">
+                            <h6 class="text-white-50 small text-uppercase fw-bold mb-2"><i
+                                    class="bi-cash-stack me-1"></i>
+                                Chiffre d'affaires</h6>
+                            <div class="h3 fw-bold mb-2 summary-value">
+                                {{s.kpis.financier.caTotal | number:'1.0-0'}} MGA
+                            </div>
+                            <div class="small opacity-80 summary-value">
+                                <span class="text-white-50">Ce mois:</span> <span
+                                    class="fw-bold">{{s.kpis.financier.caMois | number:'1.0-0'}} MGA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenus Nets -->
+                <div class="col-12 col-sm-6 col-md-6 col-xl">
+                    <div class="card border-0 shadow-sm h-100 bg-warning text-dark">
+                        <div class="card-body px-3 py-3">
+                            <h6 class="text-dark-50 small text-uppercase fw-bold mb-2"><i class="bi-wallet2 me-1"></i>
+                                Revenus Nets</h6>
+                            <div class="h3 fw-bold mb-2 summary-value">
+                                {{s.kpis.financier.revenusNets | number:'1.0-0'}} MGA
+                            </div>
+                            <div class="small text-dark-50 summary-value">
+                                <span>Commission:</span> <span class="fw-bold text-dark">{{s.kpis.financier.commission |
+                                    number:'1.0-0'}} MGA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <!-- Use col-lg for side-by-side layout, stack on md/sm -->
+            <div class="row g-4 mb-4">
+                <!-- Ventes sur 7 derniers jours -->
+                <div class="col-12 col-lg-8">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white fw-bold py-3"><i class="bi-graph-up me-2"></i>Ventes
+                            ({{ chartPeriodLabel }})</div>
+                        <div class="card-body" style="min-height: 350px;">
+                            <canvas #salesLast7DaysChart></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ventes par mois -->
+                <div class="col-12 col-lg-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white fw-bold py-3"><i class="bi-bar-chart me-2"></i>Ventes par mois
+                        </div>
+                        <div class="card-body" style="min-height: 350px;">
+                            <canvas #salesByMonthChart></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOP PRODUITS -->
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white fw-bold py-3"><i class="bi-star me-2"></i>Top 5 Produits
+                            (Quantité & Revenu)</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-borderless mb-0 align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="ps-4">Produit</th>
+                                            <th>Qté vendue</th>
+                                            <th class="pe-4 text-end">Total généré</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let prod of s.graphiques.topProduits">
+                                            <td class="ps-4 fw-medium">{{prod.nom}}</td>
+                                            <td><span
+                                                    class="badge bg-info text-dark rounded-pill px-3">{{prod.quantiteVendue}}</span>
+                                            </td>
+                                            <td class="pe-4 text-end fw-bold text-success">{{prod.totalGenere |
+                                                number:'1.0-0'}}
+                                                MGA</td>
+                                        </tr>
+                                        <tr *ngIf="s.graphiques.topProduits.length === 0">
+                                            <td colspan="3" class="text-center text-muted p-4">Aucune donnée disponible.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

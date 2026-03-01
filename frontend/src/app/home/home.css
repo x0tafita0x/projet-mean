@@ -32,9 +32,12 @@
 }
 /* Nom de la boutique */
 .boutique-nom {
-    font-size: 1.3rem; /* plus grand */
-    margin: 0;
-    font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: bold;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0;
 }
 
 /* Type de boutique */
@@ -101,4 +104,26 @@
 }
 .etat-wrapper {
     margin-left: auto;
+}
+.note-stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.note-stars i {
+  font-size: 0.9rem; /* taille des étoiles */
+}
+
+.nb-avis {
+  font-size: 0.75rem;
+  color: #888;
+  margin-left: 5px;
+}
+.nom-et-note {
+  display: flex;
+  flex-direction: column; /* nom + étoiles */
+  max-width: 150px;       /* limite largeur du nom pour ne pas casser le layout */
+  overflow: hidden;
 }

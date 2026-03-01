@@ -1,7 +1,41 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0"><i class="bi-shop-window me-2"></i>Supervision Boutiques</h2>
-        <span class="badge bg-primary rounded-pill">{{ boutiques().length }} boutiques</span>
+        <span class="badge bg-primary rounded-pill">{{ totalItems() }} boutiques</span>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted">Rechercher</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" placeholder="Nom de boutique..."
+                            [(ngModel)]="filters().search">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted">Statut</label>
+                    <select class="form-select form-select-sm" [(ngModel)]="filters().status">
+                        <option value="">Tous les statuts</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button class="btn btn-primary btn-sm w-100" (click)="applyFilters()">
+                        <i class="bi bi-funnel"></i> Filtrer
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     @if (loading()) {
@@ -11,60 +45,66 @@
     } @else if (error()) {
     <div class="alert alert-danger">{{ error() }}</div>
     } @else {
-    <div class="table-responsive card shadow-sm border-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th>Nom</th>
-                    <th>Type</th>
-                    <th>Horaires</th>
-                    <th>Statut</th>
-                    <th>Commission</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (b of boutiques(); track b._id) {
-                <tr>
-                    <td class="fw-semibold">{{ b.nom }}</td>
-                    <td>{{ b.typeBoutique?.nom || '—' }}</td>
-                    <td class="text-muted small">{{ b.heureOuverture }} – {{ b.heureFermeture }}</td>
-                    <td><span class="badge {{ statusBadge(b.status) }}">{{ b.status }}</span></td>
-                    <td>{{ b.tauxCommission !== null ? b.tauxCommission + ' %' : 'Global' }}</td>
-                    <td class="text-end">
-                        <a [routerLink]="['/home/admin/boutiques', b._id]" class="btn btn-sm btn-outline-primary me-1">
-                            <i class="bi-eye"></i>
-                        </a>
-                        @if (b.status !== 'active') {
-                        <button class="btn btn-sm btn-outline-success me-1" (click)="setStatus(b._id, 'active')"
-                            title="Activer">
-                            <i class="bi-check-circle"></i>
-                        </button>
-                        }
-                        @if (b.status !== 'inactive') {
-                        <button class="btn btn-sm btn-outline-secondary me-1" (click)="setStatus(b._id, 'inactive')"
-                            title="Désactiver">
-                            <i class="bi-pause-circle"></i>
-                        </button>
-                        }
-                        @if (b.status !== 'suspendue') {
-                        <button class="btn btn-sm btn-outline-warning me-1" (click)="setStatus(b._id, 'suspendue')"
-                            title="Suspendre">
-                            <i class="bi-slash-circle"></i>
-                        </button>
-                        }
-                        <button class="btn btn-sm btn-outline-danger" (click)="delete(b._id)" title="Supprimer">
-                            <i class="bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                } @empty {
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">Aucune boutique trouvée.</td>
-                </tr>
-                }
-            </tbody>
-        </table>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Horaires</th>
+                        <th>Statut</th>
+                        <th>Commission</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (b of boutiques(); track b._id) {
+                    <tr>
+                        <td class="fw-semibold">{{ b.nom }}</td>
+                        <td>{{ b.typeBoutique?.nom || '—' }}</td>
+                        <td class="text-muted small">{{ b.heureOuverture }} – {{ b.heureFermeture }}</td>
+                        <td><span class="badge {{ statusBadge(b.status) }}">{{ b.status }}</span></td>
+                        <td>{{ b.tauxCommission !== null ? b.tauxCommission + ' %' : 'Global' }}</td>
+                        <td class="text-end">
+                            <a [routerLink]="['/home/admin/boutiques', b._id]"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi-eye"></i>
+                            </a>
+                            @if (b.status !== 'active') {
+                            <button class="btn btn-sm btn-outline-success me-1" (click)="setStatus(b._id, 'active')"
+                                title="Activer">
+                                <i class="bi-check-circle"></i>
+                            </button>
+                            }
+                            @if (b.status !== 'inactive') {
+                            <button class="btn btn-sm btn-outline-secondary me-1" (click)="setStatus(b._id, 'inactive')"
+                                title="Désactiver">
+                                <i class="bi-pause-circle"></i>
+                            </button>
+                            }
+                            <button class="btn btn-sm btn-outline-danger" (click)="delete(b._id)" title="Supprimer">
+                                <i class="bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi-shop d-block mb-2 fs-2"></i>
+                            Aucune boutique trouvée.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer bg-white border-0 py-3">
+            <app-pagination [totalItems]="totalItems()" [pageSize]="pageSize()" [currentPage]="currentPage()"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
+        </div>
     </div>
     }
 </div>

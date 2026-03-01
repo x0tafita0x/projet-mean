@@ -1,0 +1,8 @@
+module.exports = {
+    EN_BROUILLON: "EN BROUILLON",
+    EN_ATTENTE: "EN ATTENTE",
+    VALIDEE: "VALIDÉE",
+    A_RECUPERER: "À RÉCUPÉRER",
+    PAYEE_ET_RECUPEREE: "PAYÉE ET RÉCUPÉRÉE",
+    ANNULEE: "ANNULÉE"
+};

@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { BaseLoginComponent } from '../base-login/base-login.component';
 import { LoginRequest } from '../../models/auth.models';
@@ -7,7 +7,7 @@ import { LoginRequest } from '../../models/auth.models';
 @Component({
     selector: 'app-login-admin',
     standalone: true,
-    imports: [BaseLoginComponent],
+    imports: [BaseLoginComponent, RouterLink],
     templateUrl: './login-admin.component.html'
 })
 export class LoginAdminComponent {

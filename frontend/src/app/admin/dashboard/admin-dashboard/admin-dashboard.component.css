@@ -15,3 +15,35 @@ canvas {
 .card:hover {
     transform: translateY(-2px);
 }
+
+.stats-number,
+.summary-value {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    /* clipped to be safe, but we aim for fitting with clamp */
+    line-height: 1.2;
+    display: block;
+    width: 100%;
+}
+
+/* Fluid scaling for totals: scales automatically to fit div */
+.summary-value {
+    font-size: clamp(0.7rem, 2vw, 1.2rem) !important;
+}
+
+.h3.summary-value {
+    font-size: clamp(0.9rem, 3vw, 1.7rem) !important;
+}
+
+.h4.summary-value {
+    font-size: clamp(0.7rem, 2vw, 1.2rem) !important;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}

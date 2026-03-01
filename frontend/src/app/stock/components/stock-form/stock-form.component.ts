@@ -24,52 +24,55 @@ export class StockFormComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  stock = signal<StockInsert>({ produit:'', in: '', out: '', prix: '' , boutique: ''});
+  stock = signal<StockInsert>({ produit: '', in: '', out: '', prix: '', boutique: '' });
   mouvementPrixProduit = signal<MouvementPrixProduitInsert>({ produit: '', prix: '0' });
   produits = signal<Produit[]>([]);
   loading = signal(false);
   selectedFile: File | null = null;
-  user : User | null = null;
+  user: User | null = null;
   private authService = inject(AuthService);
 
   ngOnInit() {
+    this.user = this.authService.currentUser();
     this.loadMetadata();
-this.user = this.authService.currentUser();
+  }
 
-}
-
-loadMetadata(){
-    this.produitService.getProduits('','', this.user?.boutique || '', '', 'asc').subscribe({
-      next: (data) => this.produits.set(data),
+  loadMetadata() {
+    this.produitService.getProduits({
+      boutique: this.user?.boutique || '',
+      order: 'asc',
+      limit: 1000
+    }).subscribe({
+      next: (response) => this.produits.set(response.data),
       error: (err) => console.error('Error loading produits', err)
     });
-}
+  }
   save() {
     this.loading.set(true);
 
-if (this.stock().in && parseFloat(this.stock().in || '0') !== 0) {
-  
-    this.mouvementPrixProduit.set({
-      produit: this.stock().produit as string,
-      prix: this.stock().prix  || '0'
+    if (this.stock().in && parseFloat(this.stock().in || '0') !== 0) {
+
+      this.mouvementPrixProduit.set({
+        produit: this.stock().produit as string,
+        prix: this.stock().prix || '0'
+      });
+
+      this.mouvementPrixProduitService.createMouvementPrixProduit(this.mouvementPrixProduit()).subscribe({
+        next: (data) => console.log('MouvementPrixProduit created', data),
+        error: (err) => console.error('Error creating MouvementPrixProduit', err)
+      });
+    }
+
+
+    this.stock.set({
+      produit: this.stock().produit,
+      in: this.stock().in,
+      out: this.stock().out,
+      prix: this.stock().prix,
+      boutique: this.user?.boutique || ''
     });
 
-  this.mouvementPrixProduitService.createMouvementPrixProduit(this.mouvementPrixProduit()).subscribe({
-      next: (data) => console.log('MouvementPrixProduit created', data),
-      error: (err) => console.error('Error creating MouvementPrixProduit', err)
-    });
-  }
-    
-   
-  this.stock.set({
-    produit: this.stock().produit,
-    in: this.stock().in,
-    out: this.stock().out,
-    prix: this.stock().prix,
-    boutique: this.user?.boutique || ''
-  });
-
-    const obs =  this.stockService.createStock(this.stock());
+    const obs = this.stockService.createStock(this.stock());
 
     obs.subscribe({
       next: () => {

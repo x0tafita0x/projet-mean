@@ -38,13 +38,8 @@ export const routes: Routes = [
       { path: 'produit/new', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produit/edit/:id', loadComponent: () => import('./produit/components/produit-form/produit-form.component').then(m => m.ProduitFormComponent) },
       { path: 'produitByBoutique/:id', loadComponent: () => import('./produit/components/produit-list-acheteur/produit-list-acheteur.component').then(m => m.ProduitListAcheteurComponent) },
-<<<<<<< admin
-=======
-      
       // Favori routes
       { path: 'favori', loadComponent: () => import('./favori/components/favori-list/favori-list.component').then(m => m.FavoriListComponent) },
-
->>>>>>> develop
 
       // Panier routes
       { path: 'panier', loadComponent: () => import('./panier/components/panier-list/panier-list.component').then(m => m.PanierListComponent) },
@@ -52,7 +47,7 @@ export const routes: Routes = [
       { path: 'etat', loadComponent: () => import('./panier/components/etat-list/etat-list.component').then(m => m.EtatListComponent) },
       { path: 'etat/new', loadComponent: () => import('./panier/components/etat-form/etat-form.component').then(m => m.EtatFormComponent) },
       { path: 'etat/edit/:id', loadComponent: () => import('./panier/components/etat-form/etat-form.component').then(m => m.EtatFormComponent) },
-      
+
       // Achat routes
       { path: 'achat', loadComponent: () => import('./achat/components/achat-list/achat-list.component').then(m => m.AchatListComponent) },
       { path: 'achat-details/:id', loadComponent: () => import('./achat/components/achat-details/achat-details.component').then(m => m.AchatDetailsComponent) },
@@ -61,10 +56,13 @@ export const routes: Routes = [
       { path: 'commande-non-traitée', loadComponent: () => import('./commande/components/commande-list/commande-list.component').then(m => m.CommandeListComponent) },
       { path: 'commande-a-récupérer', loadComponent: () => import('./commande/components/commande-a-recuperer-liste/commande-a-recuperer-list.component').then(m => m.CommandeARecupererListComponent) },
       { path: 'commande-payée-récupérée', loadComponent: () => import('./commande/components/commande-payee-recuperee-list/commande-payee-recuperee-list.component').then(m => m.CommandePayeeRecupereeListComponent) },
-      
+
+      // Annonce routes
+      { path: 'publications', loadComponent: () => import('./annonce/components/annonce-page/annonce-page.component').then(m => m.AnnoncePageComponent) },
+
       // facture
       { path: 'facture-template', loadComponent: () => import('./facture-ticket/facture-ticket.component').then(m => m.FactureTicketComponent) },
-     
+
       // Stock routes
       { path: 'stock', loadComponent: () => import('./stock/components/stock-list/stock-list.component').then(m => m.StockListComponent) },
       { path: 'produits-avec-stock', loadComponent: () => import('./stock/components/stock-list-by-produit/stock-list-by-produit.component').then(m => m.StockListComponentByProduit) },
@@ -80,6 +78,7 @@ export const routes: Routes = [
       { path: 'type-boutique/edit/:id', loadComponent: () => import('./boutique/components/type-boutique-form/type-boutique-form.component').then(m => m.TypeBoutiqueFormComponent) },
 
       // Boutique routes
+      { path: 'boutique/dashboard', loadComponent: () => import('./boutique/components/boutique-dashboard/boutique-dashboard').then(m => m.BoutiqueDashboard) },
       { path: 'boutique', loadComponent: () => import('./boutique/components/boutique-list/boutique-list.component').then(m => m.BoutiqueListComponent) },
       { path: 'boutique/new', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
       { path: 'boutique/edit/:id', loadComponent: () => import('./boutique/components/boutique-form/boutique-form.component').then(m => m.BoutiqueFormComponent) },
