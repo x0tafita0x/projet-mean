@@ -6,11 +6,12 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../auth/models/auth.models';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-favori-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, PaginationComponent],
+  imports: [CommonModule, RouterModule, PaginationComponent, PhotoUrlPipe],
   templateUrl: './favori-list.component.html'
 })
 export class FavoriListComponent implements OnInit {

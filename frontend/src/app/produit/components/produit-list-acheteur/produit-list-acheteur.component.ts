@@ -17,11 +17,12 @@ import { AvisNote, AvisNoteList } from '../../../avis-note/models/avis-note.mode
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
 import { AnnonceListComponent } from '../../../annonce/components/annonce-list/annonce-list.component';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'produit-list-acheteur',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AnnonceListComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AnnonceListComponent, PhotoUrlPipe],
   templateUrl: './produit-list-acheteur.component.html',
   styleUrl: './produit-list-acheteur.component.css'
 })

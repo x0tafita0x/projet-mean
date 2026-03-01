@@ -6,6 +6,7 @@ import { BoutiqueService } from '../../services/boutique.services';
 import { Boutique, TypeBoutique } from '../../models/boutique.models';
 import { User } from '../../../auth/models/auth.models';
 import { AuthService } from '../../../auth/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-boutique-form',
@@ -45,7 +46,7 @@ export class BoutiqueFormComponent implements OnInit {
 
           this.boutique.set(data);
           if (data.photo) {
-            this.imagePreview = `http://localhost:3000/${data.photo}`;
+            this.imagePreview = `${environment.serverUrl}/${data.photo}`;
           }
         },
         error: (err) => alert('Erreur lors du chargement de la boutique')

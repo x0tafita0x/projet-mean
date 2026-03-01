@@ -11,11 +11,12 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { FilterCriteria } from '../../../shared/models/pagination.models';
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-commande-payee-recuperee-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, FactureTicketComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, RouterModule, FactureTicketComponent, PaginationComponent, PhotoUrlPipe],
   templateUrl: './commande-payee-recuperee-list.component.html',
   styleUrl: './commande-payee-recuperee-list.component.css'
 })

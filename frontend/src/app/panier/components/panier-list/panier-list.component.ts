@@ -10,11 +10,12 @@ import { StockService } from '../../../stock/services/stock.services';
 import { EtatService } from '../../../shared/service/etat.service';
 import { ETATS } from '../../../shared/constants/etat.constants';
 import { sign } from 'chart.js/helpers';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-panier-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PhotoUrlPipe],
   templateUrl: './panier-list.component.html',
   styleUrl: './panier-list.component.css'
 })
@@ -27,11 +28,11 @@ export class PanierListComponent implements OnInit {
   private location = inject(Location);
   canValidate = signal(false);
   paniers = signal<PanierList[]>([]);
-  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: ''});
+  panierUpdated = signal<Panier>({ utilisateur: '', produit: '', prix: 0, quantite: 1, etat: '' });
   PaniertoValidate = signal<Panier[]>([]);
-    user : User | null = null;
-    max_stock = signal<number>(0);
-  dateRecuperation = new Date().toISOString().split('T')[0]; 
+  user: User | null = null;
+  max_stock = signal<number>(0);
+  dateRecuperation = new Date().toISOString().split('T')[0];
   dateMin = new Date().toISOString().split('T')[0];
   showDateModal = signal(false);
 
@@ -136,7 +137,7 @@ export class PanierListComponent implements OnInit {
       alert('Veuillez sélectionner au moins un panier à valider.');
       return;
     }
-   this.addDateRecuperation(paniersToValidateIntermedaire);
+    this.addDateRecuperation(paniersToValidateIntermedaire);
     this.panierService.sendData(paniersToValidateIntermedaire);
     console.log('Paniers à valider :', paniersToValidateIntermedaire);
     sessionStorage.setItem('produitSelected', JSON.stringify(paniersToValidateIntermedaire));

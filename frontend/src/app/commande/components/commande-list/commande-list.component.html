@@ -73,8 +73,7 @@
         <div class="produit-content">
           <input type="checkbox" class="form-check-input me-3" [checked]="estSelectionne(commande)"
             (click)="$event.stopPropagation()" (change)="toggleSelection(commande)">
-          <img class="custom-image img-fluid"
-            [src]="commande.panier.produit.photo ? 'http://localhost:3000/' + commande.panier.produit.photo : 'assets/placeholder.png'">
+          <img class="custom-image img-fluid" [src]="commande.panier.produit.photo | photoUrl">
           <div class="produit-info">
             <h3 class="produit-nom">{{ commande.panier.produit.nom }}</h3>
             <p class="produit-type">{{ commande.panier.produit.sousTypeProduit.nom }}</p>

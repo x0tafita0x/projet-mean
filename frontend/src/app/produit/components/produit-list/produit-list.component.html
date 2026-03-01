@@ -76,8 +76,8 @@
                     <tbody>
                         <tr *ngFor="let produit of produits()">
                             <td>
-                                <img [src]="produit.photo ? 'http://localhost:3000/' + produit.photo : 'assets/placeholder.png'"
-                                    class="img-thumbnail rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img [src]="produit.photo | photoUrl" class="img-thumbnail rounded"
+                                    style="width: 50px; height: 50px; object-fit: cover;">
                             </td>
                             <td>
                                 <div class="fw-bold">{{ produit.nom }}</div>

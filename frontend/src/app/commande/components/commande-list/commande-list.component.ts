@@ -12,11 +12,12 @@ import { EtatService } from '../../../shared/service/etat.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterCriteria } from '../../../shared/models/pagination.models';
 import { ETATS } from '../../../shared/constants/etat.constants';
+import { PhotoUrlPipe } from '../../../shared/pipes/photo-url.pipe';
 
 @Component({
   selector: 'app-commande-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, PaginationComponent],
+  imports: [CommonModule, FormsModule, RouterModule, PaginationComponent, PhotoUrlPipe],
   templateUrl: './commande-list.component.html',
   styleUrl: './commande-list.component.css'
 })
@@ -124,7 +125,7 @@ export class CommandeListComponent implements OnInit {
     const achatId = this.commandeSelectionnee().length > 0 ? this.commandeSelectionnee()[0].achat : '';
 
 
-    this.commandeService.updateCommandeToRecuperer(achatId,this.user?.boutique || "").subscribe({
+    this.commandeService.updateCommandeToRecuperer(achatId, this.user?.boutique || "").subscribe({
       next: () => {
         alert('Commande mise à jour avec succès !');
         this.loadCommandes();
