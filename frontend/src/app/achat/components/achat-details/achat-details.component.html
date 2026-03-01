@@ -33,18 +33,19 @@
         <td>{{ achatDetails.panier.produit.nom }}</td>
         <td>{{ achatDetails.panier.produit.boutique.nom }}</td>
         <td>{{ achatDetails.quantite }}</td>
-        <td>{{ achatDetails.prix  | currency:'MGA ':'symbol':'1.0-0' }}</td>
+        <td>{{ achatDetails.prix | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td> {{ (+achatDetails.prix) * (+achatDetails.quantite) | currency:'MGA ':'symbol':'1.0-0' }}</td>
         <td>{{ achatDetails.etat.nom }}</td>
-        <td><button *ngIf="achatDetails.etat.nom != 'Annule'" class="btn" style="color: red;" [hidden]="!annuler()" (click)="annulerCommande(achatDetails._id || '')"><i class="bi bi-trash"></i></button>
-          <small class="facture-notes" *ngIf="achatDetails.etat.nom == 'Annule'" >pas d'action</small>
+        <td><button *ngIf="achatDetails.etat.nom != 'Annule'" class="btn" style="color: red;" [hidden]="!annuler()"
+            (click)="annulerCommande(achatDetails._id || '')"><i class="bi bi-trash"></i></button>
+          <small class="facture-notes" *ngIf="achatDetails.etat.nom == 'Annule'">pas d'action</small>
         </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <th colspan="4" class="text-end">Total :</th>
-        <th>{{ this.total() | number:'1.0-0' }} MGA</th>
+        <th>{{ total() | number:'1.0-0' }} MGA</th>
       </tr>
     </tfoot>
   </table>
