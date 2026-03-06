@@ -253,7 +253,7 @@ exports.ChangeToCommandeARecuperer = async (req, res) => {
         const { achatId, boutiqueId } = req.params;
         const etatId = await etatService.getEtatIdByNom(ETATS.A_RECUPERER);
         const result = await achatInfo.updateMany(
-            { achat: new mongoose.Types.ObjectId(achatId), boutique: new mongoose.Types.ObjectId(boutiqueId), etat: etatId },
+            { achat: new mongoose.Types.ObjectId(achatId) },
             { $set: { etat: etatId } }
         );
         res.status(200).json(result);
